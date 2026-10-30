@@ -105,3 +105,14 @@ def test_bad_json_body(base):
 
 def test_unknown_api_path(base):
     assert get(base + "/api/nothing")[0] == 404
+
+
+def test_activities(base):
+    status, data = post(base + "/api/activities", {"q": "morn", "history": [{"text": "Morning yoga", "area": "Health"}]})
+    assert status == 200
+    assert data[0] == {"text": "Morning yoga", "area": "Health", "source": "yours"}
+
+
+def test_activities_ignores_bad_history(base):
+    status, data = post(base + "/api/activities", {"q": "morn", "history": "nonsense"})
+    assert status == 200 and any(d["text"] == "Morning run" for d in data)

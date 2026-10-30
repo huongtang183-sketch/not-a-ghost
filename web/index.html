@@ -88,6 +88,10 @@ footer{padding:28px clamp(16px,4vw,48px);font-size:14px;color:var(--mute);displa
 .opts label{display:grid;gap:4px;font-size:14px;font-weight:600}
 .opts input,.opts select{border:2px solid var(--ink);border-radius:12px;padding:8px 10px;background:var(--white);min-width:0}
 .opts .wideopt{grid-column:1/-1}
+.cityRes{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.cityRes button{border:2px solid var(--ink);border-radius:999px;padding:5px 12px;font-weight:600;background:var(--sky);cursor:pointer}
+.sugg{grid-column:1/-1;margin:-4px 0 0}
+.cityRes small{font-weight:500;opacity:.7}
 .form .wide{grid-column:span 2}
 .form label{min-width:0}
 .form input,.form select{width:100%;min-width:0}
@@ -186,7 +190,8 @@ footer{padding:28px clamp(16px,4vw,48px);font-size:14px;color:var(--mute);displa
     <p class="sub">Your usual and your ghost (the top quarter of your days) are worked out per area from your own earlier days. One entry per area per day; saving again replaces it.</p>
     <form class="form" id="logForm">
       <label>Area<select id="area"><option>Study</option><option>Work</option><option>Health</option><option>Style</option><option>Money</option><option>Other</option></select></label>
-      <label class="wide">What are you doing<input id="what" required maxlength="200" placeholder="Reading chapter 3 of a quant finance book, then notes"></label>
+      <label class="wide">What are you doing<input id="what" required maxlength="200" autocomplete="off" placeholder="Reading chapter 3 of a quant finance book, then notes"></label>
+      <ul class="cityRes sugg" id="whatRes" hidden></ul>
       <label>Minutes<input id="minutes" type="number" min="5" max="600" value="90" required></label>
       <label>Items finished (optional)<input id="solved" type="number" min="0" max="500" value="0"></label>
       <label>Sleep last night, hours<input id="sleep" type="number" min="0" max="14" step="0.5" value="7" required></label>
@@ -511,8 +516,36 @@ document.querySelectorAll('#checkin [data-r]').forEach(b => b.onclick = () => {
   l.done = true; save(); renderAll();
 });
 
-const savePrefs = () => { S.prefs = {region: $('region').value, limit: $('limit').value, count: +$('count').value || 1}; save(); };
+const savePrefs = () => { S.prefs = Object.assign(S.prefs, {region: $('region').value, limit: $('limit').value, count: +$('count').value || 1}); save(); };
 ['region', 'limit', 'count'].forEach(id => $(id).addEventListener('input', savePrefs));
+
+// The Python server (python -m ghost.server) adds city search, the prompt builder and the answer checker.
+// Without it the page works on its own with the built-in versions.
+let api = false;
+async function callApi(path, body){
+  const r = await fetch(path, body ? {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)} : undefined);
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.error || 'Request failed');
+  return j;
+}
+let sugTimer = 0;
+const hideSug = () => { $('whatRes').hidden = true; $('whatRes').textContent = ''; };
+$('what').addEventListener('input', () => {
+  clearTimeout(sugTimer);
+  const q = $('what').value.trim();
+  if (!api || q.length < 2){ hideSug(); return; }
+  sugTimer = setTimeout(() => callApi('/api/activities', {q, history: S.days.map(d => ({text: d.text, area: d.area}))}).then(list => {
+    const box = $('whatRes'); box.textContent = ''; box.hidden = !list.length;
+    list.forEach(s => {
+      const li = el('li'), b = el('button', '', s.text); b.type = 'button';
+      b.append(' ', el('small', '', s.source === 'yours' ? s.area + ' \u00b7 yours' : s.area));
+      b.onclick = () => { $('what').value = s.text; $('area').value = s.area; hideSug(); $('minutes').focus(); };
+      li.append(b); box.append(li);
+    });
+  }).catch(() => {}), 120);
+});
+$('what').addEventListener('keydown', e => { if (e.key === 'Escape') hideSug(); });
+callApi('/api/activities', {q: 'zz', history: []}).then(() => { api = true; }).catch(() => {});
 
 $('copyPrompt').onclick = async () => {
   const last = S.days.filter(d => d.date === today()).slice(-1)[0] || S.days[S.days.length - 1];
@@ -520,7 +553,7 @@ $('copyPrompt').onclick = async () => {
   S.promptArea = area; save();
   const region = (S.prefs.region || '').trim() || 'anywhere in the world', limit = (S.prefs.limit || '').trim(), n = +S.prefs.count || 1;
   const names = f => Object.keys(S.titles).filter(f).map(k => S.titles[k]).join('; ') || 'none';
-  const prompt = [
+  let prompt = [
     'You are my daily coach. Find how other people around the world do the same thing as me in a different way, and suggest ' + (n === 1 ? 'ONE small change' : n + ' different small changes') + ' I can try tomorrow.',
     last ? 'What I did today: ' + (last.text || area) + ' (area: ' + area + '), ' + last.minutes + ' minutes, ' + last.solved + ' items finished, slept ' + last.sleep + ' hours, felt ' + last.feel + ' out of 5.' : 'I have not logged a day yet, so suggest a change for how I study.',
     'Examples should come from: ' + region + '.' + (limit ? ' My limit: ' + limit + '.' : ''),
@@ -529,6 +562,14 @@ $('copyPrompt').onclick = async () => {
     'Write each change at four sizes: 10%, 30%, 50% and 100% of the full change, from a small first step to the whole thing.',
     'Reply with a JSON array only, one object per change: [{"title":"","why":"","source_type":"research|person|product","from":"","source_title":"","source_url":"","variants":{"10":"","30":"","50":"","100":""}}]'
   ].join('\n');
+  if (api){
+    try {
+      const day = last ? {area, text: last.text, minutes: last.minutes, solved: last.solved, sleep: last.sleep, feel: last.feel} : null;
+      const titles = f => Object.keys(S.titles).filter(f).map(k => S.titles[k]);
+      prompt = (await callApi('/api/prompt', {day, region: S.prefs.region, limit: S.prefs.limit, count: n,
+        kept: titles(k => S.decided[k] === 'keep'), dropped: titles(k => S.decided[k] === 'drop'), tried: titles(k => S.tries[k])})).prompt;
+    } catch(e){}
+  }
   try { await navigator.clipboard.writeText(prompt); $('toolMsg').textContent = 'Prompt copied. Paste it into Claude with web search on.'; }
   catch(e){ $('pasteBox').hidden = false; $('pasteArea').value = prompt; $('toolMsg').textContent = 'Copy the prompt from the box below.'; }
 };
@@ -540,12 +581,12 @@ $('another').onclick = () => {
   S.idx = next; save(); $('toolMsg').textContent = ''; renderAll();
 };
 $('togglePaste').onclick = () => { $('pasteBox').hidden = !$('pasteBox').hidden; };
-$('importBtn').onclick = () => {
+$('importBtn').onclick = async () => {
   try {
     const raw = $('pasteArea').value.trim().replace(/^```(?:json)?\s*|\s*```$/g, '');
     const j = JSON.parse(raw), list = (Array.isArray(j) ? j : [j]).slice(0, 5);
     const lastArea = S.days.length ? S.days[S.days.length - 1].area : 'Other';
-    const items = list.filter(x => x && typeof x.title === 'string' && x.title && x.variants && SIZES.every(k => typeof x.variants[k] === 'string' && x.variants[k]))
+    let items = list.filter(x => x && typeof x.title === 'string' && x.title && x.variants && SIZES.every(k => typeof x.variants[k] === 'string' && x.variants[k]))
       .map((x, i) => ({
         id: 's' + Date.now() + '-' + i, area: AREAS.includes(x.area) ? x.area : (S.promptArea || lastArea),
         source_type: SRC_LABEL[x.source_type] ? x.source_type : '', from: String(x.from || ''),
@@ -553,6 +594,10 @@ $('importBtn').onclick = () => {
         source_url: /^https?:\/\//.test(String(x.source_url || '')) ? String(x.source_url) : '',
         variants: Object.fromEntries(SIZES.map(k => [k, String(x.variants[k])]))
       }));
+    if (api){
+      try { items = (await callApi('/api/parse', {text: $('pasteArea').value, area: S.promptArea || lastArea})).items.map((x, i) => Object.assign({id: 's' + Date.now() + '-' + i}, x)); }
+      catch(e){ items = []; }
+    }
     if (!items.length) throw new Error('no valid item');
     S.pool = items; S.idx = 0;
     save(); $('pasteBox').hidden = true; $('pasteArea').value = ''; $('toolMsg').textContent = items.length + (items.length === 1 ? ' idea loaded.' : ' ideas loaded.'); renderAll();

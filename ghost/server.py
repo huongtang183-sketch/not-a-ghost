@@ -11,7 +11,7 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from ghost import coach, geo, places
+from ghost import activities, coach, geo, places
 
 WEB = Path(__file__).resolve().parent.parent / "web"
 MAX_BODY = 1_000_000
@@ -68,6 +68,10 @@ class Handler(SimpleHTTPRequestHandler):
                 raise ValueError("Body must be a JSON object.")
         except ValueError as error:
             return self.send_json({"error": str(error) or "Invalid JSON."}, 400)
+        if path == "/api/activities":
+            history = body.get("history", [])
+            history = [h for h in history if isinstance(h, dict)] if isinstance(history, list) else []
+            return self.send_json(activities.suggest(str(body.get("q", "")), history))
         if path == "/api/prompt":
             prompt = coach.build_prompt(
                 body.get("day"), body.get("region", ""), body.get("limit", ""), int(body.get("count") or 1),
