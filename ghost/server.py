@@ -75,7 +75,9 @@ class Handler(SimpleHTTPRequestHandler):
         if path == "/api/prompt":
             prompt = coach.build_prompt(
                 body.get("day"), body.get("region", ""), body.get("limit", ""), int(body.get("count") or 1),
-                body.get("kept", []), body.get("dropped", []), body.get("tried", []))
+                body.get("kept", []), body.get("dropped", []), body.get("tried", []),
+                str(body.get("current", "")), str(body.get("goal", "")),
+                str(body.get("keep_same", "")), str(body.get("may_change", "")))
             return self.send_json({"prompt": prompt})
         if path == "/api/parse":
             try:

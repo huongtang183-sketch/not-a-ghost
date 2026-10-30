@@ -23,11 +23,14 @@ def _names(titles):
     return "; ".join(titles) or "none"
 
 
-def build_prompt(day=None, region="", limit="", count=1, kept=(), dropped=(), tried=()):
+def build_prompt(day=None, region="", limit="", count=1, kept=(), dropped=(), tried=(),
+                 current="", goal="", keep_same="", may_change=""):
     """Prompt to paste into Claude with web search on.
 
     day: dict with area, text, minutes, solved, sleep, feel (or None).
     kept, dropped, tried: titles of ideas already decided, so Claude does not repeat them.
+    current: how the user does it now. goal: what they want to improve.
+    keep_same, may_change: what must stay the same, and what may differ, in the ideas returned.
     """
     region = (region or "").strip() or ANYWHERE
     limit = (limit or "").strip()
@@ -38,9 +41,19 @@ def build_prompt(day=None, region="", limit="", count=1, kept=(), dropped=(), tr
                  f"{day.get('solved', 0)} items finished, slept {day.get('sleep')} hours, felt {day.get('feel')} out of 5.")
     else:
         today = "I have not logged a day yet, so suggest a change for how I study."
+    details = []
+    if (current or "").strip():
+        details.append(f"How I do it now: {current.strip()}.")
+    if (goal or "").strip():
+        details.append(f"My goal: {goal.strip()}.")
+    if (keep_same or "").strip():
+        details.append(f"Keep the same: {keep_same.strip()}.")
+    if (may_change or "").strip():
+        details.append(f"Open to changing: {may_change.strip()}.")
     return "\n".join([
         f"You are my daily coach. Find how other people around the world do the same thing as me in a different way, and suggest {ask} I can try tomorrow.",
         today,
+        *details,
         f"Examples should come from: {region}." + (f" My limit: {limit}." if limit else ""),
         "Search the web. Use only sources you opened and give each link. If you cannot find a source, say so in \"why\" and leave the link empty. "
         "Do not invent people, quotes or numbers. Say whether each source is research, a person’s own account, or a product listing. "

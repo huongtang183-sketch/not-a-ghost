@@ -116,3 +116,10 @@ def test_activities(base):
 def test_activities_ignores_bad_history(base):
     status, data = post(base + "/api/activities", {"q": "morn", "history": "nonsense"})
     assert status == 200 and any(d["text"] == "Morning run" for d in data)
+
+
+def test_prompt_passes_improve_details(base):
+    status, data = post(base + "/api/prompt", {"goal": "Run 10 km", "keep_same": "Three sessions a week"})
+    assert status == 200
+    assert "My goal: Run 10 km." in data["prompt"]
+    assert "Keep the same: Three sessions a week." in data["prompt"]

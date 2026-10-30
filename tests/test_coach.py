@@ -86,3 +86,24 @@ def test_parse_errors():
         coach.parse_answer("[]")
     with pytest.raises(ValueError):
         coach.parse_answer(json.dumps([{"title": "x"}]))
+
+
+def test_prompt_with_improve_details():
+    p = coach.build_prompt(None, current="Run 5 km three times a week", goal="Run 10 km",
+                           keep_same="Three sessions a week", may_change="Exercises and pace")
+    assert "How I do it now: Run 5 km three times a week." in p
+    assert "My goal: Run 10 km." in p
+    assert "Keep the same: Three sessions a week." in p
+    assert "Open to changing: Exercises and pace." in p
+
+
+def test_prompt_skips_empty_details():
+    p = coach.build_prompt(None, current="  ", goal="", keep_same="", may_change="")
+    assert "How I do it now" not in p and "My goal" not in p
+    assert "Keep the same" not in p and "Open to changing" not in p
+
+
+def test_details_come_after_the_day_and_before_the_region():
+    day = {"area": "Health", "text": "Run", "minutes": 30, "solved": 0, "sleep": 7, "feel": 3}
+    p = coach.build_prompt(day, region="Japan", goal="Run 10 km")
+    assert p.index("What I did today") < p.index("My goal") < p.index("Examples should come from")
