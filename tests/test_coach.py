@@ -106,8 +106,8 @@ def test_parse_keeps_real_area_else_default():
     assert coach.parse_answer(json.dumps([idea(area="Cooking")]), "Study")[0]["area"] == "Study"
 
 
-def test_parse_keeps_at_most_five():
-    assert len(coach.parse_answer(json.dumps([idea(title=f"T{i}") for i in range(8)]))) == 5
+def test_parse_keeps_at_most_ten():
+    assert len(coach.parse_answer(json.dumps([idea(title=f"T{i}") for i in range(14)]))) == coach.MAX_IDEAS == 10
 
 
 def test_parse_errors():
@@ -121,3 +121,34 @@ def test_parse_errors():
 
 def test_parse_drops_an_idea_whose_benefits_are_all_unusable():
     assert [i["title"] for i in coach.parse_answer(json.dumps([idea(benefits=[" ", 3]), idea(title="Keep me")]))] == ["Keep me"]
+
+
+def test_modes_change_the_request_and_ask_for_a_price():
+    cheaper = coach.build_prompt("A blender at 89 CHF", mode="cheaper")
+    similar = coach.build_prompt("I love Lisbon trams", mode="similar")
+    improve = coach.build_prompt("I run 5 km")
+    assert "cheaper equivalent" in cheaper and "lower price" in cheaper
+    assert "similar to what I describe" in similar
+    assert "in a different way" in improve and "\n\n" not in improve
+    assert coach.build_prompt("x", mode="unknown") == coach.build_prompt("x")
+    assert '"price"' in cheaper
+
+
+def test_price_is_kept_only_as_short_text():
+    base = {"title": "t", "summary": "s", "benefits": ["b"]}
+    items = coach.parse_answer(json.dumps([dict(base, price="CHF 49 instead of CHF 89"), dict(base, price=5), dict(base, price="x" * 200)]))
+    assert items[0]["price"] == "CHF 49 instead of CHF 89"
+    assert items[1]["price"] == ""
+    assert len(items[2]["price"]) == coach.MAX_PRICE_CHARS
+
+
+def test_links_and_photos_appear_in_the_request():
+    prompt = coach.build_prompt("a blender", mode="cheaper", links=["https://shop.example/b", "javascript:x", "not a link"], photos=2)
+    assert "https://shop.example/b" in prompt and "javascript" not in prompt and "not a link" not in prompt
+    assert "I attached 2 photos" in prompt
+    assert "attached" not in coach.build_prompt("a blender")
+
+
+def test_more_ideas_allow_more_searches():
+    assert "at most 3 searches and 2 pages" in coach.build_prompt("x", count=1)
+    assert "at most 8 searches and 8 pages" in coach.build_prompt("x", count=8)

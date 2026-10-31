@@ -13,14 +13,50 @@ from urllib.parse import parse_qs, urlparse
 
 from concurrent.futures import ThreadPoolExecutor
 
-from ghost import activities, coach, places, preview, search
+import base64
+import binascii
+
+from ghost import activities, coach, countries, places, preview, search
 
 WEB = Path(__file__).resolve().parent.parent / "web"
 MAX_BODY = 1_000_000
+MAX_BODY_PHOTOS = 8_000_000
+MAX_PHOTOS = 3
+MAX_PHOTO_BYTES = 2_500_000
+PHOTO_TYPES = ((b"\xff\xd8\xff", "image/jpeg"), (b"\x89PNG\r\n\x1a\n", "image/png"), (b"GIF8", "image/gif"))
 
 
 def place_json(p):
     return {"id": p.id, "name": p.name, "country": p.country, "lat": p.lat, "lng": p.lng, "timezone": p.timezone}
+
+
+def clean_photos(raw):
+    """Check the photos sent by the page. Returns [(media type, base64 text)] or raises ValueError."""
+    if not isinstance(raw, list):
+        return []
+    if len(raw) > MAX_PHOTOS:
+        raise ValueError(f"At most {MAX_PHOTOS} photos.")
+    out = []
+    for item in raw:
+        text = str(item.get("data", "") if isinstance(item, dict) else "")
+        text = text.split(",", 1)[1] if text.startswith("data:") and "," in text else text
+        try:
+            blob = base64.b64decode(text, validate=True)
+        except (binascii.Error, ValueError):
+            raise ValueError("A photo could not be read.") from None
+        if len(blob) > MAX_PHOTO_BYTES:
+            raise ValueError("A photo is too large.")
+        kind = next((k for magic, k in PHOTO_TYPES if blob.startswith(magic)), "")
+        if not kind and blob[:4] == b"RIFF" and blob[8:12] == b"WEBP":
+            kind = "image/webp"
+        if not kind:
+            raise ValueError("Photos must be JPEG, PNG, GIF or WebP.")
+        out.append((kind, base64.b64encode(blob).decode()))
+    return out
+
+
+def format_coord(value, plus, minus):
+    return f"{abs(value):.2f}\u00b0 {plus if value >= 0 else minus}"
 
 
 class Handler(SimpleHTTPRequestHandler):
@@ -56,6 +92,14 @@ class Handler(SimpleHTTPRequestHandler):
         if url.path == "/api/places":
             found = places.search(self.index, query.get("q", [""])[0])
             return self.send_json([place_json(p) for p in found])
+        if url.path == "/api/location":
+            q = query.get("q", [""])[0]
+            out = [dict(r, label=r["name"]) for r in countries.search(q)]
+            for p in places.search(self.index, q, 6):
+                country = countries.country_name(p.country)
+                out.append({"kind": "city", "name": p.name, "country": country, "lat": p.lat, "lng": p.lng,
+                            "label": f"{p.name}, {country}", "coords": f"{format_coord(p.lat, 'N', 'S')}, {format_coord(p.lng, 'E', 'W')}"})
+            return self.send_json(out)
         if url.path == "/api/status":
             return self.send_json({"search": self.searcher is not None})
         if url.path.startswith("/api/"):
@@ -68,7 +112,7 @@ class Handler(SimpleHTTPRequestHandler):
             return self.send_json({"error": "Content-Type must be application/json."}, 415)
         try:
             size = int(self.headers.get("Content-Length", 0))
-            if size > MAX_BODY:
+            if size > (MAX_BODY_PHOTOS if path == "/api/search" else MAX_BODY):
                 return self.send_json({"error": "Request too large."}, 413)
             body = json.loads(self.rfile.read(size) or b"{}")
             if not isinstance(body, dict):
@@ -82,7 +126,12 @@ class Handler(SimpleHTTPRequestHandler):
             if not prompt:
                 return self.send_json({"error": "Empty request."}, 400)
             try:
-                items = coach.parse_answer(self.searcher(prompt), str(body.get("area") or "Other"))
+                photos = clean_photos(body.get("images"))
+            except ValueError as error:
+                return self.send_json({"error": str(error)}, 400)
+            try:
+                answer = self.searcher(prompt, images=photos) if photos else self.searcher(prompt)
+                items = coach.parse_answer(answer, str(body.get("area") or "Other"))
             except search.SearchError as error:
                 return self.send_json({"error": str(error)}, 503)
             except ValueError as error:
@@ -101,8 +150,11 @@ class Handler(SimpleHTTPRequestHandler):
             if not request:
                 return self.send_json({"error": "Empty request."}, 400)
             prompt = coach.build_prompt(request, str(body.get("region", "")), str(body.get("limit", "")),
-                                        int(body.get("count") or 1), str(body.get("keep_same", "")),
-                                        [str(t) for t in body.get("tried", []) if isinstance(t, str)])
+                                        max(1, min(int(body.get("count") or 1), coach.MAX_IDEAS)), str(body.get("keep_same", "")),
+                                        [str(t) for t in body.get("tried", []) if isinstance(t, str)],
+                                        str(body.get("mode", "improve")),
+                                        [str(x) for x in body.get("links", []) if isinstance(x, str)] if isinstance(body.get("links"), list) else [],
+                                        max(0, min(int(body.get("photos") or 0), MAX_PHOTOS)))
             return self.send_json({"prompt": prompt})
         if path == "/api/parse":
             try:

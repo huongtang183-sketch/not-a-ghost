@@ -33,23 +33,53 @@ def command(exe):
             "--tools", TOOLS, "--allowedTools", TOOLS, "--no-session-persistence"]
 
 
-def run_claude(prompt, timeout=TIMEOUT, runner=subprocess.run, exe=None):
-    """Send the prompt to Claude Code and return its text answer."""
+def image_command(exe):
+    """Photos go in as image blocks on standard input, so Claude never needs file access."""
+    return [exe, "-p", "--input-format", "stream-json", "--output-format", "stream-json", "--verbose",
+            "--model", "sonnet", "--tools", TOOLS, "--allowedTools", TOOLS, "--no-session-persistence"]
+
+
+def image_message(prompt, images):
+    """images: list of (media_type, base64 text). One line of stream-json."""
+    blocks = [{"type": "image", "source": {"type": "base64", "media_type": kind, "data": data}} for kind, data in images]
+    blocks.append({"type": "text", "text": prompt})
+    return json.dumps({"type": "user", "message": {"role": "user", "content": blocks}}) + "\n"
+
+
+def last_result(stdout):
+    """The final result event of a stream-json run, or None."""
+    found = None
+    for line in (stdout or "").splitlines():
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(event, dict) and event.get("type") == "result":
+            found = event
+    return found
+
+
+def run_claude(prompt, timeout=TIMEOUT, runner=subprocess.run, exe=None, images=()):
+    """Send the prompt (and optional photos) to Claude Code and return its text answer."""
     exe = exe or find_claude()
     if not exe:
         raise SearchError("Claude Code is not installed.")
+    cmd, stdin = (image_command(exe), image_message(prompt, images)) if images else (command(exe), prompt)
     try:
-        done = runner(command(exe), input=prompt, capture_output=True, text=True, encoding="utf-8",
+        done = runner(cmd, input=stdin, capture_output=True, text=True, encoding="utf-8",
                       timeout=timeout, cwd=tempfile.gettempdir())
     except subprocess.TimeoutExpired as error:
         raise SearchError("The search took too long.") from error
     except OSError as error:
         raise SearchError(f"Claude Code could not start: {error}") from error
     out = (done.stdout or "").strip()
-    try:
-        data = json.loads(out)
-    except json.JSONDecodeError:
-        data = None
+    if images:
+        data = last_result(out)
+    else:
+        try:
+            data = json.loads(out)
+        except json.JSONDecodeError:
+            data = None
     if isinstance(data, dict):
         if data.get("is_error") or done.returncode != 0:
             raise SearchError(str(data.get("result") or "Claude Code reported an error.")[:300])

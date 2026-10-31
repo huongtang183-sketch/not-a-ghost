@@ -82,3 +82,23 @@ def test_find_claude_falls_back_to_the_installer_folder(monkeypatch, tmp_path):
     exe = folder / ("claude.exe" if search.sys.platform == "win32" else "claude")
     exe.write_text("x")
     assert search.find_claude() == str(exe)
+
+
+def test_photos_go_in_as_image_blocks_on_stdin():
+    seen = {}
+    out = "\n".join([json.dumps({"type": "system"}), json.dumps({"type": "result", "is_error": False, "result": "[2]"})])
+    text = search.run_claude("describe it", runner=fake_runner(out, capture=seen), exe="claude", images=[("image/jpeg", "QUJD")])
+    assert text == "[2]"
+    cmd = seen["cmd"]
+    assert cmd[cmd.index("--input-format") + 1] == "stream-json" and cmd[cmd.index("--output-format") + 1] == "stream-json"
+    assert cmd[cmd.index("--tools") + 1] == "WebSearch,WebFetch"
+    message = json.loads(seen["input"])
+    blocks = message["message"]["content"]
+    assert blocks[0] == {"type": "image", "source": {"type": "base64", "media_type": "image/jpeg", "data": "QUJD"}}
+    assert blocks[-1] == {"type": "text", "text": "describe it"}
+
+
+def test_photo_run_error_is_reported():
+    out = json.dumps({"type": "result", "is_error": True, "result": "Not logged in"})
+    with pytest.raises(search.SearchError, match="Not logged in"):
+        search.run_claude("p", runner=fake_runner(out), exe="claude", images=[("image/png", "QQ==")])

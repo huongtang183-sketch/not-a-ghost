@@ -1,3 +1,4 @@
+import base64
 import json
 import threading
 import urllib.error
@@ -23,7 +24,11 @@ IDEA = {"title": "Run strides", "area": "Health", "summary": "Runners add short 
         "source_url": "https://example.org/a"}
 
 
-def fake_search(prompt):
+SEEN = {}
+
+
+def fake_search(prompt, images=()):
+    SEEN["images"] = list(images)
     if "FAIL" in prompt:
         raise search.SearchError("Claude Code is not logged in.")
     if "PROSE" in prompt:
@@ -189,3 +194,46 @@ def test_a_failing_image_lookup_does_not_break_the_search(tmp_path):
 def test_pages_are_never_cached(base):
     with urllib.request.urlopen(base + "/") as r:
         assert r.headers["Cache-Control"] == "no-store"
+
+
+def test_prompt_endpoint_uses_the_mode(tmp_path):
+    httpd = server.make_server(make_index(), port=0, web=tmp_path, searcher=None)
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
+    try:
+        import urllib.request
+        req = urllib.request.Request(f"http://127.0.0.1:{httpd.server_address[1]}/api/prompt", data=json.dumps({"request": "a blender", "mode": "cheaper"}).encode(),
+                                     headers={"Content-Type": "application/json"})
+        assert "cheaper equivalent" in json.load(urllib.request.urlopen(req))["prompt"]
+    finally:
+        httpd.shutdown()
+
+
+def test_location_suggests_countries_and_cities_with_coordinates(base):
+    status, text = get(base + "/api/location?q=mad")
+    assert status == 200
+    found = json.loads(text)
+    city = next(r for r in found if r["kind"] == "city" and r["name"] == "Madrid")
+    assert city["label"] == "Madrid, Spain" and city["coords"] == "40.42\u00b0 N, 3.70\u00b0 W"
+    status, text = get(base + "/api/location?q=jap")
+    assert json.loads(text) == [{"kind": "country", "name": "Japan", "label": "Japan"}]
+    assert json.loads(get(base + "/api/location?q=ja")[1]) == []
+
+
+PNG = base64.b64encode(b"\x89PNG\r\n\x1a\n" + b"0" * 20).decode()
+
+
+def test_search_passes_valid_photos_to_the_searcher(base):
+    status, data = post(base + "/api/search", {"prompt": "find", "images": [{"data": "data:image/png;base64," + PNG}]})
+    assert status == 200 and SEEN["images"] == [("image/png", PNG)]
+
+
+def test_search_rejects_bad_photos(base):
+    assert post(base + "/api/search", {"prompt": "find", "images": [{"data": base64.b64encode(b"not an image").decode()}]})[0] == 400
+    assert post(base + "/api/search", {"prompt": "find", "images": [{"data": PNG}] * 4})[0] == 400
+    assert post(base + "/api/search", {"prompt": "find", "images": [{"data": "%%%"}]})[0] == 400
+
+
+def test_prompt_endpoint_uses_links_photos_and_count(base):
+    status, data = post(base + "/api/prompt", {"request": "x", "mode": "similar", "links": ["https://a.example/b"], "photos": 1, "count": 40})
+    assert status == 200 and "https://a.example/b" in data["prompt"] and "I attached 1 photo" in data["prompt"]
+    assert "10 different ideas" in data["prompt"]

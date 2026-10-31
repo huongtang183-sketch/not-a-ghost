@@ -14,45 +14,83 @@ from ghost import places
 
 AREAS = ["Study", "Work", "Health", "Style", "Money", "Other"]
 SOURCE_TYPES = ["research", "person", "product"]
-MAX_IDEAS = 5
+MAX_IDEAS = 10
 MAX_BENEFITS = 3
 MAX_BENEFIT_CHARS = 160
+MAX_PRICE_CHARS = 80
+MODES = ["improve", "cheaper", "similar"]
 ANYWHERE = "anywhere in the world"
+MODE_RULES = {
+    "improve": "",
+    "cheaper": "The alternative must do the same job as mine at a lower price. If its quality or features differ, say so in the summary.",
+    "similar": "The suggestion must share something concrete with my example, and the summary says what it shares.",
+}
+SUMMARY_FOCUS = {
+    "improve": "what people do and why it works",
+    "cheaper": "what the alternative is and how it matches mine",
+    "similar": "what it is and what it shares with my example",
+}
+BENEFIT_FOCUS = {
+    "improve": "my goal",
+    "cheaper": "what stays the same and what I save",
+    "similar": "what is alike",
+}
 
 
-def build_prompt(request, region="", limit="", count=1, keep_same="", tried=()):
+def build_prompt(request, region="", limit="", count=1, keep_same="", tried=(), mode="improve", links=(), photos=0):
     """Request text for Claude (web search on).
 
     request: the user's description of what they do and want to improve.
     tried: titles of ideas the user already started, so Claude does not repeat them.
+    mode: improve (do it differently), cheaper (same job at a lower price) or similar (something alike).
     """
+    mode = mode if mode in MODES else "improve"
+    searches, pages = max(3, count), max(2, count)
     region = (region or "").strip() or ANYWHERE
     limit = (limit or "").strip()
     ask = "ONE idea" if count == 1 else f"{count} different ideas"
-    lines = [
-        f"Find how other people do the same thing as me in a different way, and give me {ask} I can try.",
-        f"What I do and what I want to improve: {request.strip()}",
-    ]
+    if mode == "cheaper":
+        lines = [
+            f"Find a cheaper equivalent of what I buy or use, and give me {ask} I can switch to.",
+            f"What I buy or use now (with its price if I know it): {request.strip()}",
+        ]
+    elif mode == "similar":
+        lines = [
+            f"Find something similar to what I describe that I may not know yet, and give me {ask} I can try.",
+            f"What I like or use now: {request.strip()}",
+        ]
+    else:
+        lines = [
+            f"Find how other people do the same thing as me in a different way, and give me {ask} I can try.",
+            f"What I do and what I want to improve: {request.strip()}",
+        ]
     if (keep_same or "").strip():
         lines.append(f"Keep the same: {keep_same.strip()}.")
     lines += [
         f"Examples should come from: {region}." + (f" My limit: {limit}." if limit else ""),
         "Stay strictly on my activity and my numbers. Do not bring in other topics, interviews or anything unrelated.",
-        "Search the web, with at most 3 searches and 2 pages opened. Use only sources you opened and give each link. "
+        *(MODE_RULES[mode],),
+        f"Search the web, with at most {searches} searches and {pages} pages opened. Use only sources you opened and give each link. "
         "If you cannot find a source, leave source_url empty. Do not invent people, quotes or numbers. "
         "Never suggest anything risky, such as cutting sleep.",
         "Write like a short magazine article: no first person and no comments about your searching or checking. "
-        "summary: 2 or 3 sentences on what people do and why it works. "
-        "benefits: 2 or 3 short phrases, each under 12 words and tied to my goal. "
-        "from: the place or people the idea comes from.",
+        f"summary: 2 or 3 sentences on {SUMMARY_FOCUS[mode]}. "
+        f"benefits: 2 or 3 short phrases, each under 12 words, on {BENEFIT_FOCUS[mode]}. "
+        "from: the place or people the idea comes from. "
+        "price: only if a page you opened shows it, with currency, such as \"CHF 49 instead of CHF 89\"; otherwise an empty string.",
     ]
+    links = [str(x).strip() for x in links if re.match(r"https?://", str(x).strip())][:5]
+    if links:
+        lines.append("Open these links first; they show what I mean: " + " ".join(links))
+    if photos:
+        lines.append(f"I attached {photos} photo{'s' if photos > 1 else ''} of it; use what you see in the photo{'s' if photos > 1 else ''}.")
     names = [t for t in tried if t]
     if names:
         lines.append("Do not repeat these: " + "; ".join(names) + ".")
     lines.append(
         'Reply with a JSON array only: [{"title":"","area":"Study|Work|Health|Style|Money|Other","summary":"",'
-        '"benefits":["",""],"source_type":"research|person|product","from":"","source_title":"","source_url":""}]')
-    return "\n".join(lines)
+        '"benefits":["",""],"source_type":"research|person|product","from":"","price":"","source_title":"","source_url":""}]')
+    return "\n".join(line for line in lines if line)
 
 
 def _clean(text):
@@ -94,6 +132,7 @@ def parse_answer(text, default_area="Other"):
             "benefits": benefits,
             "source_type": x["source_type"] if x.get("source_type") in SOURCE_TYPES else "",
             "from": _clean(x.get("from") or ""),
+            "price": _clean(x.get("price") or "")[:MAX_PRICE_CHARS] if isinstance(x.get("price"), str) else "",
             "source_title": _clean(x.get("source_title") or ""),
             "source_url": url if re.match(r"https?://", url) else "",
         })

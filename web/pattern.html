@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ghost: your pattern</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#16143f;--sky:#d6e2ff;--blue:#3a3aff;--coral:#ff6b8b;--lemon:#ffe45c;--white:#fff;--mute:#4b4a7a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--sky);color:var(--ink);font:17px/1.5 'Bricolage Grotesque',system-ui,sans-serif}
+h1,h2,h3,p{margin:0}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+[hidden]{display:none!important}
+header{display:flex;align-items:center;gap:20px;padding:18px clamp(16px,4vw,48px)}
+.logo{font-weight:800;font-size:26px;letter-spacing:-1px;display:flex;align-items:center;gap:6px;color:inherit;text-decoration:none}
+.logo i{font-style:normal;color:var(--blue)}.logo .lg{width:30px;height:auto}
+header .grow{flex:1}
+header nav{display:flex;gap:18px}
+header nav a{color:var(--mute);font-weight:600;text-decoration:none;padding:4px 0;border-bottom:3px solid transparent}
+header nav a:hover{color:var(--ink)}header nav a[aria-current=page]{color:var(--ink);border-color:var(--ink)}
+.big{display:inline-block;background:var(--coral);border:3px solid var(--ink);border-radius:999px;padding:14px 26px;font-weight:800;font-size:20px;color:var(--ink);text-decoration:none;box-shadow:4px 4px 0 var(--ink)}
+.band{padding:40px clamp(16px,4vw,48px) 64px}.band>.in{max-width:1100px;margin:0 auto}
+h1{font-size:clamp(40px,6vw,76px);line-height:.95;font-weight:800;letter-spacing:-.045em}
+.sub{margin-top:12px;max-width:34em;color:var(--mute);font-size:19px}
+.lead{font-size:clamp(22px,3vw,30px);line-height:1.2;letter-spacing:-.02em;font-weight:600;max-width:28em;margin-top:26px}
+.cloud{position:relative;height:560px;margin-top:30px;background:#eef2ff;border:3px solid var(--ink);border-radius:32px;overflow:hidden}
+.cGhost{position:absolute;left:50%;top:50%;width:200px;height:auto;transform:translate(-50%,-50%);overflow:visible}
+@media (prefers-reduced-motion:no-preference){.cGhost{animation:bob2 5s ease-in-out infinite}@keyframes bob2{50%{transform:translate(-50%,calc(-50% - 10px))}}}
+#pills{position:absolute;inset:0}
+.pill{position:absolute;display:inline-block;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:2px solid var(--ink);border-radius:999px;padding:5px 14px;font-size:15px;font-weight:600;transform:rotate(var(--r,0deg))}
+@media (prefers-reduced-motion:no-preference){.pill.pop{animation:pop .5s cubic-bezier(.2,.9,.3,1.2) both;animation-delay:calc(var(--i)*35ms)}@keyframes pop{from{opacity:0;transform:scale(.7) rotate(var(--r,0deg))}to{opacity:1;transform:scale(1) rotate(var(--r,0deg))}}}
+.cloud.flow{height:auto;display:flex;flex-direction:column;align-items:center;padding:22px 14px}
+.cloud.flow .cGhost{position:static;transform:none;width:140px;margin-bottom:14px;animation:none}
+.cloud.flow #pills{position:static;display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.cloud.flow .pill{position:static;transform:none}
+.pbars{margin-top:34px;display:grid;gap:10px;max-width:780px}
+.prow{display:grid;grid-template-columns:130px 1fr 150px;gap:12px;align-items:center}
+.track{height:24px;border:3px solid var(--ink);border-radius:999px;background:var(--white);overflow:hidden}
+.fill{height:100%;border-right:3px solid var(--ink)}
+.ph{margin-top:34px;font-size:22px;letter-spacing:-.02em}
+.try{margin-top:12px;display:grid;gap:10px;max-width:780px}
+.tr{background:var(--white);border:3px solid var(--ink);border-radius:20px;padding:12px 18px}
+.tr b{display:block;font-size:19px;letter-spacing:-.02em}.tr span{color:var(--mute);font-size:15px}
+.msg{margin-top:22px;font-size:14px;color:var(--mute)}
+.empty{display:grid;justify-items:start;gap:16px;margin-top:30px}.empty svg{width:200px;height:auto;overflow:visible}
+@media (prefers-reduced-motion:no-preference){.empty svg{animation:bob2b 5s ease-in-out infinite}@keyframes bob2b{50%{transform:translateY(-10px)}}}
+@media (max-width:520px){.prow{grid-template-columns:90px 1fr}.prow .amt{grid-column:1/-1}}
+footer{padding:28px clamp(16px,4vw,48px);font-size:14px;color:var(--mute)}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="index.html"><svg class="lg" viewBox="0 0 120 110" aria-hidden="true"><path d="M18 98V46C18 22 36 8 60 8s42 14 42 38v52l-13-11-14 13-15-13-15 13-14-13z" fill="#fff" stroke="#16143f" stroke-width="7" stroke-linejoin="round"/><circle cx="45" cy="48" r="7" fill="#16143f"/><circle cx="75" cy="48" r="7" fill="#16143f"/></svg> ghost<i>.</i></a>
+  <div class="grow"></div>
+  <nav aria-label="Pages"><a href="index.html">Ideas</a><a href="pattern.html" aria-current="page">Your pattern</a></nav>
+</header>
+
+<section class="band">
+  <div class="in">
+    <h1>Your pattern</h1>
+    <p class="sub">How your days add up, from what you have logged.</p>
+    <div id="full" hidden>
+      <p class="lead" id="lead"></p>
+      <div class="cloud" id="cloud">
+        <svg class="cGhost" viewBox="0 0 120 110" aria-hidden="true">
+          <path d="M18 98V46C18 22 36 8 60 8s42 14 42 38v52l-13-11-14 13-15-13-15 13-14-13z" fill="#fff" stroke="#16143f" stroke-width="4" stroke-linejoin="round"/>
+          <circle cx="45" cy="48" r="6" fill="#16143f"/><circle cx="75" cy="48" r="6" fill="#16143f"/>
+          <ellipse cx="36" cy="62" rx="7" ry="4" fill="#ff6b8b"/><ellipse cx="84" cy="62" rx="7" ry="4" fill="#ff6b8b"/>
+          <path d="M52 64q8 7 16 0" stroke="#16143f" stroke-width="4" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div id="pills"></div>
+      </div>
+      <div class="pbars" id="bars"></div>
+      <div id="cmp" hidden><h3 class="ph">Compared with before</h3><div id="cmpBody"></div></div>
+      <div id="tryWrap" hidden><h3 class="ph">What you are trying</h3><div class="try" id="tryList"></div></div>
+      <p class="msg" id="basis"></p>
+    </div>
+    <div class="empty" id="empty" hidden>
+      <svg viewBox="0 0 120 110" aria-hidden="true"><path d="M18 98V46C18 22 36 8 60 8s42 14 42 38v52l-13-11-14 13-15-13-15 13-14-13z" fill="#fff" stroke="#16143f" stroke-width="4" stroke-linejoin="round"/><circle cx="45" cy="48" r="6" fill="#16143f"/><circle cx="75" cy="48" r="6" fill="#16143f"/><ellipse cx="36" cy="62" rx="7" ry="4" fill="#ff6b8b"/><ellipse cx="84" cy="62" rx="7" ry="4" fill="#ff6b8b"/><path d="M52 64q8 7 16 0" stroke="#16143f" stroke-width="4" fill="none" stroke-linecap="round"/></svg>
+      <p class="lead" style="margin:0">Nothing logged yet. Log a day and your pattern appears here.</p>
+      <a class="big" href="index.html#log">Log today</a>
+    </div>
+  </div>
+</section>
+<footer>Your data stays in this browser.</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+function el(tag, cls, text){ const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; }
+const CATS = ['Study', 'Work', 'Exercise', 'Nutrition', 'Self-care', 'Medication', 'Social media', 'Phone', 'TV & streaming', 'Internet browsing', 'Other'];
+const OLD_CAT = {Study: 'Study', Work: 'Work', Health: 'Exercise'};
+const CAT_COLOR = {Study: '#3a3aff', Work: '#16143f', Exercise: '#1fb36b', Nutrition: '#ff8a3d', 'Self-care': '#9b6bff', Medication: '#17a2b8', 'Social media': '#ff6b8b', Phone: '#8a8fb5', 'TV & streaming': '#c2410c', 'Internet browsing': '#0e7490', Other: '#6b7280'};
+const PASTEL = {Study: '#cfd5ff', Work: '#dcdcea', Exercise: '#c8f3dc', Nutrition: '#ffe0c2', 'Self-care': '#e4d9ff', Medication: '#c9eef3', 'Social media': '#ffd3df', Phone: '#e3e5f2', 'TV & streaming': '#ffd9c4', 'Internet browsing': '#cde8ee', Other: '#e6e7f5', Word: '#ffffff', Trial: '#fff0a6'};
+const STOP = new Set('with that this from have were what about today then when they them their into over also some more very just been only than like done doing after before while which would could should there where these those your'.split(' '));
+
+// Same saved data as the Ideas page (browser storage key ghost.v3).
+function cleanAct(a){
+  if (!a || !(+a.minutes > 0)) return null;
+  const cat = CATS.includes(a.cat) ? a.cat : 'Other';
+  return {cat, name: cat === 'Other' ? String(a.name || '').trim().slice(0, 60) : '', minutes: Math.min(Math.round(+a.minutes), 1440), desc: String(a.desc || '').trim().slice(0, 140)};
+}
+function normDays(list){
+  const by = {};
+  (Array.isArray(list) ? list : []).forEach(d => {
+    if (!d || !d.date) return;
+    const e = by[d.date] || (by[d.date] = {date: d.date, acts: [], sleep: null, feel: null});
+    if (Array.isArray(d.acts)) e.acts = d.acts.map(cleanAct).filter(Boolean);
+    else if (+d.minutes > 0) e.acts.push(OLD_CAT[d.area] ? {cat: OLD_CAT[d.area], name: '', minutes: Math.round(+d.minutes), desc: String(d.text || '').slice(0, 140)} : {cat: 'Other', name: String(d.text || d.area || '').slice(0, 60), minutes: Math.round(+d.minutes), desc: ''});
+    if (d.sleep !== undefined && d.sleep !== null) e.sleep = +d.sleep;
+    if (+d.feel >= 1 && +d.feel <= 5) e.feel = +d.feel;
+  });
+  return Object.values(by).sort((a, b) => a.date.localeCompare(b.date));
+}
+let saved = {};
+for (const k of ['ghost.v3', 'ghost.v2']){ try { const raw = localStorage.getItem(k); if (raw){ saved = JSON.parse(raw) || {}; break; } } catch(e){} }
+const days = normDays(saved.days).filter(d => d.acts.length);
+const trials = Array.isArray(saved.trials) ? saved.trials.filter(t => t && t.title && t.metric) : [];
+
+const label = a => a.cat === 'Other' ? (a.name || 'Other') : a.cat;
+const fmtMin = m => { const h = Math.floor(m / 60), r = m % 60; return [h ? h + ' h' : '', r || !h ? r + ' min' : ''].filter(Boolean).join(' '); };
+function shareOf(list){
+  const t = {}; let s = 0;
+  list.forEach(d => d.acts.forEach(a => { t[a.cat] = (t[a.cat] || 0) + a.minutes; s += a.minutes; }));
+  return {t, s, pct: c => s ? Math.round(100 * (t[c] || 0) / s) : 0};
+}
+function recurring(){
+  const count = {};
+  days.forEach(d => {
+    const seen = new Set(d.acts.map(a => a.desc + ' ' + a.name).join(' ').toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(w => w.length >= 4 && !STOP.has(w)));
+    seen.forEach(w => { count[w] = (count[w] || 0) + 1; });
+  });
+  return Object.entries(count).filter(e => e[1] >= 2).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 8);
+}
+function mulberry32(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function cloudItems(all, ranked, words){
+  const items = [];
+  ranked.forEach(c => items.push({t: c + ' ' + all.pct(c) + '%', a: c}));
+  words.forEach(w => items.push({t: w[0] + ' \u00d7' + w[1], a: 'Word'}));
+  trials.filter(t => t.status !== 'done').slice(-3).forEach(t => items.push({t: 'trying: ' + t.title, a: 'Trial'}));
+  const sl = days.filter(d => d.sleep !== null);
+  if (sl.length) items.push({t: 'average sleep ' + (sl.reduce((s, d) => s + d.sleep, 0) / sl.length).toFixed(1) + ' h', a: 'Other'});
+  const fe = days.filter(d => d.feel);
+  if (fe.length) items.push({t: 'average felt ' + (fe.reduce((s, d) => s + d.feel, 0) / fe.length).toFixed(1) + '/5', a: 'Other'});
+  items.push({t: days.length + (days.length === 1 ? ' day logged' : ' days logged'), a: 'Other'});
+  days.slice().reverse().slice(0, 8).forEach(d => {
+    d.acts.forEach(a => { items.push({t: fmtMin(a.minutes) + ' ' + label(a).toLowerCase(), a: a.cat}); if (a.desc) items.push({t: a.desc, a: a.cat}); });
+    if (d.feel) items.push({t: 'felt ' + d.feel + '/5', a: 'Other'});
+    if (d.sleep !== null) items.push({t: 'slept ' + d.sleep + ' h', a: 'Other'});
+  });
+  return items.slice(0, 34);
+}
+let pop = true;
+function renderCloud(all, ranked, words){
+  const wrap = $('pills'); wrap.replaceChildren();
+  cloudItems(all, ranked, words).forEach((it, i) => {
+    const p = el('span', 'pill', it.t); p.title = it.t; p.style.background = PASTEL[it.a] || '#fff'; p.style.setProperty('--i', i);
+    if (pop) p.classList.add('pop');
+    wrap.append(p);
+  });
+  pop = false; layoutCloud();
+}
+function layoutCloud(){
+  const cloud = $('cloud'); if (!cloud || $('full').hidden) return;
+  const pills = [...cloud.querySelectorAll('.pill')], W = cloud.clientWidth;
+  pills.forEach(p => { p.hidden = false; });
+  if (W < 760){ cloud.classList.add('flow'); pills.forEach(p => { p.style.left = ''; p.style.top = ''; p.style.setProperty('--r', '0deg'); }); return; }
+  cloud.classList.remove('flow');
+  const H = cloud.clientHeight, pad = 14, rnd = mulberry32(11);
+  const placed = [{x: W / 2 - 115, y: H / 2 - 105, w: 230, h: 210}];
+  pills.forEach(p => {
+    const w = p.offsetWidth, h = p.offsetHeight; let spot = null;
+    for (let t = 0; t < 300 && !spot; t++){
+      const x = pad + rnd() * (W - w - 2 * pad), y = pad + rnd() * (H - h - 2 * pad);
+      if (!placed.some(r => x < r.x + r.w + 10 && x + w + 10 > r.x && y < r.y + r.h + 8 && y + h + 8 > r.y)) spot = {x, y};
+    }
+    if (!spot){ p.hidden = true; return; }
+    p.style.left = spot.x + 'px'; p.style.top = spot.y + 'px'; p.style.setProperty('--r', (rnd() * 6 - 3).toFixed(1) + 'deg');
+    placed.push({x: spot.x, y: spot.y, w, h});
+  });
+}
+let resizeT; window.addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(layoutCloud, 150); });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutCloud);
+
+function render(){
+  if (!days.length){ $('empty').hidden = false; return; }
+  $('full').hidden = false;
+  const all = shareOf(days), ranked = Object.keys(all.t).sort((a, b) => all.t[b] - all.t[a]), words = recurring();
+  let line = 'Most of your logged time goes to ' + ranked[0] + ' (' + all.pct(ranked[0]) + '%).';
+  if (words.length) line += ' Words that keep coming back: ' + words.slice(0, 5).map(w => w[0]).join(', ') + '.';
+  $('lead').textContent = line;
+  const bars = $('bars');
+  ranked.forEach(c => {
+    const row = el('div', 'prow'), track = el('div', 'track'), fill = el('div', 'fill');
+    fill.style.width = Math.max(all.pct(c), 3) + '%'; fill.style.background = CAT_COLOR[c] || '#9aa0d0';
+    track.append(fill); row.append(el('b', '', c), track, el('span', 'amt', all.pct(c) + '%, ' + fmtMin(all.t[c]))); bars.append(row);
+  });
+  const cutoff = new Date(Date.now() - 7 * 864e5).toLocaleDateString('sv');
+  const recent = days.filter(d => d.date > cutoff), earlier = days.filter(d => d.date <= cutoff);
+  if (recent.length && earlier.length){
+    const r = shareOf(recent), e = shareOf(earlier);
+    const ch = ranked.map(c => ({c, r: r.pct(c), e: e.pct(c)})).filter(x => Math.abs(x.r - x.e) >= 10).sort((x, y) => Math.abs(y.r - y.e) - Math.abs(x.r - x.e)).slice(0, 2);
+    if (ch.length){ $('cmp').hidden = false; ch.forEach(c => $('cmpBody').append(el('p', '', c.c + ': ' + c.r + '% of the last 7 days, ' + c.e + '% before.'))); }
+  }
+  if (trials.length){
+    $('tryWrap').hidden = false;
+    trials.slice().reverse().forEach(t => {
+      const m = t.metric, d = el('div', 'tr'); d.append(el('b', '', t.title));
+      d.append(el('span', '', m.name + (m.unit ? ' (' + m.unit + ')' : '') + ': starting at ' + (m.fmt === 'time' ? Math.floor(m.start) + ':' + String(Math.round((m.start % 1) * 60)).padStart(2, '0') : m.start) + ' since ' + t.startDate + ', ' + t.days + ' days a week for ' + t.weeks + ' weeks.'));
+      $('tryList').append(d);
+    });
+  }
+  renderCloud(all, ranked, words);
+  $('basis').textContent = 'Based on ' + days.length + (days.length === 1 ? ' day' : ' days') + ' of logs.';
+}
+render();
+</script>
+</body>
+</html>

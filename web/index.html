@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ghost</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#16143f;--sky:#d6e2ff;--blue:#3a3aff;--coral:#ff6b8b;--lemon:#ffe45c;--white:#fff;--mute:#4b4a7a}
 *{box-sizing:border-box}
@@ -16,7 +16,11 @@ button,input,select,textarea{font:inherit;color:inherit}
 :focus-visible{outline:3px solid var(--blue);outline-offset:3px}
 
 header{display:flex;align-items:center;gap:20px;padding:18px clamp(16px,4vw,48px)}
-.logo{font-weight:800;font-size:26px;letter-spacing:-1px}
+.logo{font-weight:800;font-size:26px;letter-spacing:-1px;display:flex;align-items:center;gap:6px;color:inherit;text-decoration:none}
+.logo .lg{width:30px;height:auto}
+header nav{display:flex;gap:18px}
+header nav a{color:var(--mute);font-weight:600;text-decoration:none;padding:4px 0;border-bottom:3px solid transparent}
+header nav a:hover{color:var(--ink)}header nav a[aria-current=page]{color:var(--ink);border-color:var(--ink)}
 .logo i{font-style:normal;color:var(--blue)}
 header .grow{flex:1}
 .link{background:none;border:0;padding:0;text-decoration:underline;cursor:pointer;color:var(--mute);font-size:14px}
@@ -42,55 +46,60 @@ h1{font-size:clamp(44px,7.4vw,92px);line-height:.95;font-weight:800;letter-spaci
 .cut:before{left:-18px;clip-path:inset(0 0 0 50%)}
 .cut:after{right:-18px;clip-path:inset(0 50% 0 0)}
 .q{font-weight:600;margin-bottom:10px}
-.dial{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.dial button{padding:14px 0;border:3px solid var(--ink);border-radius:18px;background:var(--white);font-weight:800;font-size:22px;cursor:pointer;transition:transform .12s,box-shadow .12s,background .12s}
-.dial button:hover{transform:translate(-2px,-2px);box-shadow:3px 3px 0 var(--ink)}
-.dial button[aria-pressed=true]{background:var(--blue);color:var(--white);transform:translate(-3px,-3px);box-shadow:5px 5px 0 var(--ink)}
-.variant{margin-top:16px;min-height:78px;font-size:18px;line-height:1.4}
 .btnrow{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px;align-items:center}
 .big{background:var(--coral);border:3px solid var(--ink);border-radius:999px;padding:14px 26px;font-weight:800;font-size:20px;cursor:pointer;box-shadow:4px 4px 0 var(--ink);transition:transform .12s,box-shadow .12s}
 .big:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
 .big:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
 .big[disabled]{opacity:.5;cursor:default}
 .small{background:var(--white);border:2px solid var(--ink);border-radius:999px;padding:8px 16px;font-weight:600;cursor:pointer}
-.locked{margin-top:12px;font-weight:600;color:var(--blue)}
 .tools{margin-top:14px;display:grid;gap:10px}
 .tools textarea{width:100%;min-height:90px;border:2px solid var(--ink);border-radius:14px;padding:10px;background:var(--sky)}
 .msg{font-size:14px;color:var(--mute)}
+.logwrap{display:grid;grid-template-columns:minmax(0,700px) minmax(260px,340px);gap:56px;align-items:start;margin-top:34px}
+.logwrap .paper{margin:0}
+.daypanel{position:sticky;top:24px;padding-top:12px}
+.dgrid{display:grid;grid-template-columns:repeat(12,1fr);gap:5px;width:100%}.dgrid i{aspect-ratio:1;border-radius:5px;background:rgba(22,20,63,.12)}
+.dleg{margin-top:22px;display:grid;gap:8px;font-weight:600;font-size:17px;line-height:1.25}.dleg div{display:flex;gap:10px;align-items:center}.dleg i{width:16px;height:16px;border-radius:5px;flex:none;border:1.5px solid var(--ink)}.dleg small{font-size:15px;font-weight:500;opacity:.7;margin-left:auto}
+.dnote{font-size:14px;line-height:1.35;opacity:.75;margin-top:16px;max-width:30em}
+.paper{--rule:48px;position:relative;max-width:700px;margin:0;padding:30px 36px 36px 92px;background:#fffbe9;color:var(--ink);transform:rotate(-.8deg);box-shadow:0 18px 30px -14px rgba(22,20,63,.35);
+  background-image:repeating-linear-gradient(transparent 0 47px,rgba(58,58,255,.25) 47px 48px);background-position:0 18px;font-family:'Caveat','Segoe Print',cursive;font-size:28px;line-height:48px}
+.paper:before{content:"";position:absolute;left:68px;top:0;bottom:0;width:2px;background:var(--coral)}
+.paper .hole{position:absolute;left:20px;width:22px;height:22px;border-radius:50%;background:var(--lemon);box-shadow:inset 0 2px 3px rgba(0,0,0,.25)}
+.paper .dt{font:800 30px/48px 'Bricolage Grotesque',system-ui,sans-serif;letter-spacing:-.03em}
+.paper input,.paper select{font:inherit;color:var(--ink);background:transparent;border:0;border-bottom:2px solid var(--coral);border-radius:0;padding:0 4px;height:40px;min-width:0}
+.paper select{font-weight:700;appearance:none;padding-right:20px;cursor:pointer;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%2316143f' stroke-width='2'/%3E%3C/svg%3E") right 4px center no-repeat}
+.paper input::placeholder{color:rgba(22,20,63,.4)}
+.paper input[type=number]{-moz-appearance:textfield;text-align:center}.paper input[type=number]::-webkit-inner-spin-button{display:none}
+.paper :focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:4px}
+.arow .l1{display:flex;align-items:center;gap:10px}.arow .l1 .oth{flex:1;min-width:80px}.arow .l1 .min{width:64px}
+.arow .dsc{display:block;width:100%;font-size:25px;margin-left:34px;width:calc(100% - 34px)}
+.arow .bx{flex:none;width:22px;height:22px;border:2.5px solid var(--ink);border-radius:4px;position:relative}.arow .bx:after{content:"\2713";position:absolute;left:2px;top:-14px;font-size:28px;color:var(--blue)}
+.arow .rm{margin-left:auto;border:0;background:transparent;font:700 30px/1 'Caveat',cursive;cursor:pointer;opacity:.5;padding:0 6px;height:40px}.arow .rm:hover{opacity:1}.arow .rm[hidden]{display:none}
+.addA{border:0;background:transparent;font:inherit;cursor:pointer;opacity:.6;display:flex;align-items:center;gap:10px;padding:0}.addA:hover{opacity:1}
+.addA i{width:22px;height:22px;border:2.5px solid var(--ink);border-radius:4px;display:inline-block}
+.paper .sleep input{width:60px}
+.fv{display:inline-flex;gap:6px;vertical-align:middle;margin:0 6px}.fv button{width:38px;height:38px;border-radius:50%;border:2px solid transparent;background:transparent;font:700 26px/1 'Caveat',cursive;cursor:pointer;color:var(--ink);padding:0}
+.fv button[aria-pressed=true]{border-color:var(--blue);color:var(--blue)}
+.paper .msg{font:600 15px/1.3 'Bricolage Grotesque',system-ui,sans-serif;margin:10px 0 0}
+.paper .save{font:800 18px/1 'Bricolage Grotesque',system-ui,sans-serif;margin-top:18px;background:var(--ink);color:#fffbe9;border:0;border-radius:6px;padding:13px 26px;cursor:pointer;transform:rotate(1.2deg)}
+@media (max-width:940px){.logwrap{grid-template-columns:1fr;gap:28px}.daypanel{position:static;max-width:420px}}
+@media (max-width:620px){.paper{transform:none;padding:24px 16px 30px 52px;font-size:25px}.paper:before{left:38px}.paper .hole{left:8px}.arow .dash{display:none}.logwrap{grid-template-columns:1fr;gap:28px}.daypanel{position:static}.dgrid{width:100%}.arow .l1{flex-wrap:wrap}}
+
 
 .band{padding:64px clamp(16px,4vw,48px)}
 .band>.in{max-width:1100px;margin:0 auto}
 .band h2{font-size:clamp(32px,4.6vw,52px);line-height:1;letter-spacing:-.04em;font-weight:800;max-width:16em}
 .band .sub{margin-top:12px;max-width:34em}
 .lemon{background:var(--lemon)}.coral{background:var(--coral)}.ink{background:var(--ink);color:var(--white)}.ink .sub{color:#c9c8ee}
-.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-top:28px;align-items:end}
-.form label{display:grid;gap:6px;font-weight:600;font-size:15px}
-.form input,.form select{border:3px solid var(--ink);border-radius:14px;padding:12px;background:var(--white)}
-.result{margin-top:26px;display:flex;flex-wrap:wrap;gap:14px}
-.stat{background:var(--white);border:3px solid var(--ink);border-radius:20px;padding:14px 20px;min-width:150px}
-.stat b{display:block;font-size:38px;line-height:1;letter-spacing:-.03em}
-.stat span{font-size:14px;color:var(--mute)}
-.three{display:flex;flex-wrap:wrap;gap:14px;margin-top:22px}
-.three button{background:var(--white);border:3px solid var(--ink);border-radius:999px;padding:14px 28px;font-weight:800;font-size:20px;cursor:pointer;box-shadow:4px 4px 0 var(--ink)}
-.three button:hover{transform:translate(-2px,-2px)}
-.method{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:28px}
-.item{background:var(--white);color:var(--ink);border-radius:22px;padding:18px 20px}
-.item h3{font-size:20px;letter-spacing:-.02em;line-height:1.15}
-.item p{font-size:15px;color:var(--mute);margin-top:6px}
-.dots{display:flex;gap:6px;margin-top:10px}
-.dots i{width:16px;height:16px;border-radius:50%;border:2px solid var(--ink)}
-.dots i.b{background:#6ee7a0}.dots i.s{background:var(--lemon)}.dots i.w{background:var(--coral)}
-.empty{margin-top:24px;color:#c9c8ee}
 footer{padding:28px clamp(16px,4vw,48px);font-size:14px;color:var(--mute);display:flex;gap:16px;flex-wrap:wrap}
 .tags{display:flex;flex-wrap:wrap;gap:8px}
+.tab{border:2px solid var(--ink);border-radius:999px;padding:2px 14px;font-size:14px;font-weight:600;background:var(--white);cursor:pointer}
+.tab:hover{background:var(--sky)}.tab[aria-selected=true]{background:#9af0c0}
 .tag.plain{background:var(--white)}
 .opts{display:grid;grid-template-columns:1fr 84px;gap:10px}
 .opts label{display:grid;gap:4px;font-size:14px;font-weight:600}
 .opts input,.opts select{border:2px solid var(--ink);border-radius:12px;padding:8px 10px;background:var(--white);min-width:0}
 .opts .wideopt{grid-column:1/-1}
-.cityRes{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
-.cityRes button{border:2px solid var(--ink);border-radius:999px;padding:5px 12px;font-weight:600;background:var(--sky);cursor:pointer}
-.sugg{grid-column:1/-1;margin:-4px 0 0}
 .head{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start}
 .collage{display:flex;flex-direction:column;gap:8px;align-items:flex-end;padding-top:4px}
 .tile{width:84px;height:84px;border:3px solid var(--ink);border-radius:18px;overflow:hidden;display:grid;place-items:center;background:var(--sky);box-shadow:3px 3px 0 var(--ink)}
@@ -98,6 +107,7 @@ footer{padding:28px clamp(16px,4vw,48px);font-size:14px;color:var(--mute);displa
 .tile img{width:100%;height:100%;object-fit:cover;display:block}
 .tile svg{width:78%;height:78%}
 .summary{margin-top:14px;font-size:18px;line-height:1.5;color:var(--ink)}
+.price{margin-top:10px;font-weight:800;color:#0a7f43}
 .gainsH{margin-top:18px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
 .gains{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:8px}
 .gains li{display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:start;font-weight:600;line-height:1.35}
@@ -112,27 +122,27 @@ footer{padding:28px clamp(16px,4vw,48px);font-size:14px;color:var(--mute);displa
 .trial label{display:grid;gap:4px;font-size:14px;font-weight:600;min-width:0}
 .trial textarea,.trial input,.trial select{border:2px solid var(--ink);border-radius:12px;padding:9px 11px;background:var(--white);width:100%;min-width:0}
 .trial textarea{min-height:84px;resize:vertical}
-.tcard{background:var(--white);color:var(--ink);border:3px solid var(--ink);border-radius:24px;padding:22px;box-shadow:6px 6px 0 var(--ink);display:grid;gap:12px}
-.tcard h3{font-size:26px;letter-spacing:-.03em}
-.tmeta{color:var(--mute);font-size:14px}
-.tstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
-.tstats div{background:var(--sky);border:2px solid var(--ink);border-radius:14px;padding:8px 12px}
-.tstats b{display:block;font-size:20px}
-.tstats span{font-size:12px;color:var(--mute)}
-.chart{width:100%;height:auto;background:#f4f6ff;border:2px solid var(--ink);border-radius:16px}
-.tcard .small{justify-self:start}
-.tadd{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
-.tadd label{display:grid;gap:4px;font-size:14px;font-weight:600}
-.tadd input{border:2px solid var(--ink);border-radius:12px;padding:9px 11px;background:var(--white)}
-.good{color:#0a7f43;font-weight:800}.bad{color:#c4264b;font-weight:800}
-.trials{display:grid;gap:22px;margin-top:26px}
 @media (max-width:560px){.head{grid-template-columns:1fr}.collage{flex-direction:row;align-items:center}.tile:nth-child(2){transform:rotate(-5deg)}}
 .modes{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.askRow{display:grid;grid-template-columns:minmax(0,1fr) 110px;gap:12px}
+.askRow label,.attach label{display:grid;gap:6px;font-weight:600;font-size:15px;min-width:0}
+.askRow input,.attach textarea{border:3px solid var(--ink);border-radius:14px;padding:12px;background:var(--white);width:100%;min-width:0;font:inherit}
+.attach{display:grid;gap:10px}.ask .attach textarea{min-height:64px;resize:vertical;font-size:16px;border-radius:14px;padding:10px 12px}
+.combo{position:relative}
+.locList{position:absolute;z-index:20;left:0;right:0;top:100%;margin:6px 0 0;padding:6px;list-style:none;background:var(--white);border:3px solid var(--ink);border-radius:16px;max-height:340px;overflow:auto;box-shadow:0 12px 24px -12px rgba(22,20,63,.4)}
+.locList button{display:flex;justify-content:space-between;gap:14px;align-items:baseline;width:100%;text-align:left;border:0;background:transparent;padding:9px 10px;border-radius:10px;cursor:pointer;font:inherit}
+.locList button:hover,.locList button:focus-visible{background:var(--sky);outline:0}
+.locList b{font-weight:700}.locList small{font-weight:500;color:var(--mute);white-space:nowrap}
+.photoRow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.photoNote{font-size:14px;color:var(--mute)}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap}.thumbs div{position:relative}.thumbs img{width:56px;height:56px;object-fit:cover;border-radius:10px;border:2px solid var(--ink);display:block}
+.thumbs button{position:absolute;top:-8px;right:-8px;width:22px;height:22px;border-radius:50%;border:2px solid var(--ink);background:var(--white);font-weight:800;line-height:1;cursor:pointer;padding:0}
 .mode{border:2px solid var(--ink);border-radius:999px;padding:7px 14px;font-weight:600;background:var(--white);cursor:pointer}
 .mode[aria-pressed="true"]{background:var(--blue);color:var(--white)}
 .mode:disabled{opacity:.45;cursor:not-allowed}
 .ask{margin-top:22px;display:grid;gap:12px}
 .ask textarea{width:100%;min-height:130px;border:3px solid var(--ink);border-radius:20px;padding:16px;font-size:18px;line-height:1.4;background:var(--white);resize:vertical}
+.opts4 .wide{grid-column:1/-1}
 .opts4{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .opts4 label{display:grid;gap:4px;font-size:14px;font-weight:600;min-width:0}
 .opts4 input,.opts4 select{border:2px solid var(--ink);border-radius:12px;padding:8px 10px;background:var(--white);min-width:0;width:100%}
@@ -142,61 +152,43 @@ footer{padding:28px clamp(16px,4vw,48px);font-size:14px;color:var(--mute);displa
 .steps textarea{width:100%;min-height:110px;border:2px solid var(--ink);border-radius:14px;padding:10px;background:var(--sky)}
 .steps details summary{cursor:pointer;font-size:14px;font-weight:600}
 @media (max-width:520px){.opts4{grid-template-columns:1fr}}
-.cityRes small{font-weight:500;opacity:.7}
-.form .wide{grid-column:span 2}
-.form label{min-width:0}
-.form input,.form select{width:100%;min-width:0}
 .white{background:var(--white)}
-.lead{font-size:clamp(22px,3vw,30px);line-height:1.2;letter-spacing:-.02em;font-weight:600;max-width:28em;margin-top:22px}
-.pbars{margin-top:26px;display:grid;gap:10px;max-width:780px}
-.prow{display:grid;grid-template-columns:84px 1fr 150px;gap:12px;align-items:center}
-.track{height:24px;border:3px solid var(--ink);border-radius:999px;background:var(--white);overflow:hidden}
-.fill{height:100%;border-right:3px solid var(--ink)}
-.ph{margin-top:28px;font-size:20px;letter-spacing:-.02em}
-.chip{display:inline-block;border:2px solid var(--ink);border-radius:999px;padding:4px 12px;margin:8px 8px 0 0;font-weight:600;background:var(--sky)}
-@media (max-width:520px){.form .wide{grid-column:auto}.prow{grid-template-columns:64px 1fr}.prow .amt{grid-column:1/-1}}
-.cloud{position:relative;height:560px;margin-top:30px;background:#eef2ff;border:3px solid var(--ink);border-radius:32px;overflow:hidden}
-.cGhost{position:absolute;left:50%;top:50%;width:200px;height:auto;transform:translate(-50%,-50%);overflow:visible}
-@media (prefers-reduced-motion:no-preference){.cGhost{animation:bob2 5s ease-in-out infinite}@keyframes bob2{50%{transform:translate(-50%,calc(-50% - 10px))}}}
-#pills{position:absolute;inset:0}
-.pill{position:absolute;display:inline-block;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:2px solid var(--ink);border-radius:999px;padding:5px 14px;font-size:15px;font-weight:600;transform:rotate(var(--r,0deg))}
-@media (prefers-reduced-motion:no-preference){.pill.pop{animation:pop .5s cubic-bezier(.2,.9,.3,1.2) both;animation-delay:calc(var(--i)*35ms)}@keyframes pop{from{opacity:0;transform:scale(.7) rotate(var(--r,0deg))}to{opacity:1;transform:scale(1) rotate(var(--r,0deg))}}}
-.cloud.flow{height:auto;display:flex;flex-direction:column;align-items:center;padding:22px 14px}
-.cloud.flow .cGhost{position:static;transform:none;width:140px;margin-bottom:14px;animation:none}
-.cloud.flow #pills{position:static;display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-.cloud.flow .pill{position:static;transform:none}
+
 [hidden]{display:none!important}
 @media (max-width:860px){.hero{grid-template-columns:1fr}.ticket{transform:none}.ghostWrap{width:140px}}
 </style>
 </head>
 <body>
 <header>
-  <div class="logo">ghost<i>.</i></div>
+  <a class="logo" href="index.html"><svg class="lg" viewBox="0 0 120 110" aria-hidden="true"><path d="M18 98V46C18 22 36 8 60 8s42 14 42 38v52l-13-11-14 13-15-13-15 13-14-13z" fill="#fff" stroke="#16143f" stroke-width="7" stroke-linejoin="round"/><circle cx="45" cy="48" r="7" fill="#16143f"/><circle cx="75" cy="48" r="7" fill="#16143f"/></svg> ghost<i>.</i></a>
   <div class="grow"></div>
-  <a class="link" href="#log">Today</a>
-  <a class="link" href="#trials">Your trials</a>
-  <a class="link" href="#pattern">Your pattern</a>
+  <nav aria-label="Pages"><a href="index.html" aria-current="page">Ideas</a><a href="pattern.html">Your pattern</a></nav>
 </header>
 
 <section class="hero">
   <div>
     <h1>Change one small thing tomorrow.</h1>
-    <p class="lede">Describe what you do and what you want to improve. You get an idea from people elsewhere who do it differently, with a source.</p>
+    <p class="lede" id="lede"></p>
     <div class="modes" role="group" aria-label="What do you want">
-      <button class="mode" type="button" aria-pressed="true">Do it differently</button>
-      <button class="mode" type="button" disabled title="Coming next">Find cheaper</button>
-      <button class="mode" type="button" disabled title="Coming next">Find similar</button>
+      <button class="mode" type="button" data-mode="improve" aria-pressed="true">Do it differently</button>
+      <button class="mode" type="button" data-mode="cheaper" aria-pressed="false">Spend less</button>
+      <button class="mode" type="button" data-mode="similar" aria-pressed="false">Something similar</button>
     </div>
     <form class="ask" id="askForm">
       <textarea id="ask" required maxlength="1000" placeholder="Describe what you do and what you want to improve. For example: I run 5 km three times a week at 6:30 per km and want to get faster."></textarea>
-      <div class="opts4">
-        <label>Examples from<input id="region" list="regions" placeholder="Anywhere"></label>
-        <label>Keep the same (optional)<input id="keepSame" maxlength="300" placeholder="Three sessions a week"></label>
-        <label>Limit, such as budget or time (optional)<input id="limit" maxlength="300" placeholder="Under 50, or 30 minutes a day"></label>
-        <label>Ideas<select id="count"><option>1</option><option>2</option><option>3</option></select></label>
+      <div class="askRow">
+        <label class="combo">Examples from
+          <input id="region" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="locList" placeholder="Anywhere, or type a country or city">
+          <ul class="locList" id="locList" role="listbox" hidden></ul>
+        </label>
+        <label>Ideas<input id="count" type="number" min="1" max="10" value="1"></label>
       </div>
-      <datalist id="regions"><option value="Anywhere"><option value="Europe"><option value="North America"><option value="Latin America"><option value="East Asia"><option value="South Asia"><option value="Southeast Asia"><option value="Middle East"><option value="Africa"><option value="Oceania"></datalist>
-      <div class="btnrow"><button class="big" id="findBtn" type="submit">Find ideas</button></div>
+      <div class="attach" id="attach" hidden>
+        <label>Links (optional)<textarea id="links" rows="2" maxlength="600" placeholder="Paste a link to the product or place, one per line"></textarea></label>
+        <div class="photoRow"><input id="photoIn" type="file" accept="image/*" multiple hidden>
+          <button class="small" type="button" id="photoBtn">Add photos</button><span class="photoNote" id="photoNote"></span><div class="thumbs" id="thumbs"></div></div>
+      </div>
+      <div class="btnrow"><button class="big" id="findBtn" type="submit">Show me ideas</button></div>
       <p class="msg" id="searchMsg" hidden></p>
     </form>
     <div class="steps" id="steps" hidden>
@@ -228,19 +220,20 @@ footer{padding:28px clamp(16px,4vw,48px);font-size:14px;color:var(--mute);displa
     <article class="ticket" id="ticket" hidden>
       <div class="head">
         <div>
-          <div class="tags"><span class="tag" id="tag"></span><span class="tag plain" id="areaTag"></span><span class="tag plain" id="srcTag" hidden></span></div>
+          <div class="tags" id="ideaTabs" role="tablist" aria-label="Ideas"></div>
           <h2 id="sTitle"></h2>
         </div>
         <div class="collage" id="collage" aria-hidden="true"></div>
       </div>
       <p class="summary" id="sSummary"></p>
-      <h4 class="gainsH">What you gain</h4>
+      <p class="price" id="sPrice" hidden></p>
+      <h4 class="gainsH" id="gainsH">What you gain</h4>
       <ul class="gains" id="gains"></ul>
       <p class="src" id="sFrom"></p>
       <p class="src" id="sSrc"></p>
       <div class="cut"></div>
       <div id="tryBox">
-        <h3 class="try" id="tryQ">Should you try it?</h3>
+        <h3 class="try" id="tryQ">Do you want to try it?</h3>
         <div class="yn" id="yn">
           <button class="big yes" id="yes" type="button">Yes</button>
           <button class="big no" id="no" type="button">No</button>
@@ -254,16 +247,17 @@ footer{padding:28px clamp(16px,4vw,48px);font-size:14px;color:var(--mute);displa
           <label>How much of the idea<select id="tShare" required><option value="">Choose</option><option value="10">10%</option><option value="30">30%</option><option value="50">50%</option><option value="100">100%</option></select></label>
           <label>Days per week<input id="tDays" type="number" min="1" max="7" required placeholder="3"></label>
           <label>For how many weeks<input id="tWeeks" type="number" min="1" max="52" required placeholder="8"></label>
-          <label>Better means<select id="tDir"><option value="lower">A lower number</option><option value="higher">A higher number</option></select></label>
-          <label>What you track<input id="tMetric" required maxlength="60" placeholder="Pace"></label>
-          <label>Unit<input id="tUnit" maxlength="30" placeholder="min per km"></label>
+          <label class="wide">What you track<select id="tMeasure" required></select></label>
+          <label id="lUnit">Unit<select id="tUnitSel"></select></label>
+          <label id="lName" hidden>Name of what you track<input id="tMetric" maxlength="60" placeholder="Pace"></label>
+          <label id="lUnitC" hidden>Unit<input id="tUnit" maxlength="30" placeholder="min per km"></label>
+          <label class="wide">How you measure it (optional)<input id="tNote" maxlength="140" placeholder="Average of three easy runs on the same route"></label>
           <label>Starting value<input id="tStart" required maxlength="12" placeholder="6:30"></label>
           <label>Target (optional)<input id="tTarget" maxlength="12" placeholder="6:00"></label>
         </div>
         <p class="msg" id="tMsg" hidden></p>
-        <div class="btnrow"><button class="big" type="submit">Start tracking</button><button class="small" id="tBack" type="button">Back</button></div>
+        <div class="btnrow"><button class="big" type="submit">Start my trial</button><button class="small" id="tBack" type="button">Back</button></div>
       </form>
-      <div class="btnrow"><button class="small" id="another">Show another idea</button></div>
     </article>
   </div>
 </section>
@@ -271,72 +265,75 @@ footer{padding:28px clamp(16px,4vw,48px);font-size:14px;color:var(--mute);displa
 <section class="band lemon" id="log">
   <div class="in">
     <h2>How did today go?</h2>
-    <p class="sub">Your usual and your ghost (the top quarter of your days) are worked out per area from your own earlier days. One entry per area per day; saving again replaces it.</p>
-    <form class="form" id="logForm">
-      <label>Area<select id="area"><option>Study</option><option>Work</option><option>Health</option><option>Style</option><option>Money</option><option>Other</option></select></label>
-      <label class="wide">What are you doing<input id="what" required maxlength="200" autocomplete="off" placeholder="Reading chapter 3 of a quant finance book, then notes"></label>
-      <ul class="cityRes sugg" id="whatRes" hidden></ul>
-      <label>Minutes<input id="minutes" type="number" min="5" max="600" value="90" required></label>
-      <label>Items finished (optional)<input id="solved" type="number" min="0" max="500" value="0"></label>
-      <label>Sleep last night, hours<input id="sleep" type="number" min="0" max="14" step="0.5" value="7" required></label>
-      <label>How it felt, 1 to 5<input id="feel" type="number" min="1" max="5" value="3" required></label>
-      <button class="big" type="submit">Save today</button>
+    <p class="sub">Log your day.</p>
+    <div class="logwrap">
+    <form class="paper" id="logForm">
+      <i class="hole" style="top:70px"></i><i class="hole" style="top:260px"></i><i class="hole" style="top:450px"></i>
+      <div class="dt" id="logDate"></div>
+      <div class="acts" id="acts"></div>
+      <button class="addA" type="button" id="addAct"><i></i>add another thing</button>
+      <div class="sleep">Slept <input id="sleep" type="number" min="0" max="14" step="0.5" placeholder="7" required aria-label="Sleep last night, hours"> hours. The day felt
+        <span class="fv" id="feel" role="group" aria-label="Overall feel, 1 to 5"></span> out of 5.</div>
+      <p class="msg" id="logMsg" hidden></p>
+      <button class="save" type="submit">Save today</button>
     </form>
-    <div class="result" id="result"></div>
-  </div>
-</section>
-
-<section class="band ink" id="trials">
-  <div class="in">
-    <h2>Your trials</h2>
-    <p class="sub">Each trial tracks the number you chose against your starting value.</p>
-    <div class="trials" id="trialList"></div>
-    <p class="empty" id="trialEmpty">No trial yet. Find an idea and press Yes to start one.</p>
-  </div>
-</section>
-
-<section class="band white" id="pattern">
-  <div class="in">
-    <h2>Your pattern</h2>
-    <p class="sub">A summary of what you have logged so far.</p>
-    <div class="cloud" id="cloud" hidden>
-      <svg class="cGhost" viewBox="0 0 120 110" aria-hidden="true">
-        <path d="M18 98V46C18 22 36 8 60 8s42 14 42 38v52l-13-11-14 13-15-13-15 13-14-13z" fill="#fff" stroke="#16143f" stroke-width="4" stroke-linejoin="round"/>
-        <circle cx="45" cy="48" r="6" fill="#16143f"/><circle cx="75" cy="48" r="6" fill="#16143f"/>
-        <ellipse cx="36" cy="62" rx="7" ry="4" fill="#ff6b8b"/><ellipse cx="84" cy="62" rx="7" ry="4" fill="#ff6b8b"/>
-        <path d="M52 64q8 7 16 0" stroke="#16143f" stroke-width="4" fill="none" stroke-linecap="round"/>
-      </svg>
-      <div id="pills"></div>
+    <aside class="daypanel"><div class="dgrid" id="dgrid" aria-hidden="true"></div><div class="dleg" id="dleg"></div><p class="dnote">One square is 15 minutes. Empty squares are time you did not log.</p></aside>
     </div>
-    <div id="patternBody"></div>
-    <p class="msg" id="patternEmpty" style="margin-top:22px">Log a few days and your pattern appears here.</p>
   </div>
 </section>
 
 <footer>
   <span>Your data stays in this browser.</span>
   <button class="link" id="export">Export JSON</button>
-  <button class="link" id="shift">Test mode: move the clock forward one day</button>
-  <span id="clockNote"></span>
 </footer>
 
 <script>
 const $ = id => document.getElementById(id);
 const KEY = 'ghost.v3', OLD_KEY = 'ghost.v2';
 const AREAS = ['Study', 'Work', 'Health', 'Style', 'Money', 'Other'];
-const AREA_COLOR = {Study: '#3a3aff', Work: '#16143f', Health: '#4fd68a', Style: '#ff6b8b', Money: '#ffe45c', Other: '#9aa0d0'};
+const MODES = {
+  improve: {btn: 'Show me ideas', attach: false, gain: 'What you gain', lede: 'Describe what you do and what you want to improve. You get an idea from people elsewhere who do it differently, with a source.',
+    ph: 'Describe what you do and what you want to improve. For example: I run 5 km three times a week at 6:30 per km and want to get faster.', cap: 'Describe what you do, then press Show me ideas.'},
+  cheaper: {btn: 'Show me ideas', attach: true, gain: 'What you save', lede: 'Describe what you buy or use, with its price if you know it. You get an equivalent that costs less, with a source.',
+    ph: 'Describe what you buy or use. For example: A 1000 W blender that cost me 89 CHF.', cap: 'Describe what you buy, then press Show me ideas.'},
+  similar: {btn: 'Show me ideas', attach: true, gain: 'What it shares', lede: 'Describe something you like. You get something similar that you may not know yet, with a source.',
+    ph: 'Describe what you like. For example: I love the old yellow trams of Lisbon and want to find similar places to visit.', cap: 'Describe what you like, then press Show me ideas.'}
+};
+const curMode = () => MODES[S.prefs.mode] ? S.prefs.mode : 'improve';
+function applyMode(){
+  const m = curMode(), c = MODES[m];
+  document.querySelectorAll('.mode').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === m)));
+  $('lede').textContent = c.lede; $('ask').placeholder = c.ph; $('findBtn').textContent = c.btn; $('attach').hidden = !c.attach;
+}
 const SRC_LABEL = {research: 'Research', person: 'A person’s account', product: 'Product listing'};
-const SIZES = ['10', '30', '50', '100'];
-const STOP = new Set('with that this from have were what about today then when they them their into over also some more very just been only than like done doing after before while which would could should there where these those your'.split(' '));
 
 const DEMO_IDS = ['attempt-first', 'mix-types', 'test-yourself'];
 
+const CATS = ['Study', 'Work', 'Exercise', 'Nutrition', 'Self-care', 'Medication', 'Social media', 'Phone', 'TV & streaming', 'Internet browsing', 'Other'];
+const OLD_CAT = {Study: 'Study', Work: 'Work', Health: 'Exercise'};
+function cleanAct(a){
+  if (!a || !(+a.minutes > 0)) return null;
+  const cat = CATS.includes(a.cat) ? a.cat : 'Other';
+  return {cat, name: cat === 'Other' ? String(a.name || '').trim().slice(0, 60) : '', minutes: Math.min(Math.round(+a.minutes), 1440), desc: String(a.desc || '').trim().slice(0, 140)};
+}
+function normDays(list){
+  const by = {};
+  (Array.isArray(list) ? list : []).forEach(d => {
+    if (!d || !d.date) return;
+    const e = by[d.date] || (by[d.date] = {date: d.date, acts: [], sleep: null, feel: null});
+    if (Array.isArray(d.acts)) e.acts = d.acts.map(cleanAct).filter(Boolean);
+    else if (+d.minutes > 0) e.acts.push(OLD_CAT[d.area] ? {cat: OLD_CAT[d.area], name: '', minutes: Math.round(+d.minutes)} : {cat: 'Other', name: String(d.text || d.area || '').slice(0, 60), minutes: Math.round(+d.minutes)});
+    if (d.sleep !== undefined && d.sleep !== null) e.sleep = +d.sleep;
+    if (+d.feel >= 1 && +d.feel <= 5) e.feel = +d.feel;
+  });
+  return Object.values(by).sort((a, b) => a.date.localeCompare(b.date));
+}
 function el(tag, cls, text){ const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; }
 
 function blank(){ return {days: [], trials: [], pool: [], idx: 0, lock: null, tries: {}, titles: {}, sarea: {}, decided: {}, offset: 0, prefs: {region: '', limit: '', count: 1}, promptArea: null}; }
 function normalize(v){
   const o = Object.assign(blank(), v);
-  o.days = (o.days || []).map(d => ({date: d.date, area: AREAS.includes(d.area) ? d.area : 'Study', text: d.text || d.task || '', minutes: +d.minutes || 0, solved: +d.solved || 0, sleep: d.sleep === undefined ? null : d.sleep, feel: +d.feel || 3}));
+  o.days = normDays(o.days);
   delete o.suggestion;
   o.trials = Array.isArray(o.trials) ? o.trials : [];
   o.pool = (Array.isArray(o.pool) ? o.pool : []).filter(x => x && !DEMO_IDS.includes(x.id));
@@ -352,19 +349,7 @@ let S = load();
 let shownId = null, notice = '';
 function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
 const sug = () => S.pool[S.idx];
-function today(off = 0){ const d = new Date(); d.setDate(d.getDate() + S.offset + off); return d.toLocaleDateString('sv'); }
-const rate = d => d.minutes ? d.solved * 60 / d.minutes : 0;
-function quantile(a, q){ const s = a.slice().sort((x, y) => x - y), p = (s.length - 1) * q, lo = Math.floor(p), hi = Math.ceil(p); return s[lo] + (s[hi] - s[lo]) * (p - lo); }
-
-// Comparison for one logged day, against earlier days in the same area.
-function measure(log){
-  const prev = S.days.filter(d => d.area === log.area && d.date !== log.date);
-  const ratePrev = prev.filter(d => d.solved > 0).map(rate), feelPrev = prev.map(d => d.feel);
-  if (log.solved > 0 && ratePrev.length >= 3) return {kind: 'rate', value: rate(log), usual: quantile(ratePrev, .5), ghost: quantile(ratePrev, .75), n: ratePrev.length};
-  if (feelPrev.length >= 3) return {kind: 'feel', value: log.feel, usual: quantile(feelPrev, .5), ghost: quantile(feelPrev, .75), n: feelPrev.length};
-  return log.solved > 0 ? {kind: 'rate', value: rate(log), usual: null, ghost: null, n: 0} : {kind: 'feel', value: log.feel, usual: null, ghost: null, n: 0};
-}
-const unitOf = k => k === 'rate' ? 'finished per hour' : 'felt rating out of 5';
+function today(off = 0){ const d = new Date(); d.setDate(d.getDate() + off); return d.toLocaleDateString('sv'); }
 
 const ART_BG = {Study: '#cfd5ff', Work: '#dcdcea', Health: '#c8f3dc', Style: '#ffd3df', Money: '#fff0a6', Other: '#e4e7ff'};
 const ART = {
@@ -388,22 +373,53 @@ function renderCollage(s){
   } else box.append(art);
   box.append(tile(DOTS, '#fff'));
 }
+
+const MEASURES = {
+  Health: [{name:'Pace', units:['min per km','min per mile'], dir:'lower'}, {name:'Distance', units:['km','miles'], dir:'higher'}, {name:'Duration', units:['minutes'], dir:'higher'}, {name:'Weight lifted', units:['kg','lb'], dir:'higher'}, {name:'Body weight', units:['kg','lb'], dir:null}, {name:'Resting heart rate', units:['bpm'], dir:null}, {name:'Sleep', units:['hours'], dir:null}],
+  Study: [{name:'Problems solved per hour', units:['problems per hour'], dir:'higher'}, {name:'Practice test score', units:['%','points'], dir:'higher'}, {name:'Study time', units:['hours','minutes'], dir:null}, {name:'Items recalled', units:['items'], dir:'higher'}],
+  Work: [{name:'Tasks finished', units:['tasks per day','tasks per week'], dir:'higher'}, {name:'Focused time', units:['hours per day'], dir:'higher'}, {name:'Applications sent', units:['per week'], dir:'higher'}],
+  Money: [{name:'Spending', units:['CHF per week','EUR per week','USD per week'], dir:'lower'}, {name:'Saved', units:['CHF per month','EUR per month','USD per month'], dir:'higher'}],
+  Style: [{name:'Outfits planned ahead', units:['per week'], dir:'higher'}],
+  Other: []
+};
+let presetList = [];
+function fillMeasures(){
+  const sel = $('tMeasure'), s = sug();
+  presetList = (s && MEASURES[s.area]) || [];
+  sel.textContent = '';
+  const ph = el('option', '', 'Choose'); ph.value = ''; sel.append(ph);
+  presetList.forEach((p, i) => { const o = el('option', '', p.name); o.value = String(i); sel.append(o); });
+  const o = el('option', '', 'Something else'); o.value = 'custom'; sel.append(o);
+  syncMeasure();
+}
+function syncMeasure(){
+  const v = $('tMeasure').value, custom = v === 'custom';
+  $('lUnit').hidden = custom || v === ''; $('lName').hidden = !custom; $('lUnitC').hidden = !custom;
+  $('tMetric').required = custom;
+  const u = $('tUnitSel'); u.textContent = '';
+  if (!custom && v !== '') presetList[+v].units.forEach(x => { const o = el('option', '', x); o.value = x; u.append(o); });
+}
+$('tMeasure').onchange = syncMeasure;
 function resetTry(){
   $('tryQ').hidden = false; $('yn').hidden = false; $('thanks').hidden = true; $('trialForm').hidden = true; $('tryBox').hidden = false;
-  $('trialForm').reset(); $('tMsg').hidden = true;
+  $('trialForm').reset(); $('tMsg').hidden = true; fillMeasures();
 }
 function renderSuggestion(){
   const has = S.pool.length > 0, s = sug();
   $('ticket').hidden = !has; $('ghostWrap').hidden = has;
-  if (!has){ shownId = null; $('ghostCap').textContent = notice || 'Describe what you do, then press Find ideas.'; return; }
+  if (!has){ shownId = null; $('ghostCap').textContent = notice || MODES[curMode()].cap; return; }
   notice = '';
   if (shownId !== s.id){ shownId = s.id; resetTry(); }
-  $('tag').textContent = S.pool.length > 1 ? 'Idea ' + (S.idx + 1) + ' of ' + S.pool.length : 'Your idea';
-  $('tag').className = 'tag real';
-  $('areaTag').textContent = s.area || 'Other';
-  const st = $('srcTag'); st.hidden = !SRC_LABEL[s.source_type]; st.textContent = SRC_LABEL[s.source_type] || '';
+  const tabs = $('ideaTabs'); tabs.textContent = '';
+  S.pool.forEach((x, i) => {
+    const b = el('button', 'tab', 'Idea ' + (i + 1)); b.type = 'button'; b.setAttribute('role', 'tab'); b.setAttribute('aria-selected', String(i === S.idx));
+    b.onclick = () => { if (i === S.idx) return; S.idx = i; save(); renderAll(); };
+    tabs.append(b);
+  });
   $('sTitle').textContent = s.title;
   $('sSummary').textContent = s.summary || '';
+  $('sPrice').hidden = !s.price; $('sPrice').textContent = s.price ? 'Price: ' + s.price : '';
+  $('gainsH').textContent = (MODES[s.mode] || MODES.improve).gain;
   const gains = $('gains'); gains.textContent = '';
   (s.benefits || []).forEach(b => gains.append(el('li', '', b)));
   $('sFrom').textContent = s.from ? 'From: ' + s.from : '';
@@ -413,22 +429,62 @@ function renderSuggestion(){
     src.append('Source: ', a);
   } else src.textContent = 'No source found.';
   renderCollage(s);
-  $('another').hidden = S.pool.length < 2;
 }
 
-function renderResult(){
-  const box = $('result'); box.replaceChildren();
-  const add = (n, label) => { const d = el('div', 'stat'); d.append(el('b', '', n), el('span', '', label)); box.append(d); };
-  for (const log of S.days.filter(d => d.date === today())){
-    const m = measure(log);
-    if (m.kind === 'rate') add(m.value.toFixed(1), 'finished per hour in ' + log.area + ' today');
-    else { add(String(m.value), 'out of 5, how ' + log.area + ' felt today'); if (log.solved > 0) add(rate(log).toFixed(1), 'finished per hour in ' + log.area + ' today'); }
-    if (m.n >= 3){
-      add(m.usual.toFixed(1), 'your usual in ' + log.area + ', ' + unitOf(m.kind) + ' (median of ' + m.n + ' days)');
-      add(m.ghost.toFixed(1), 'your ghost in ' + log.area + ' (top quarter of days)');
-    } else add('–', 'usual and ghost for ' + log.area + ' appear after 3 earlier days');
+const fmtMin = m => { const h = Math.floor(m / 60), r = m % 60; return [h ? h + ' h' : '', r || !h ? r + ' min' : ''].filter(Boolean).join(' '); };
+const CAT_COLOR = {Study: '#3a3aff', Work: '#16143f', Exercise: '#1fb36b', Nutrition: '#ff8a3d', 'Self-care': '#9b6bff', Medication: '#17a2b8', 'Social media': '#ff6b8b', Phone: '#8a8fb5', 'TV & streaming': '#c2410c', 'Internet browsing': '#0e7490', Other: '#6b7280', Sleep: '#ffffff'};
+function readRows(){
+  const out = [];
+  for (const r of $('acts').children){
+    const sel = r.querySelector('select'), oth = r.querySelector('.oth'), min = r.querySelector('.min'), dsc = r.querySelector('.dsc');
+    out.push({cat: sel.value, name: oth.value.trim(), minutes: +min.value || 0, desc: dsc.value.trim(), raw: min.value});
   }
+  return out;
 }
+function drawGrid(){
+  const rows = readRows().filter(a => a.minutes > 0), sleep = +$('sleep').value || 0, grid = $('dgrid'), leg = $('dleg');
+  const sums = new Map(); rows.forEach(a => { const k = a.cat === 'Other' ? (a.name || 'Other') : a.cat; const o = sums.get(k) || {cat: a.cat, min: 0}; o.min += a.minutes; sums.set(k, o); });
+  const cells = [];
+  const push = (n, color, label) => { for (let i = 0; i < n && cells.length < 96; i++) cells.push([color, label]); };
+  push(Math.round(Math.min(sleep, 14) * 4), CAT_COLOR.Sleep, 'Sleep');
+  sums.forEach((o, k) => push(Math.max(1, Math.round(o.min / 15)), CAT_COLOR[o.cat], k));
+  grid.textContent = '';
+  for (let i = 0; i < 96; i++){ const c = document.createElement('i'); if (cells[i]){ c.style.background = cells[i][0]; c.title = cells[i][1]; } grid.append(c); }
+  leg.textContent = '';
+  const total = [...sums.values()].reduce((t, o) => t + o.min, 0);
+  const add = (color, text, extra) => { const d = el('div'), sw = el('i'); sw.style.background = color; d.append(sw, text); if (extra){ d.append(el('small', '', extra)); } leg.append(d); };
+  if (sleep > 0) add(CAT_COLOR.Sleep, 'Sleep ' + fmtMin(Math.round(sleep * 60)));
+  sums.forEach((o, k) => add(CAT_COLOR[o.cat], k + ' ' + fmtMin(o.min), Math.round(o.min / total * 100) + '%'));
+  if (!sums.size && !(sleep > 0)) leg.append(el('div', '', 'Your day appears here as you fill it in.'));
+}
+let feelVal = 3;
+function setFeel(v){ feelVal = v; document.querySelectorAll('#feel button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.v === v))); }
+for (let v = 1; v <= 5; v++){ const b = el('button', '', String(v)); b.type = 'button'; b.dataset.v = v; b.onclick = () => setFeel(v); $('feel').append(b); }
+function addRow(a = {}){
+  const row = el('div', 'arow'), l1 = el('div', 'l1'), sel = el('select'), oth = el('input', 'oth'), min = el('input', 'min'), rm = el('button', 'rm', '\u00d7'), dsc = el('input', 'dsc');
+  sel.setAttribute('aria-label', 'Category');
+  CATS.forEach(c => { const o = el('option', '', c); o.value = c; sel.append(o); });
+  sel.value = a.cat || 'Study';
+  oth.placeholder = 'name it'; oth.maxLength = 60; oth.value = a.name || ''; oth.setAttribute('aria-label', 'Your own category');
+  min.type = 'number'; min.min = 1; min.max = 1440; min.placeholder = '60'; min.setAttribute('aria-label', 'Minutes'); if (a.minutes) min.value = a.minutes;
+  dsc.maxLength = 140; dsc.placeholder = 'what did you do?'; dsc.value = a.desc || ''; dsc.setAttribute('aria-label', 'What you did');
+  rm.type = 'button'; rm.setAttribute('aria-label', 'Remove activity'); rm.onclick = () => { row.remove(); syncRows(); drawGrid(); };
+  const sync = () => { oth.hidden = sel.value !== 'Other'; };
+  sel.onchange = () => { sync(); if (sel.value === 'Other') oth.focus(); drawGrid(); }; sync();
+  l1.append(el('span', 'bx'), sel, oth, el('span', 'dash', '\u2014'), min, el('span', '', 'min'), rm);
+  row.append(l1, dsc); $('acts').append(row); syncRows();
+}
+function syncRows(){ const rows = $('acts').children; for (const r of rows) r.querySelector('.rm').hidden = rows.length < 2; }
+function fillLog(){
+  $('logDate').textContent = new Date(today() + 'T12:00:00').toLocaleDateString('en-GB', {weekday: 'long', day: 'numeric', month: 'long'});
+  $('acts').textContent = '';
+  const d = S.days.find(x => x.date === today());
+  (d && d.acts.length ? d.acts : [{}]).forEach(addRow);
+  $('sleep').value = d && d.sleep !== null ? d.sleep : ''; setFeel(d && d.feel ? d.feel : 3);
+  drawGrid();
+}
+$('addAct').onclick = () => { addRow(); $('acts').lastChild.querySelector('select').focus(); drawGrid(); };
+$('logForm').addEventListener('input', drawGrid);
 
 // ---- Trials: one number tracked against its starting value
 const parseValue = t => {
@@ -442,219 +498,58 @@ function fmtValue(v, fmt){
   if (fmt === 'time'){ let m = Math.floor(v), s = Math.round((v - m) * 60); if (s === 60){ m += 1; s = 0; } return m + ':' + String(s).padStart(2, '0'); }
   return String(Math.round(v * 100) / 100);
 }
-function trialStats(t){
-  const m = t.metric, last = t.checkins.length ? t.checkins[t.checkins.length - 1].value : null;
-  const vals = t.checkins.map(c => c.value);
-  const best = vals.length ? (m.dir === 'lower' ? Math.min(...vals) : Math.max(...vals)) : null;
-  const gain = last === null ? null : (m.dir === 'lower' ? m.start - last : last - m.start);
-  return {last, best, gain, pct: gain === null || !m.start ? null : gain / Math.abs(m.start) * 100};
-}
-const SVGNS = 'http://www.w3.org/2000/svg';
-function svgEl(tag, attrs, text){ const e = document.createElementNS(SVGNS, tag); Object.entries(attrs).forEach(([k, v]) => e.setAttribute(k, v)); if (text !== undefined) e.textContent = text; return e; }
-function renderChart(t){
-  const W = 640, H = 240, L = 64, R = 24, T = 22, B = 36, m = t.metric;
-  const svg = svgEl('svg', {viewBox: '0 0 ' + W + ' ' + H, class: 'chart', role: 'img', 'aria-label': 'Results for ' + m.name + ' compared with the starting value'});
-  const vals = [m.start].concat(t.checkins.map(c => c.value)); if (m.target !== null) vals.push(m.target);
-  let lo = Math.min(...vals), hi = Math.max(...vals); if (hi === lo){ hi += 1; lo -= 1; }
-  const pad = (hi - lo) * .15; lo -= pad; hi += pad;
-  const x = i => L + (t.checkins.length ? i / t.checkins.length : 0) * (W - L - R), y = v => T + (1 - (v - lo) / (hi - lo)) * (H - T - B);
-  [m.start, m.target].forEach((v, k) => {
-    if (v === null) return;
-    svg.append(svgEl('line', {x1: L, x2: W - R, y1: y(v), y2: y(v), stroke: k ? '#0a7f43' : '#16143f', 'stroke-width': 2, 'stroke-dasharray': '6 5'}));
-    svg.append(svgEl('text', {x: L - 8, y: y(v) + 4, 'text-anchor': 'end', 'font-size': 12, fill: '#16143f'}, fmtValue(v, m.fmt)));
-    svg.append(svgEl('text', {x: W - R, y: y(v) - 6, 'text-anchor': 'end', 'font-size': 12, fill: k ? '#0a7f43' : '#5a5890'}, k ? 'Target' : 'Start'));
-  });
-  const pts = [[x(0), y(m.start)]].concat(t.checkins.map((c, i) => [x(i + 1), y(c.value)]));
-  svg.append(svgEl('polyline', {points: pts.map(p => p.join(',')).join(' '), fill: 'none', stroke: '#3a3aff', 'stroke-width': 3, 'stroke-linejoin': 'round'}));
-  pts.forEach((p, i) => {
-    const better = i === 0 ? null : (m.dir === 'lower' ? t.checkins[i - 1].value < m.start : t.checkins[i - 1].value > m.start);
-    svg.append(svgEl('circle', {cx: p[0], cy: p[1], r: 6, fill: better === null ? '#fff' : better ? '#6ee7a0' : '#ff6b8b', stroke: '#16143f', 'stroke-width': 3}));
-  });
-  svg.append(svgEl('text', {x: L, y: H - 10, 'font-size': 12, fill: '#5a5890'}, t.startDate));
-  if (t.checkins.length) svg.append(svgEl('text', {x: W - R, y: H - 10, 'text-anchor': 'end', 'font-size': 12, fill: '#5a5890'}, t.checkins[t.checkins.length - 1].date));
-  return svg;
-}
-function renderTrials(){
-  const box = $('trialList'); box.textContent = '';
-  $('trialEmpty').hidden = S.trials.length > 0;
-  S.trials.slice().reverse().forEach(t => {
-    const m = t.metric, st = trialStats(t), planned = t.days * t.weeks, card = el('div', 'tcard');
-    card.append(el('h3', '', t.title));
-    card.append(el('p', 'tmeta', t.share + '% of the idea, ' + t.days + ' days a week for ' + t.weeks + ' weeks. Started ' + t.startDate + (t.status === 'done' ? '. Finished.' : '.')));
-    card.append(el('p', '', t.plan));
-    const stats = el('div', 'tstats'), add = (label, value, cls) => { const d = el('div'); const b = el('b', cls || '', value); d.append(b, el('span', '', label)); stats.append(d); };
-    const unit = m.unit ? ' ' + m.unit : '';
-    add('Start', fmtValue(m.start, m.fmt) + unit);
-    add('Latest', st.last === null ? 'none yet' : fmtValue(st.last, m.fmt) + unit);
-    add('Best', st.best === null ? 'none yet' : fmtValue(st.best, m.fmt) + unit);
-    if (st.gain !== null){
-      const word = st.gain > 0 ? 'Better by ' : st.gain < 0 ? 'Worse by ' : 'No change';
-      add('Change since start', st.gain === 0 ? word : word + fmtValue(Math.abs(st.gain), m.fmt) + unit + ' (' + Math.abs(st.pct).toFixed(1) + '%)', st.gain > 0 ? 'good' : st.gain < 0 ? 'bad' : '');
-    }
-    add('Results logged', t.checkins.length + ' of ' + planned);
-    card.append(stats);
-    if (t.checkins.length) card.append(renderChart(t));
-    else card.append(el('p', 'msg', 'No result yet. Add your first ' + m.name.toLowerCase() + ' below.'));
-    if (m.dir) card.append(el('p', 'msg', m.dir === 'lower' ? 'A lower ' + m.name.toLowerCase() + ' is better.' : 'A higher ' + m.name.toLowerCase() + ' is better.'));
-    if (t.status === 'active'){
-      const form = el('form', 'tadd');
-      const l1 = el('label', '', 'Result'), v = el('input'); v.required = true; v.placeholder = m.fmt === 'time' ? '6:20' : 'Number'; v.maxLength = 12; l1.append(v);
-      const l2 = el('label', '', 'Date'), d = el('input'); d.type = 'date'; d.value = today(); l2.append(d);
-      const go = el('button', 'big', 'Add result'); go.type = 'submit'; go.style.fontSize = '16px'; go.style.padding = '10px 18px';
-      const msg = el('p', 'msg'); msg.hidden = true;
-      form.append(l1, l2, go);
-      form.onsubmit = e => {
-        e.preventDefault();
-        const p = parseValue(v.value);
-        if (!p){ msg.hidden = false; msg.textContent = 'Enter a number, or a time such as 6:20.'; card.append(msg); return; }
-        t.checkins = t.checkins.filter(c => c.date !== d.value); t.checkins.push({date: d.value || today(), value: p.v});
-        t.checkins.sort((a, b) => a.date.localeCompare(b.date)); save(); renderTrials();
-      };
-      card.append(form);
-      const row = el('div', 'btnrow');
-      const fin = el('button', 'small', 'Finish this trial'); fin.onclick = () => { t.status = 'done'; save(); renderTrials(); };
-      row.append(fin); card.append(row);
-    }
-    const rm = el('button', 'small', 'Remove'); rm.onclick = () => { S.trials = S.trials.filter(x => x.id !== t.id); save(); renderTrials(); };
-    card.append(rm);
-    box.append(card);
-  });
-}
-
-function recurring(){
-  const count = {};
-  S.days.forEach(d => {
-    const seen = new Set((d.text || '').toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(w => w.length >= 4 && !STOP.has(w)));
-    seen.forEach(w => { count[w] = (count[w] || 0) + 1; });
-  });
-  return Object.entries(count).filter(e => e[1] >= 2).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 8);
-}
-const fmtMin = m => Math.floor(m / 60) + ' h ' + String(m % 60).padStart(2, '0') + ' min';
-function shareFn(list){
-  const t = {}; let s = 0;
-  list.forEach(d => { t[d.area] = (t[d.area] || 0) + d.minutes; s += d.minutes; });
-  return {t, s, pct: a => s ? Math.round(100 * (t[a] || 0) / s) : 0};
-}
-
-
-const PASTEL = {Study: '#cfd5ff', Work: '#dcdcea', Health: '#c8f3dc', Style: '#ffd3df', Money: '#fff0a6', Other: '#e6e7f5', Word: '#ffffff'};
-let cloudPop = true;
-function mulberry32(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
-function cloudItems(days, all, ranked, words, kept){
-  const items = [];
-  ranked.forEach(a => items.push({t: a + ' ' + all.pct(a) + '%', a}));
-  words.forEach(w => items.push({t: w[0] + ' x' + w[1], a: 'Word'}));
-  kept.forEach(k => items.push({t: 'kept: ' + (S.titles[k] || k), a: S.sarea[k] || 'Study'}));
-  const withSleep = days.filter(d => d.sleep !== null && d.sleep !== undefined);
-  if (withSleep.length) items.push({t: 'average sleep ' + (withSleep.reduce((s, d) => s + d.sleep, 0) / withSleep.length).toFixed(1) + ' h', a: 'Other'});
-  items.push({t: 'average felt ' + (days.reduce((s, d) => s + d.feel, 0) / days.length).toFixed(1) + '/5', a: 'Other'});
-  items.push({t: days.length + (days.length === 1 ? ' entry' : ' entries'), a: 'Other'});
-  days.slice().sort((x, y) => x.date < y.date ? 1 : -1).slice(0, 8).forEach(d => {
-    items.push({t: d.minutes + ' min ' + d.area.toLowerCase(), a: d.area});
-    if (d.solved > 0) items.push({t: d.solved + ' finished', a: d.area});
-    items.push({t: 'felt ' + d.feel + '/5', a: d.area});
-    if (d.sleep !== null && d.sleep !== undefined) items.push({t: 'slept ' + d.sleep + ' h', a: d.area});
-    if (d.text) items.push({t: d.text, a: d.area});
-  });
-  return items.slice(0, 34);
-}
-function renderCloud(days, all, ranked, words, kept){
-  const wrap = $('pills'); wrap.replaceChildren();
-  cloudItems(days, all, ranked, words, kept).forEach((it, i) => {
-    const p = el('span', 'pill', it.t); p.title = it.t; p.style.background = PASTEL[it.a] || '#fff'; p.style.setProperty('--i', i);
-    if (cloudPop) p.classList.add('pop');
-    wrap.append(p);
-  });
-  cloudPop = false;
-  layoutCloud();
-}
-function layoutCloud(){
-  const cloud = $('cloud'); if (cloud.hidden) return;
-  const pills = [...cloud.querySelectorAll('.pill')], W = cloud.clientWidth, H = cloud.clientHeight || 560;
-  pills.forEach(p => { p.hidden = false; });
-  if (W < 760){ cloud.classList.add('flow'); pills.forEach(p => { p.style.left = ''; p.style.top = ''; p.style.setProperty('--r', '0deg'); }); return; }
-  cloud.classList.remove('flow');
-  const H2 = cloud.clientHeight, pad = 14, rnd = mulberry32(11);
-  const placed = [{x: W / 2 - 115, y: H2 / 2 - 105, w: 230, h: 210}];
-  pills.forEach(p => {
-    const w = p.offsetWidth, h = p.offsetHeight; let spot = null;
-    for (let t = 0; t < 300 && !spot; t++){
-      const x = pad + rnd() * (W - w - 2 * pad), y = pad + rnd() * (H2 - h - 2 * pad);
-      if (!placed.some(r => x < r.x + r.w + 10 && x + w + 10 > r.x && y < r.y + r.h + 8 && y + h + 8 > r.y)) spot = {x, y};
-    }
-    if (!spot){ p.hidden = true; return; }
-    p.style.left = spot.x + 'px'; p.style.top = spot.y + 'px'; p.style.setProperty('--r', (rnd() * 6 - 3).toFixed(1) + 'deg');
-    placed.push({x: spot.x, y: spot.y, w, h});
-  });
-}
-let resizeT; window.addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(layoutCloud, 150); });
-if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutCloud);
-
-function renderPattern(){
-  const box = $('patternBody'); box.replaceChildren();
-  const days = S.days; $('patternEmpty').hidden = days.length > 0; $('cloud').hidden = !days.length;
-  if (!days.length) return;
-  const all = shareFn(days), ranked = Object.keys(all.t).sort((a, b) => all.t[b] - all.t[a]), words = recurring();
-  let line = 'Most of your logged time goes to ' + ranked[0] + ' (' + all.pct(ranked[0]) + '%).';
-  if (words.length) line += ' Words that keep coming back: ' + words.slice(0, 5).map(w => w[0]).join(', ') + '.';
-  box.append(el('p', 'lead', line));
-
-  const bars = el('div', 'pbars');
-  ranked.forEach(a => {
-    const row = el('div', 'prow'), track = el('div', 'track'), fill = el('div', 'fill');
-    fill.style.width = Math.max(all.pct(a), 3) + '%'; fill.style.background = AREA_COLOR[a] || '#9aa0d0';
-    track.append(fill);
-    row.append(el('b', '', a), track, el('span', 'amt', all.pct(a) + '%, ' + fmtMin(all.t[a])));
-    bars.append(row);
-  });
-  box.append(bars);
-
-  const cutoff = today(-7), recent = days.filter(d => d.date > cutoff), earlier = days.filter(d => d.date <= cutoff);
-  if (recent.length && earlier.length){
-    const r = shareFn(recent), e = shareFn(earlier);
-    const changes = ranked.map(a => ({a, r: r.pct(a), e: e.pct(a)})).filter(x => Math.abs(x.r - x.e) >= 10).sort((x, y) => Math.abs(y.r - y.e) - Math.abs(x.r - x.e)).slice(0, 2);
-    if (changes.length){
-      box.append(el('h3', 'ph', 'Compared with before'));
-      changes.forEach(c => box.append(el('p', '', c.a + ': ' + c.r + '% of the last 7 days, ' + c.e + '% before.')));
-    }
-  }
-  const kept = Object.keys(S.decided).filter(k => S.decided[k] === 'keep');
-  renderCloud(days, all, ranked, words, kept);
-  const nDates = new Set(days.map(d => d.date)).size;
-  box.append(el('p', 'msg', 'Based on ' + days.length + ' entries across ' + nDates + ' days.'));
-}
-
 function renderAll(){
-  renderSuggestion(); renderResult(); renderTrials(); renderPattern();
-  $('clockNote').textContent = S.offset ? 'Test clock: +' + S.offset + ' day(s). Today is ' + today() + '.' : '';
+  renderSuggestion();
 }
 
-$('yes').onclick = () => { $('tryQ').hidden = true; $('yn').hidden = true; $('trialForm').hidden = false; $('tPlan').focus(); };
+$('yes').onclick = () => { $('tryQ').hidden = true; $('yn').hidden = true; $('trialForm').hidden = false; fillMeasures(); $('tPlan').focus(); };
 $('no').onclick = () => { $('tryQ').hidden = true; $('yn').hidden = true; $('thanks').hidden = false; };
 $('again').onclick = () => { S.pool = []; S.idx = 0; save(); renderAll(); $('ask').focus(); window.scrollTo({top: 0}); };
 $('tBack').onclick = () => { $('trialForm').hidden = true; $('tryQ').hidden = false; $('yn').hidden = false; };
 $('trialForm').onsubmit = e => {
   e.preventDefault();
-  const s = sug(), start = parseValue($('tStart').value), target = $('tTarget').value.trim() ? parseValue($('tTarget').value) : null;
+  const s = sug(), start = parseValue($('tStart').value), tt = $('tTarget').value.trim(), target = tt ? parseValue(tt) : null;
   const fail = text => { $('tMsg').hidden = false; $('tMsg').textContent = text; };
   if (!s) return;
+  const sel = $('tMeasure').value, custom = sel === 'custom', pre = custom ? null : presetList[+sel];
+  const name = custom ? $('tMetric').value.trim() : pre.name, unit = custom ? $('tUnit').value.trim() : $('tUnitSel').value;
+  if (!name) return fail('Name what you track.');
   if (!start) return fail('The starting value must be a number, or a time such as 6:30.');
-  if ($('tTarget').value.trim() && !target) return fail('The target must be a number, or a time such as 6:00.');
+  if (tt && !target) return fail('The target must be a number, or a time such as 6:00.');
+  let dir = pre && pre.dir ? pre.dir : '';
+  if (target){
+    if (target.v === start.v) return fail('The target must differ from the starting value.');
+    const implied = target.v < start.v ? 'lower' : 'higher';
+    if (dir && dir !== implied) return fail(name + ' improves with a ' + dir + ' number, so the target must be ' + dir + ' than the start.');
+    dir = implied;
+  }
   S.trials.push({id: 't' + Date.now(), title: s.title, area: s.area || 'Other', source_url: s.source_url || '', source_title: s.source_title || '',
     plan: $('tPlan').value.trim(), share: +$('tShare').value, days: +$('tDays').value, weeks: +$('tWeeks').value, startDate: today(), status: 'active', checkins: [],
-    metric: {name: $('tMetric').value.trim(), unit: $('tUnit').value.trim(), dir: $('tDir').value, fmt: start.fmt, start: start.v, target: target ? target.v : null}});
-  S.pool = []; S.idx = 0; notice = 'Your trial has started. Follow it under Your trials.'; save(); renderAll();
-  $('trials').scrollIntoView({block: 'start'});
+    metric: {name, unit, note: $('tNote').value.trim(), dir, fmt: start.fmt, start: start.v, target: target ? target.v : null}});
+  S.pool = []; S.idx = 0; notice = 'Your trial is saved.'; save(); renderAll();
 };
 
 $('logForm').onsubmit = e => {
   e.preventDefault();
-  const d = {date: today(), area: $('area').value, text: $('what').value.trim(), minutes: +$('minutes').value, solved: +$('solved').value || 0, sleep: +$('sleep').value, feel: +$('feel').value};
-  S.days = S.days.filter(x => !(x.date === d.date && x.area === d.area)); S.days.push(d); save(); renderAll();
+  const msg = $('logMsg'), fail = t => { msg.hidden = false; msg.textContent = t; };
+  const acts = [];
+  for (const a of readRows()){
+    if (!a.raw && !a.name && !a.desc) continue;
+    if (!(a.minutes >= 1 && a.minutes <= 1440)) return fail('Time must be between 1 and 1440 minutes.');
+    if (a.cat === 'Other' && !a.name) return fail('Name your activity.');
+    acts.push({cat: a.cat, name: a.cat === 'Other' ? a.name : '', minutes: Math.round(a.minutes), desc: a.desc});
+  }
+  if (!acts.length) return fail('Add at least one activity with its time.');
+  if (acts.reduce((t, a) => t + a.minutes, 0) > 1440) return fail('The activities add up to more than 24 hours.');
+  const sleep = +$('sleep').value;
+  if ($('sleep').value === '' || !(sleep >= 0 && sleep <= 14)) return fail('Sleep must be between 0 and 14 hours.');
+  S.days = S.days.filter(x => x.date !== today()); S.days.push({date: today(), acts, sleep, feel: feelVal}); save();
+  msg.hidden = false; msg.textContent = 'Saved.';
 };
 
-const savePrefs = () => { S.prefs = Object.assign(S.prefs, {ask: $('ask').value, region: $('region').value, limit: $('limit').value, count: +$('count').value || 1, keepSame: $('keepSame').value}); save(); };
-['ask', 'region', 'limit', 'count', 'keepSame'].forEach(id => $(id).addEventListener('input', savePrefs));
+const clampCount = () => Math.min(10, Math.max(1, Math.round(+$('count').value) || 1));
+const savePrefs = () => { S.prefs = Object.assign(S.prefs, {ask: $('ask').value, region: $('region').value, count: clampCount()}); save(); };
+['ask', 'region', 'count'].forEach(id => $(id).addEventListener('input', savePrefs));
 
 // The Python server (python -m ghost.server) adds city search, the prompt builder and the answer checker.
 // Without it the page works on its own with the built-in versions.
@@ -665,25 +560,77 @@ async function callApi(path, body){
   if (!r.ok) throw new Error(j.error || 'Request failed');
   return j;
 }
-let sugTimer = 0;
-const hideSug = () => { $('whatRes').hidden = true; $('whatRes').textContent = ''; };
-$('what').addEventListener('input', () => {
-  clearTimeout(sugTimer);
-  const q = $('what').value.trim();
-  if (!api || q.length < 2){ hideSug(); return; }
-  sugTimer = setTimeout(() => callApi('/api/activities', {q, history: S.days.map(d => ({text: d.text, area: d.area}))}).then(list => {
-    const box = $('whatRes'); box.textContent = ''; box.hidden = !list.length;
-    list.forEach(s => {
-      const li = el('li'), b = el('button', '', s.text); b.type = 'button';
-      b.append(' ', el('small', '', s.source === 'yours' ? s.area + ' \u00b7 yours' : s.area));
-      b.onclick = () => { $('what').value = s.text; $('area').value = s.area; hideSug(); $('minutes').focus(); };
-      li.append(b); box.append(li);
-    });
-  }).catch(() => {}), 120);
-});
-$('what').addEventListener('keydown', e => { if (e.key === 'Escape') hideSug(); });
 let canSearch = false;
-callApi('/api/status').then(s => { api = true; canSearch = !!s.search; }).catch(() => {});
+
+// Location suggestions: first three letters of a country or city, with coordinates for cities.
+let locTimer = 0, locSeq = 0;
+const locList = () => $('locList');
+function closeLoc(){ locList().hidden = true; locList().textContent = ''; $('region').setAttribute('aria-expanded', 'false'); }
+function pickLoc(text){ $('region').value = text; savePrefs(); closeLoc(); }
+$('region').addEventListener('input', () => {
+  clearTimeout(locTimer);
+  const q = $('region').value.trim();
+  if (!api || q.length < 3){ closeLoc(); return; }
+  const seq = ++locSeq;
+  locTimer = setTimeout(() => callApi('/api/location?q=' + encodeURIComponent(q)).then(list => {
+    if (seq !== locSeq) return;
+    const box = locList(); box.textContent = ''; box.hidden = !list.length; $('region').setAttribute('aria-expanded', String(!!list.length));
+    list.forEach(r => {
+      const li = el('li'), b = el('button'); b.type = 'button'; b.setAttribute('role', 'option');
+      b.append(el('b', '', r.label), el('small', '', r.kind === 'city' ? r.coords : r.kind === 'region' ? 'Region' : 'Country'));
+      b.onclick = () => pickLoc(r.label); li.append(b); box.append(li);
+    });
+  }).catch(() => {}), 150);
+});
+$('region').addEventListener('keydown', e => {
+  const items = [...locList().querySelectorAll('button')];
+  if (e.key === 'Escape') closeLoc();
+  else if (e.key === 'ArrowDown' && items.length){ e.preventDefault(); items[0].focus(); }
+});
+locList().addEventListener('keydown', e => {
+  const items = [...locList().querySelectorAll('button')], i = items.indexOf(document.activeElement);
+  if (e.key === 'ArrowDown'){ e.preventDefault(); (items[i + 1] || items[0]).focus(); }
+  else if (e.key === 'ArrowUp'){ e.preventDefault(); (i > 0 ? items[i - 1] : $('region')).focus(); }
+  else if (e.key === 'Escape'){ closeLoc(); $('region').focus(); }
+});
+document.addEventListener('click', e => { if (!e.target.closest('.combo')) closeLoc(); });
+$('count').addEventListener('change', () => { $('count').value = String(clampCount()); savePrefs(); });
+
+// Photos: shrunk in the browser before they are sent (largest side 1024 px).
+const photos = [], MAX_PHOTOS = 3;
+function renderThumbs(){
+  const box = $('thumbs'); box.textContent = '';
+  photos.forEach((d, i) => {
+    const w = el('div'), im = document.createElement('img'), x = el('button', '', '\u00d7');
+    im.src = d; im.alt = 'Photo ' + (i + 1); x.type = 'button'; x.setAttribute('aria-label', 'Remove photo ' + (i + 1));
+    x.onclick = () => { photos.splice(i, 1); renderThumbs(); }; w.append(im, x); box.append(w);
+  });
+  $('photoBtn').disabled = photos.length >= MAX_PHOTOS;
+}
+function shrink(file){
+  return new Promise((ok, fail) => {
+    const url = URL.createObjectURL(file), im = new Image();
+    im.onload = () => {
+      const k = Math.min(1, 1024 / Math.max(im.width, im.height)), c = document.createElement('canvas');
+      c.width = Math.max(1, Math.round(im.width * k)); c.height = Math.max(1, Math.round(im.height * k));
+      c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); URL.revokeObjectURL(url); ok(c.toDataURL('image/jpeg', 0.82));
+    };
+    im.onerror = () => { URL.revokeObjectURL(url); fail(new Error('read')); };
+    im.src = url;
+  });
+}
+$('photoBtn').onclick = () => $('photoIn').click();
+$('photoIn').onchange = async () => {
+  $('photoNote').textContent = '';
+  for (const f of [...$('photoIn').files]){
+    if (photos.length >= MAX_PHOTOS) break;
+    try { photos.push(await shrink(f)); } catch(e){ $('photoNote').textContent = 'One photo could not be read. Use a JPEG or PNG.'; }
+  }
+  $('photoIn').value = ''; renderThumbs();
+};
+callApi('/api/status').then(s => { api = true; canSearch = !!s.search; syncPhoto(); }).catch(() => {});
+function syncPhoto(){ $('photoBtn').hidden = !(api && canSearch); $('photoNote').textContent = api && canSearch ? '' : 'Photos need the Ghost server with search.'; }
+syncPhoto();
 
 async function showManual(prompt){
   $('promptBox').value = prompt;
@@ -693,28 +640,42 @@ async function showManual(prompt){
 }
 async function copyText(text){ try { await navigator.clipboard.writeText(text); return true; } catch(e){ return false; } }
 let lastPrompt = '';
-function buildPromptLocal(request, region, limit, n, keep, tried){
+const MODE_TEXT = {
+  improve: {rule: '', sum: 'what people do and why it works', ben: 'my goal'},
+  cheaper: {rule: 'The alternative must do the same job as mine at a lower price. If its quality or features differ, say so in the summary.', sum: 'what the alternative is and how it matches mine', ben: 'what stays the same and what I save'},
+  similar: {rule: 'The suggestion must share something concrete with my example, and the summary says what it shares.', sum: 'what it is and what it shares with my example', ben: 'what is alike'}
+};
+function buildPromptLocal(request, region, limit, n, keep, tried, mode = 'improve', links = [], photos = 0){
+  const ask = n === 1 ? 'ONE idea' : n + ' different ideas', mt = MODE_TEXT[mode] || MODE_TEXT.improve;
+  const head = mode === 'cheaper' ? ['Find a cheaper equivalent of what I buy or use, and give me ' + ask + ' I can switch to.', 'What I buy or use now (with its price if I know it): ' + request]
+    : mode === 'similar' ? ['Find something similar to what I describe that I may not know yet, and give me ' + ask + ' I can try.', 'What I like or use now: ' + request]
+    : ['Find how other people do the same thing as me in a different way, and give me ' + ask + ' I can try.', 'What I do and what I want to improve: ' + request];
   return [
-    'Find how other people do the same thing as me in a different way, and give me ' + (n === 1 ? 'ONE idea' : n + ' different ideas') + ' I can try.',
-    'What I do and what I want to improve: ' + request,
+    ...head,
     ...(keep ? ['Keep the same: ' + keep + '.'] : []),
     'Examples should come from: ' + (region || 'anywhere in the world') + '.' + (limit ? ' My limit: ' + limit + '.' : ''),
     'Stay strictly on my activity and my numbers. Do not bring in other topics, interviews or anything unrelated.',
-    'Search the web, with at most 3 searches and 2 pages opened. Use only sources you opened and give each link. If you cannot find a source, leave source_url empty. Do not invent people, quotes or numbers. Never suggest anything risky, such as cutting sleep.',
-    'Write like a short magazine article: no first person and no comments about your searching or checking. summary: 2 or 3 sentences on what people do and why it works. benefits: 2 or 3 short phrases, each under 12 words and tied to my goal. from: the place or people the idea comes from.',
+    ...(mt.rule ? [mt.rule] : []),
+    'Search the web, with at most ' + Math.max(3, n) + ' searches and ' + Math.max(2, n) + ' pages opened. Use only sources you opened and give each link. If you cannot find a source, leave source_url empty. Do not invent people, quotes or numbers. Never suggest anything risky, such as cutting sleep.',
+    'Write like a short magazine article: no first person and no comments about your searching or checking. summary: 2 or 3 sentences on ' + mt.sum + '. benefits: 2 or 3 short phrases, each under 12 words, on ' + mt.ben + '. from: the place or people the idea comes from. price: only if a page you opened shows it, with currency, such as "CHF 49 instead of CHF 89"; otherwise an empty string.',
+    ...(links.length ? ['Open these links first; they show what I mean: ' + links.join(' ')] : []),
+    ...(photos ? ['I attached ' + photos + (photos > 1 ? ' photos' : ' photo') + ' of it; use what you see in the ' + (photos > 1 ? 'photos' : 'photo') + '.'] : []),
     ...(tried.length ? ['Do not repeat these: ' + tried.join('; ') + '.'] : []),
-    'Reply with a JSON array only: [{"title":"","area":"Study|Work|Health|Style|Money|Other","summary":"","benefits":["",""],"source_type":"research|person|product","from":"","source_title":"","source_url":""}]'
+    'Reply with a JSON array only: [{"title":"","area":"Study|Work|Health|Style|Money|Other","summary":"","benefits":["",""],"source_type":"research|person|product","from":"","price":"","source_title":"","source_url":""}]'
   ].join('\n');
 }
 $('askForm').onsubmit = async e => {
   e.preventDefault();
   const request = $('ask').value.trim(); if (!request) return;
   savePrefs();
-  const region = (S.prefs.region || '').trim(), limit = (S.prefs.limit || '').trim(), keep = (S.prefs.keepSame || '').trim(), n = +S.prefs.count || 1;
+  const region = (S.prefs.region || '').trim(), limit = '', keep = '', n = clampCount(), mode0 = curMode();
+  const links = MODES[mode0].attach ? $('links').value.split(/\s+/).filter(x => /^https?:\/\/\S+$/.test(x)).slice(0, 5) : [];
+  const sent = MODES[mode0].attach && api && canSearch ? photos.slice() : [];
   const tried = S.trials.map(t => t.title);
-  let prompt = buildPromptLocal(request, region, limit, n, keep, tried);
+  const mode = curMode();
+  let prompt = buildPromptLocal(request, region, limit, n, keep, tried, mode, links, sent.length);
   if (api){
-    try { prompt = (await callApi('/api/prompt', {request, region, limit, count: n, keep_same: keep, tried})).prompt; } catch(err){}
+    try { prompt = (await callApi('/api/prompt', {request, region, limit, count: n, keep_same: keep, tried, mode, links, photos: sent.length})).prompt; } catch(err){}
   }
   lastPrompt = prompt; $('promptBox').value = prompt;
   if (api && canSearch){
@@ -724,13 +685,13 @@ $('askForm').onsubmit = async e => {
     const tick = () => { $('searchMsg').textContent = 'Searching the web and reading sources… ' + Math.round((Date.now() - t0) / 1000) + ' s'; };
     tick(); const timer = setInterval(tick, 1000);
     try {
-      const items = (await callApi('/api/search', {prompt})).items.map((x, i) => Object.assign({id: 's' + Date.now() + '-' + i}, x));
+      const items = (await callApi('/api/search', {prompt, images: sent.map(d => ({data: d}))})).items.map((x, i) => Object.assign({id: 's' + Date.now() + '-' + i, mode}, x));
       S.pool = items; S.idx = 0; save();
       $('searchMsg').hidden = true; renderAll(); $('ticket').scrollIntoView({block: 'center'});
     } catch(err){
       $('searchMsg').textContent = 'The automatic search did not work: ' + err.message + ' Use the request below instead.';
       await showManual(prompt);
-    } finally { clearInterval(timer); btn.disabled = false; btn.textContent = 'Find ideas'; }
+    } finally { clearInterval(timer); btn.disabled = false; btn.textContent = MODES[mode].btn; }
     return;
   }
   $('searchMsg').hidden = true;
@@ -738,7 +699,6 @@ $('askForm').onsubmit = async e => {
 };
 $('recopy').onclick = async () => { $('toolMsg').textContent = (await copyText(lastPrompt)) ? 'Request copied.' : 'Could not copy automatically. Open "Show the request" and copy it from there.'; };
 
-$('another').onclick = () => { if (S.pool.length < 2) return; S.idx = (S.idx + 1) % S.pool.length; save(); renderAll(); };
 
 function parseLocal(text){
   const raw = text.trim().replace(/^```(?:json)?\s*|\s*```$/g, '');
@@ -749,14 +709,14 @@ function parseLocal(text){
     .map(x => ({
       title: clean(x.title), area: AREAS.includes(x.area) ? x.area : 'Other', summary: clean(x.summary),
       benefits: x.benefits.filter(b => typeof b === 'string' && b.trim()).map(b => clean(b).slice(0, 160)).slice(0, 3),
-      source_type: SRC_LABEL[x.source_type] ? x.source_type : '', from: clean(x.from), source_title: clean(x.source_title),
+      source_type: SRC_LABEL[x.source_type] ? x.source_type : '', from: clean(x.from), price: typeof x.price === 'string' ? clean(x.price).slice(0, 80) : '', source_title: clean(x.source_title),
       source_url: /^https?:\/\//.test(String(x.source_url || '')) ? String(x.source_url) : '', image: ''
     })).filter(x => x.benefits.length);
 }
 $('importBtn').onclick = async () => {
   try {
     const text = $('pasteArea').value;
-    const items = (api ? (await callApi('/api/parse', {text, area: 'Other'})).items : parseLocal(text)).map((x, i) => Object.assign({id: 's' + Date.now() + '-' + i}, x));
+    const items = (api ? (await callApi('/api/parse', {text, area: 'Other'})).items : parseLocal(text)).map((x, i) => Object.assign({id: 's' + Date.now() + '-' + i, mode: curMode()}, x));
     if (!items.length) throw new Error('no valid item');
     S.pool = items; S.idx = 0; save();
     $('pasteArea').value = ''; $('steps').hidden = true; $('toolMsg').textContent = '';
@@ -765,11 +725,12 @@ $('importBtn').onclick = async () => {
 };
 
 $('export').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(S, null, 1)], {type: 'application/json'})); a.download = 'ghost-data.json'; a.click(); };
-$('shift').onclick = () => { S.offset += 1; save(); renderAll(); };
 
-$('ask').value = S.prefs.ask || ''; $('keepSame').value = S.prefs.keepSame || '';
-$('region').value = S.prefs.region || ''; $('limit').value = S.prefs.limit || ''; $('count').value = String(S.prefs.count || 1);
-if (S.days.length) $('area').value = S.days[S.days.length - 1].area;
+document.querySelectorAll('.mode').forEach(b => b.onclick = () => { S.prefs.mode = b.dataset.mode; save(); applyMode(); renderAll(); $('ask').focus(); });
+applyMode();
+$('ask').value = S.prefs.ask || '';
+$('region').value = S.prefs.region || ''; $('count').value = String(S.prefs.count || 1);
+fillLog();
 renderAll();
 </script>
 </body>
