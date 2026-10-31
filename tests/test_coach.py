@@ -4,74 +4,105 @@ import pytest
 
 from ghost import coach
 
-VARIANTS = {"10": "a", "30": "b", "50": "c", "100": "d"}
+REQUEST = "I run 5 km three times a week at 6:30 per km and want to get faster"
 
 
 def idea(**changes):
-    base = {"title": "Redo from a blank page", "why": "w", "source_type": "research", "from": "Japan",
-            "source_title": "A study", "source_url": "https://example.org/x", "variants": dict(VARIANTS)}
+    base = {"title": "Add strides after easy runs", "area": "Health", "summary": "Runners finish easy runs with short fast strides.",
+            "benefits": ["Faster turnover", "Little extra time"], "source_type": "research", "from": "Kenya",
+            "source_title": "A study", "source_url": "https://example.org/x"}
     base.update(changes)
     return base
 
 
-def test_prompt_contains_the_day_and_the_rules():
-    day = {"area": "Study", "text": "Rereading notes", "minutes": 90, "solved": 6, "sleep": 7, "feel": 3}
-    p = coach.build_prompt(day)
-    assert "Rereading notes (area: Study), 90 minutes, 6 items finished, slept 7 hours, felt 3 out of 5." in p
+def test_prompt_contains_the_request_and_the_rules():
+    p = coach.build_prompt(REQUEST)
+    assert f"What I do and what I want to improve: {REQUEST}" in p
+    assert "ONE idea" in p
+    assert "Stay strictly on my activity and my numbers" in p
+    assert "at most 3 searches" in p
     assert "Use only sources you opened" in p
-    assert "Never suggest cutting sleep" in p
-    assert "10%, 30%, 50% and 100%" in p
+    assert "Never suggest anything risky" in p
+    assert "no first person and no comments about your searching or checking" in p
     assert "Reply with a JSON array only" in p
 
 
-def test_prompt_defaults_and_limit():
-    p = coach.build_prompt(None)
+def test_prompt_asks_for_article_fields_and_no_sizes():
+    p = coach.build_prompt(REQUEST)
+    assert '"summary":""' in p and '"benefits":["",""]' in p
+    assert '"area":"Study|Work|Health|Style|Money|Other"' in p
+    assert "variants" not in p
+
+
+def test_prompt_defaults_region_and_limit():
+    p = coach.build_prompt(REQUEST)
     assert "Examples should come from: anywhere in the world." in p
-    assert "I have not logged a day yet" in p
     assert "My limit" not in p
-    assert "My limit: under 10 CHF." in coach.build_prompt(None, limit="under 10 CHF")
+    assert "My limit: under 10 CHF." in coach.build_prompt(REQUEST, limit="under 10 CHF")
+    assert "Examples should come from: Japan." in coach.build_prompt(REQUEST, region="Japan")
 
 
 def test_prompt_count():
-    assert "ONE small change" in coach.build_prompt(None, count=1)
-    assert "3 different small changes" in coach.build_prompt(None, count=3)
+    assert "ONE idea" in coach.build_prompt(REQUEST, count=1)
+    assert "3 different ideas" in coach.build_prompt(REQUEST, count=3)
 
 
-def test_prompt_lists_history():
-    p = coach.build_prompt(None, kept=["A"], dropped=["B", "C"], tried=["D"])
-    assert "Kept: A. Dropped: B; C. Already tried: D." in p
-    assert "Kept: none. Dropped: none. Already tried: none." in coach.build_prompt(None)
+def test_prompt_keep_same_and_tried():
+    p = coach.build_prompt(REQUEST, keep_same="Three sessions a week", tried=["A", "B"])
+    assert "Keep the same: Three sessions a week." in p
+    assert "Do not repeat these: A; B." in p
+    plain = coach.build_prompt(REQUEST)
+    assert "Keep the same" not in plain and "Do not repeat" not in plain
 
 
 def test_parse_valid_list():
-    items = coach.parse_answer(json.dumps([idea()]), "Study")
-    assert items[0]["title"] == "Redo from a blank page"
-    assert items[0]["area"] == "Study"
-    assert items[0]["source_type"] == "research"
-    assert items[0]["variants"] == VARIANTS
+    item = coach.parse_answer(json.dumps([idea()]), "Study")[0]
+    assert item["title"] == "Add strides after easy runs"
+    assert item["area"] == "Health"
+    assert item["benefits"] == ["Faster turnover", "Little extra time"]
+    assert item["source_type"] == "research"
+    assert item["source_url"] == "https://example.org/x"
 
 
 def test_parse_accepts_code_fence_and_single_object():
-    text = "```json\n" + json.dumps(idea()) + "\n```"
-    assert len(coach.parse_answer(text)) == 1
+    assert len(coach.parse_answer("```json\n" + json.dumps(idea()) + "\n```")) == 1
+
+
+def test_parse_reads_a_list_surrounded_by_text():
+    text = "Here are the ideas:\n" + json.dumps([idea()]) + "\nHope this helps."
+    assert coach.parse_answer(text)[0]["title"] == "Add strides after easy runs"
+
+
+def test_parse_text_without_a_list_fails():
+    with pytest.raises(ValueError):
+        coach.parse_answer("no list here, only words [maybe")
 
 
 def test_parse_drops_incomplete_ideas():
-    bad_sizes = idea(variants={"10": "a", "30": "b"})
-    blank_size = idea(variants={**VARIANTS, "100": " "})
-    no_title = idea(title="")
-    items = coach.parse_answer(json.dumps([bad_sizes, blank_size, no_title, idea(title="Keep me")]))
-    assert [i["title"] for i in items] == ["Keep me"]
+    bad = [idea(title=""), idea(summary=" "), idea(benefits=[]), idea(benefits="fast"), idea(title="Keep me")]
+    assert [i["title"] for i in coach.parse_answer(json.dumps(bad))] == ["Keep me"]
+
+
+def test_parse_limits_benefits_and_trims_text():
+    long = "x" * 400
+    item = coach.parse_answer(json.dumps([idea(benefits=["a", "b", "c", "d", long])]))[0]
+    assert item["benefits"] == ["a", "b", "c"]
+    item = coach.parse_answer(json.dumps([idea(benefits=[long])]))[0]
+    assert len(item["benefits"][0]) == 160
+
+
+def test_parse_collapses_white_space():
+    item = coach.parse_answer(json.dumps([idea(title="  Two\n  lines ", summary="A  b\n c")]))[0]
+    assert item["title"] == "Two lines" and item["summary"] == "A b c"
 
 
 def test_parse_blanks_unsafe_link_and_unknown_type():
     item = coach.parse_answer(json.dumps([idea(source_url="javascript:alert(1)", source_type="blog")]))[0]
-    assert item["source_url"] == ""
-    assert item["source_type"] == ""
+    assert item["source_url"] == "" and item["source_type"] == ""
 
 
 def test_parse_keeps_real_area_else_default():
-    assert coach.parse_answer(json.dumps([idea(area="Health")]), "Study")[0]["area"] == "Health"
+    assert coach.parse_answer(json.dumps([idea(area="Money")]), "Study")[0]["area"] == "Money"
     assert coach.parse_answer(json.dumps([idea(area="Cooking")]), "Study")[0]["area"] == "Study"
 
 
@@ -88,22 +119,5 @@ def test_parse_errors():
         coach.parse_answer(json.dumps([{"title": "x"}]))
 
 
-def test_prompt_with_improve_details():
-    p = coach.build_prompt(None, current="Run 5 km three times a week", goal="Run 10 km",
-                           keep_same="Three sessions a week", may_change="Exercises and pace")
-    assert "How I do it now: Run 5 km three times a week." in p
-    assert "My goal: Run 10 km." in p
-    assert "Keep the same: Three sessions a week." in p
-    assert "Open to changing: Exercises and pace." in p
-
-
-def test_prompt_skips_empty_details():
-    p = coach.build_prompt(None, current="  ", goal="", keep_same="", may_change="")
-    assert "How I do it now" not in p and "My goal" not in p
-    assert "Keep the same" not in p and "Open to changing" not in p
-
-
-def test_details_come_after_the_day_and_before_the_region():
-    day = {"area": "Health", "text": "Run", "minutes": 30, "solved": 0, "sleep": 7, "feel": 3}
-    p = coach.build_prompt(day, region="Japan", goal="Run 10 km")
-    assert p.index("What I did today") < p.index("My goal") < p.index("Examples should come from")
+def test_parse_drops_an_idea_whose_benefits_are_all_unusable():
+    assert [i["title"] for i in coach.parse_answer(json.dumps([idea(benefits=[" ", 3]), idea(title="Keep me")]))] == ["Keep me"]

@@ -91,6 +91,57 @@ footer{padding:28px clamp(16px,4vw,48px);font-size:14px;color:var(--mute);displa
 .cityRes{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
 .cityRes button{border:2px solid var(--ink);border-radius:999px;padding:5px 12px;font-weight:600;background:var(--sky);cursor:pointer}
 .sugg{grid-column:1/-1;margin:-4px 0 0}
+.head{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start}
+.collage{display:flex;flex-direction:column;gap:8px;align-items:flex-end;padding-top:4px}
+.tile{width:84px;height:84px;border:3px solid var(--ink);border-radius:18px;overflow:hidden;display:grid;place-items:center;background:var(--sky);box-shadow:3px 3px 0 var(--ink)}
+.tile:nth-child(1){transform:rotate(4deg)}.tile:nth-child(2){transform:rotate(-5deg) translateX(-14px);width:64px;height:64px;border-radius:14px}
+.tile img{width:100%;height:100%;object-fit:cover;display:block}
+.tile svg{width:78%;height:78%}
+.summary{margin-top:14px;font-size:18px;line-height:1.5;color:var(--ink)}
+.gainsH{margin-top:18px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.gains{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:8px}
+.gains li{display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:start;font-weight:600;line-height:1.35}
+.gains li:before{content:"\2713";display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#6ee7a0;border:2px solid var(--ink);font-size:14px}
+.try{font-size:clamp(34px,5vw,48px);line-height:1;letter-spacing:-.04em;font-weight:800;margin:0 0 16px}
+.yn{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.yn .big{width:100%;padding:18px 0;font-size:26px}
+.yn .no{background:var(--white)}
+.yes{background:#6ee7a0}
+.thanks{font-size:22px;font-weight:700;display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.trial{display:grid;gap:12px}
+.trial label{display:grid;gap:4px;font-size:14px;font-weight:600;min-width:0}
+.trial textarea,.trial input,.trial select{border:2px solid var(--ink);border-radius:12px;padding:9px 11px;background:var(--white);width:100%;min-width:0}
+.trial textarea{min-height:84px;resize:vertical}
+.tcard{background:var(--white);color:var(--ink);border:3px solid var(--ink);border-radius:24px;padding:22px;box-shadow:6px 6px 0 var(--ink);display:grid;gap:12px}
+.tcard h3{font-size:26px;letter-spacing:-.03em}
+.tmeta{color:var(--mute);font-size:14px}
+.tstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.tstats div{background:var(--sky);border:2px solid var(--ink);border-radius:14px;padding:8px 12px}
+.tstats b{display:block;font-size:20px}
+.tstats span{font-size:12px;color:var(--mute)}
+.chart{width:100%;height:auto;background:#f4f6ff;border:2px solid var(--ink);border-radius:16px}
+.tcard .small{justify-self:start}
+.tadd{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
+.tadd label{display:grid;gap:4px;font-size:14px;font-weight:600}
+.tadd input{border:2px solid var(--ink);border-radius:12px;padding:9px 11px;background:var(--white)}
+.good{color:#0a7f43;font-weight:800}.bad{color:#c4264b;font-weight:800}
+.trials{display:grid;gap:22px;margin-top:26px}
+@media (max-width:560px){.head{grid-template-columns:1fr}.collage{flex-direction:row;align-items:center}.tile:nth-child(2){transform:rotate(-5deg)}}
+.modes{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.mode{border:2px solid var(--ink);border-radius:999px;padding:7px 14px;font-weight:600;background:var(--white);cursor:pointer}
+.mode[aria-pressed="true"]{background:var(--blue);color:var(--white)}
+.mode:disabled{opacity:.45;cursor:not-allowed}
+.ask{margin-top:22px;display:grid;gap:12px}
+.ask textarea{width:100%;min-height:130px;border:3px solid var(--ink);border-radius:20px;padding:16px;font-size:18px;line-height:1.4;background:var(--white);resize:vertical}
+.opts4{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opts4 label{display:grid;gap:4px;font-size:14px;font-weight:600;min-width:0}
+.opts4 input,.opts4 select{border:2px solid var(--ink);border-radius:12px;padding:8px 10px;background:var(--white);min-width:0;width:100%}
+.steps{margin-top:22px;background:var(--white);border:3px solid var(--ink);border-radius:20px;padding:18px 20px;display:grid;gap:10px}
+.steps ol{margin:0;padding-left:20px;display:grid;gap:4px}
+.steps a{color:var(--blue);font-weight:600}
+.steps textarea{width:100%;min-height:110px;border:2px solid var(--ink);border-radius:14px;padding:10px;background:var(--sky)}
+.steps details summary{cursor:pointer;font-size:14px;font-weight:600}
+@media (max-width:520px){.opts4{grid-template-columns:1fr}}
 .cityRes small{font-weight:500;opacity:.7}
 .form .wide{grid-column:span 2}
 .form label{min-width:0}
@@ -123,15 +174,47 @@ footer{padding:28px clamp(16px,4vw,48px);font-size:14px;color:var(--mute);displa
   <div class="logo">ghost<i>.</i></div>
   <div class="grow"></div>
   <a class="link" href="#log">Today</a>
-  <a class="link" href="#method">My method</a>
+  <a class="link" href="#trials">Your trials</a>
   <a class="link" href="#pattern">Your pattern</a>
 </header>
 
 <section class="hero">
   <div>
     <h1>Change one small thing tomorrow.</h1>
-    <p class="lede">Log what you did today. Tonight you get one idea from someone who does the same thing differently, from the part of the world you pick. You choose how much of it to try, lock it in, and see how the day goes.</p>
-    <div class="ghostWrap">
+    <p class="lede">Describe what you do and what you want to improve. You get an idea from people elsewhere who do it differently, with a source.</p>
+    <div class="modes" role="group" aria-label="What do you want">
+      <button class="mode" type="button" aria-pressed="true">Do it differently</button>
+      <button class="mode" type="button" disabled title="Coming next">Find cheaper</button>
+      <button class="mode" type="button" disabled title="Coming next">Find similar</button>
+    </div>
+    <form class="ask" id="askForm">
+      <textarea id="ask" required maxlength="1000" placeholder="Describe what you do and what you want to improve. For example: I run 5 km three times a week at 6:30 per km and want to get faster."></textarea>
+      <div class="opts4">
+        <label>Examples from<input id="region" list="regions" placeholder="Anywhere"></label>
+        <label>Keep the same (optional)<input id="keepSame" maxlength="300" placeholder="Three sessions a week"></label>
+        <label>Limit, such as budget or time (optional)<input id="limit" maxlength="300" placeholder="Under 50, or 30 minutes a day"></label>
+        <label>Ideas<select id="count"><option>1</option><option>2</option><option>3</option></select></label>
+      </div>
+      <datalist id="regions"><option value="Anywhere"><option value="Europe"><option value="North America"><option value="Latin America"><option value="East Asia"><option value="South Asia"><option value="Southeast Asia"><option value="Middle East"><option value="Africa"><option value="Oceania"></datalist>
+      <div class="btnrow"><button class="big" id="findBtn" type="submit">Find ideas</button></div>
+      <p class="msg" id="searchMsg" hidden></p>
+    </form>
+    <div class="steps" id="steps" hidden>
+      <b>Your request is ready.</b>
+      <ol>
+        <li>Open <a href="https://claude.ai/new" target="_blank" rel="noopener">Claude</a>, paste it (Ctrl+V) and send.</li>
+        <li>Copy Claude's whole answer.</li>
+        <li>Paste it here:</li>
+      </ol>
+      <textarea id="pasteArea" placeholder="Paste Claude's answer here"></textarea>
+      <div class="btnrow"><button class="big" id="importBtn" type="button">Show ideas</button><button class="small" id="recopy" type="button">Copy the request again</button></div>
+      <p class="msg" id="toolMsg"></p>
+      <details><summary>Show the request</summary><textarea id="promptBox" readonly></textarea></details>
+    </div>
+  </div>
+
+  <div>
+    <div class="ghostWrap" id="ghostWrap">
       <svg viewBox="0 0 120 110" aria-hidden="true">
         <g id="ghostBody" style="opacity:.55">
           <path d="M18 98V46C18 22 36 8 60 8s42 14 42 38v52l-13-11-14 13-15-13-15 13-14-13z" fill="#fff" stroke="#16143f" stroke-width="4" stroke-linejoin="round"/>
@@ -142,46 +225,47 @@ footer{padding:28px clamp(16px,4vw,48px);font-size:14px;color:var(--mute);displa
       </svg>
       <div class="ghostCap" id="ghostCap"></div>
     </div>
+    <article class="ticket" id="ticket" hidden>
+      <div class="head">
+        <div>
+          <div class="tags"><span class="tag" id="tag"></span><span class="tag plain" id="areaTag"></span><span class="tag plain" id="srcTag" hidden></span></div>
+          <h2 id="sTitle"></h2>
+        </div>
+        <div class="collage" id="collage" aria-hidden="true"></div>
+      </div>
+      <p class="summary" id="sSummary"></p>
+      <h4 class="gainsH">What you gain</h4>
+      <ul class="gains" id="gains"></ul>
+      <p class="src" id="sFrom"></p>
+      <p class="src" id="sSrc"></p>
+      <div class="cut"></div>
+      <div id="tryBox">
+        <h3 class="try" id="tryQ">Should you try it?</h3>
+        <div class="yn" id="yn">
+          <button class="big yes" id="yes" type="button">Yes</button>
+          <button class="big no" id="no" type="button">No</button>
+        </div>
+        <p class="thanks" id="thanks" hidden>Thank you. <button class="small" id="again" type="button">Find another idea</button></p>
+      </div>
+      <form class="trial" id="trialForm" hidden>
+        <h3 class="try">How will you try it?</h3>
+        <label>Your plan<textarea id="tPlan" required maxlength="500" placeholder="Add four short strides after each easy run"></textarea></label>
+        <div class="opts4">
+          <label>How much of the idea<select id="tShare" required><option value="">Choose</option><option value="10">10%</option><option value="30">30%</option><option value="50">50%</option><option value="100">100%</option></select></label>
+          <label>Days per week<input id="tDays" type="number" min="1" max="7" required placeholder="3"></label>
+          <label>For how many weeks<input id="tWeeks" type="number" min="1" max="52" required placeholder="8"></label>
+          <label>Better means<select id="tDir"><option value="lower">A lower number</option><option value="higher">A higher number</option></select></label>
+          <label>What you track<input id="tMetric" required maxlength="60" placeholder="Pace"></label>
+          <label>Unit<input id="tUnit" maxlength="30" placeholder="min per km"></label>
+          <label>Starting value<input id="tStart" required maxlength="12" placeholder="6:30"></label>
+          <label>Target (optional)<input id="tTarget" maxlength="12" placeholder="6:00"></label>
+        </div>
+        <p class="msg" id="tMsg" hidden></p>
+        <div class="btnrow"><button class="big" type="submit">Start tracking</button><button class="small" id="tBack" type="button">Back</button></div>
+      </form>
+      <div class="btnrow"><button class="small" id="another">Show another idea</button></div>
+    </article>
   </div>
-
-  <article class="ticket" id="ticket">
-    <div class="tags"><span class="tag" id="tag"></span><span class="tag plain" id="areaTag"></span><span class="tag plain" id="srcTag" hidden></span></div>
-    <h2 id="sTitle"></h2>
-    <p class="why" id="sWhy"></p>
-    <p class="src" id="sFrom"></p>
-    <p class="src" id="sSrc"></p>
-    <div class="cut"></div>
-    <p class="q">How much of it will you try?</p>
-    <div class="dial" id="dial">
-      <button data-p="10" aria-pressed="false">10%</button>
-      <button data-p="30" aria-pressed="false">30%</button>
-      <button data-p="50" aria-pressed="true">50%</button>
-      <button data-p="100" aria-pressed="false">100%</button>
-    </div>
-    <p class="variant" id="variant"></p>
-    <div class="btnrow">
-      <button class="big" id="lock">Lock it in for tomorrow</button>
-    </div>
-    <p class="locked" id="lockedMsg" hidden></p>
-    <div class="tools">
-      <div class="opts">
-        <label>Examples from<input id="region" list="regions" placeholder="Anywhere"></label>
-        <label>Ideas<select id="count"><option>1</option><option>2</option><option>3</option></select></label>
-        <label class="wideopt">Limit, such as budget or time (optional)<input id="limit" placeholder="Under 50, or 30 minutes a day"></label>
-      </div>
-      <datalist id="regions"><option value="Anywhere"><option value="Europe"><option value="North America"><option value="Latin America"><option value="East Asia"><option value="South Asia"><option value="Southeast Asia"><option value="Middle East"><option value="Africa"><option value="Oceania"></datalist>
-      <div class="btnrow" style="margin:0">
-        <button class="small" id="copyPrompt">Copy tonight's prompt for Claude</button>
-        <button class="small" id="another">Show another idea</button>
-        <button class="small" id="togglePaste">Paste Claude's answer</button>
-      </div>
-      <div id="pasteBox" hidden>
-        <textarea id="pasteArea" placeholder="Paste Claude's JSON answer here"></textarea>
-        <div class="btnrow"><button class="small" id="importBtn">Use these ideas</button></div>
-      </div>
-      <p class="msg" id="toolMsg">Attach a photo in Claude when the topic is something you can show, such as an outfit.</p>
-    </div>
-  </article>
 </section>
 
 <section class="band lemon" id="log">
@@ -202,24 +286,12 @@ footer{padding:28px clamp(16px,4vw,48px);font-size:14px;color:var(--mute);displa
   </div>
 </section>
 
-<section class="band coral" id="checkin" hidden>
+<section class="band ink" id="trials">
   <div class="in">
-    <h2 id="ciTitle"></h2>
-    <p class="sub" id="ciSub"></p>
-    <div class="three">
-      <button data-r="better">Better than usual</button>
-      <button data-r="same">About the same</button>
-      <button data-r="worse">Worse</button>
-    </div>
-  </div>
-</section>
-
-<section class="band ink" id="method">
-  <div class="in">
-    <h2>My method</h2>
-    <p class="sub">Each change gets three tries. After the third, you keep it or drop it.</p>
-    <div class="method" id="methodList"></div>
-    <p class="empty" id="methodEmpty">Nothing yet. Lock in tonight's change and it appears here.</p>
+    <h2>Your trials</h2>
+    <p class="sub">Each trial tracks the number you chose against your starting value.</p>
+    <div class="trials" id="trialList"></div>
+    <p class="empty" id="trialEmpty">No trial yet. Find an idea and press Yes to start one.</p>
   </div>
 </section>
 
@@ -257,37 +329,18 @@ const SRC_LABEL = {research: 'Research', person: 'A person’s account', product
 const SIZES = ['10', '30', '50', '100'];
 const STOP = new Set('with that this from have were what about today then when they them their into over also some more very just been only than like done doing after before while which would could should there where these those your'.split(' '));
 
-const LIBRARY = [
-  {id: 'attempt-first', area: 'Study', source_type: 'research', from: 'Researchers at ETH Zurich, Switzerland',
-   title: 'Try the problem for a few minutes before you look at the method',
-   why: 'ETH Zurich researchers report a meta-analysis of 53 studies: attempting problems before instruction beat instruction first, with larger benefits at secondary and university level. Their course test was voluntary, so its pass-rate gain is not proof of cause.',
-   source_title: 'Those who fail productively are all the wiser (Phys.org)', source_url: 'https://phys.org/news/2021-09-productively-wiser.html',
-   variants: {10: 'Before opening the solution to one problem, write your first idea in one line.', 30: 'For two problems, spend 3 minutes attempting each before you look at the method.', 50: 'For half of today’s problems, spend 5 minutes attempting before you look at the method.', 100: 'For every new problem type, spend 5 minutes attempting before you look at the method.'}},
-  {id: 'mix-types', area: 'Study', source_type: 'research', from: 'A trial in 54 Florida classes, USA',
-   title: 'Mix problem types in one session instead of one type at a time',
-   why: 'In a randomized trial of 54 grade 7 classes, mixed practice scored 61% against 38% on an unannounced test a month later, with the same problems in a different order. The students were 12 to 13 years old, so the size of the effect for you is unknown.',
-   source_title: 'Efficacy study of interleaved mathematics practice (IES)', source_url: 'https://ies.ed.gov/use-work/awards/efficacy-study-interleaved-mathematics-practice',
-   variants: {10: 'Swap the order of two problems so they come from different topics.', 30: 'Do one mixed set of 4 problems from 4 different topics.', 50: 'Spend half of your session on mixed sets, with no two neighbouring problems of the same type.', 100: 'Spend the whole session on mixed sets, with no two neighbouring problems of the same type.'}},
-  {id: 'test-yourself', area: 'Study', source_type: 'research', from: '',
-   title: 'Redo problems from a blank page instead of rereading',
-   why: 'A major review of study techniques rated practice testing and spread-out practice as highly effective, and rereading as low in usefulness. This is the Association for Psychological Science summary of that review.',
-   source_title: 'Which Study Strategies Make the Grade? (APS)', source_url: 'https://www.psychologicalscience.org/news/releases/which-study-strategies-make-the-grade.html',
-   variants: {10: 'After reading one solution, close it and rewrite its key step from memory.', 30: 'After reading three solutions, close them and redo each from the first line.', 50: 'Replace half of your rereading time with redoing problems from a blank page.', 100: 'Replace all rereading with redoing problems from a blank page.'}}
-];
+const DEMO_IDS = ['attempt-first', 'mix-types', 'test-yourself'];
 
 function el(tag, cls, text){ const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; }
 
-function blank(){ return {days: [], pool: LIBRARY.slice(), idx: 0, lock: null, tries: {}, titles: {}, sarea: {}, decided: {}, offset: 0, prefs: {region: '', limit: '', count: 1}, promptArea: null}; }
+function blank(){ return {days: [], trials: [], pool: [], idx: 0, lock: null, tries: {}, titles: {}, sarea: {}, decided: {}, offset: 0, prefs: {region: '', limit: '', count: 1}, promptArea: null}; }
 function normalize(v){
   const o = Object.assign(blank(), v);
   o.days = (o.days || []).map(d => ({date: d.date, area: AREAS.includes(d.area) ? d.area : 'Study', text: d.text || d.task || '', minutes: +d.minutes || 0, solved: +d.solved || 0, sleep: d.sleep === undefined ? null : d.sleep, feel: +d.feel || 3}));
-  if (v && v.suggestion && !v.suggestion.sample && !Array.isArray(v.pool)){
-    const k = LIBRARY.findIndex(x => x.id === v.suggestion.id);
-    if (k >= 0) o.idx = k; else { o.pool = [Object.assign({area: 'Study'}, v.suggestion)].concat(LIBRARY); o.idx = 0; }
-  }
   delete o.suggestion;
-  if (!Array.isArray(o.pool) || !o.pool.length) o.pool = LIBRARY.slice();
-  o.idx = Math.min(Math.max(+o.idx || 0, 0), o.pool.length - 1);
+  o.trials = Array.isArray(o.trials) ? o.trials : [];
+  o.pool = (Array.isArray(o.pool) ? o.pool : []).filter(x => x && !DEMO_IDS.includes(x.id));
+  o.idx = Math.min(Math.max(+o.idx || 0, 0), Math.max(o.pool.length - 1, 0));
   o.prefs = Object.assign({region: '', limit: '', count: 1}, o.prefs || {});
   return o;
 }
@@ -296,7 +349,7 @@ function load(){
   return blank();
 }
 let S = load();
-let pct = 50;
+let shownId = null, notice = '';
 function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
 const sug = () => S.pool[S.idx];
 function today(off = 0){ const d = new Date(); d.setDate(d.getDate() + S.offset + off); return d.toLocaleDateString('sv'); }
@@ -313,28 +366,54 @@ function measure(log){
 }
 const unitOf = k => k === 'rate' ? 'finished per hour' : 'felt rating out of 5';
 
+const ART_BG = {Study: '#cfd5ff', Work: '#dcdcea', Health: '#c8f3dc', Style: '#ffd3df', Money: '#fff0a6', Other: '#e4e7ff'};
+const ART = {
+  Study: '<svg viewBox="0 0 80 80"><path d="M10 22c10-5 22-5 30 2v40c-8-7-20-7-30-2z" fill="#fff" stroke="#16143f" stroke-width="4" stroke-linejoin="round"/><path d="M70 22c-10-5-22-5-30 2v40c8-7 20-7 30-2z" fill="#ffe45c" stroke="#16143f" stroke-width="4" stroke-linejoin="round"/></svg>',
+  Work: '<svg viewBox="0 0 80 80"><rect x="10" y="26" width="60" height="40" rx="8" fill="#fff" stroke="#16143f" stroke-width="4"/><path d="M30 26v-6a5 5 0 015-5h10a5 5 0 015 5v6" fill="none" stroke="#16143f" stroke-width="4"/><path d="M10 44h60" stroke="#16143f" stroke-width="4"/><rect x="35" y="40" width="10" height="9" rx="2" fill="#ff6b8b" stroke="#16143f" stroke-width="3"/></svg>',
+  Health: '<svg viewBox="0 0 80 80"><path d="M40 66S12 48 12 30a14 14 0 0128-6 14 14 0 0128 6c0 18-28 36-28 36z" fill="#ff6b8b" stroke="#16143f" stroke-width="4" stroke-linejoin="round"/><path d="M18 40h12l5-9 8 16 5-7h14" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  Style: '<svg viewBox="0 0 80 80"><path d="M40 26a6 6 0 116 6c0 4-6 5-6 10M40 42L10 62h60z" fill="#fff" stroke="#16143f" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="40" cy="55" r="4" fill="#ff6b8b" stroke="#16143f" stroke-width="3"/></svg>',
+  Money: '<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="28" fill="#ffe45c" stroke="#16143f" stroke-width="4"/><circle cx="40" cy="40" r="19" fill="none" stroke="#16143f" stroke-width="3" stroke-dasharray="4 5"/><path d="M40 28v24M34 34c0-4 12-4 12 0s-12 4-12 8 12 4 12 0" fill="none" stroke="#16143f" stroke-width="3.5" stroke-linecap="round"/></svg>',
+  Other: '<svg viewBox="0 0 80 80"><path d="M40 8l8 22 22 2-17 15 6 22-19-12-19 12 6-22L10 32l22-2z" fill="#ffe45c" stroke="#16143f" stroke-width="4" stroke-linejoin="round"/></svg>'
+};
+const DOTS = '<svg viewBox="0 0 80 80"><circle cx="20" cy="22" r="8" fill="#3a3aff"/><circle cx="52" cy="18" r="5" fill="#ff6b8b"/><circle cx="60" cy="52" r="10" fill="#ffe45c" stroke="#16143f" stroke-width="3"/><circle cx="24" cy="58" r="6" fill="#16143f"/></svg>';
+function tile(html, bg){ const d = el('div', 'tile'); d.style.background = bg; d.innerHTML = html; return d; }   // html is built only from the constants above
+function renderCollage(s){
+  const box = $('collage'); box.textContent = '';
+  const art = tile(ART[s.area] || ART.Other, ART_BG[s.area] || ART_BG.Other);
+  if (s.image && /^https?:\/\//.test(s.image)){
+    const t = el('div', 'tile'), img = document.createElement('img');
+    img.alt = ''; img.referrerPolicy = 'no-referrer'; img.loading = 'lazy';
+    img.onerror = () => { t.replaceWith(art.cloneNode(true)); };
+    img.src = s.image; t.append(img); box.append(t);
+  } else box.append(art);
+  box.append(tile(DOTS, '#fff'));
+}
+function resetTry(){
+  $('tryQ').hidden = false; $('yn').hidden = false; $('thanks').hidden = true; $('trialForm').hidden = true; $('tryBox').hidden = false;
+  $('trialForm').reset(); $('tMsg').hidden = true;
+}
 function renderSuggestion(){
-  const s = sug();
-  $('tag').textContent = S.pool.length > 1 ? 'Idea ' + (S.idx + 1) + ' of ' + S.pool.length : 'Tonight’s idea';
+  const has = S.pool.length > 0, s = sug();
+  $('ticket').hidden = !has; $('ghostWrap').hidden = has;
+  if (!has){ shownId = null; $('ghostCap').textContent = notice || 'Describe what you do, then press Find ideas.'; return; }
+  notice = '';
+  if (shownId !== s.id){ shownId = s.id; resetTry(); }
+  $('tag').textContent = S.pool.length > 1 ? 'Idea ' + (S.idx + 1) + ' of ' + S.pool.length : 'Your idea';
   $('tag').className = 'tag real';
   $('areaTag').textContent = s.area || 'Other';
   const st = $('srcTag'); st.hidden = !SRC_LABEL[s.source_type]; st.textContent = SRC_LABEL[s.source_type] || '';
   $('sTitle').textContent = s.title;
-  $('sWhy').textContent = s.why || '';
+  $('sSummary').textContent = s.summary || '';
+  const gains = $('gains'); gains.textContent = '';
+  (s.benefits || []).forEach(b => gains.append(el('li', '', b)));
   $('sFrom').textContent = s.from ? 'From: ' + s.from : '';
   const src = $('sSrc'); src.textContent = '';
   if (s.source_url && /^https?:\/\//.test(s.source_url)){
     const a = document.createElement('a'); a.href = s.source_url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = s.source_title || s.source_url;
     src.append('Source: ', a);
-  } else src.textContent = 'No source given.';
-  document.querySelectorAll('#dial button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.p === pct)));
-  $('variant').textContent = s.variants[pct] || '';
-  $('ghostBody').style.opacity = String(.25 + pct * .0075);
-  $('ghostCap').textContent = pct === 100 ? 'All in.' : pct >= 50 ? 'Getting solid.' : 'Just a hint of it.';
-  const l = S.lock;
-  $('lockedMsg').hidden = !l || l.done;
-  if (l && !l.done) $('lockedMsg').textContent = 'Locked for ' + l.forDate + ': ' + l.pct + '% of "' + (S.titles[l.sid] || 'this change') + '". Log a ' + l.area + ' day to check in.';
-  $('lock').disabled = !!(l && !l.done);
+  } else src.textContent = 'No source found.';
+  renderCollage(s);
+  $('another').hidden = S.pool.length < 2;
 }
 
 function renderResult(){
@@ -351,40 +430,95 @@ function renderResult(){
   }
 }
 
-function renderCheckin(){
-  const l = S.lock, log = l && S.days.find(d => d.date === today() && d.area === l.area);
-  const show = !!(l && !l.done && today() >= l.forDate && log);
-  $('checkin').hidden = !show;
-  if (!show) return;
-  const m = measure(log), u = unitOf(m.kind);
-  $('ciTitle').textContent = 'You tried "' + (S.titles[l.sid] || 'the change') + '" at ' + l.pct + '%. How did the day go?';
-  $('ciSub').textContent = m.n >= 3
-    ? 'Today in ' + l.area + ': ' + m.value.toFixed(1) + ' ' + u + '. Your usual: ' + m.usual.toFixed(1) + '. Your ghost: ' + m.ghost.toFixed(1) + '. Your call.'
-    : 'Today in ' + l.area + ': ' + m.value.toFixed(1) + ' ' + u + '. The comparison appears after 3 earlier ' + l.area + ' days. Go by how the day felt.';
+// ---- Trials: one number tracked against its starting value
+const parseValue = t => {
+  t = String(t || '').trim();
+  const m = /^(\d+):([0-5]\d)$/.exec(t);
+  if (m) return {v: +m[1] + +m[2] / 60, fmt: 'time'};
+  const n = Number(t.replace(',', '.'));
+  return t && isFinite(n) ? {v: n, fmt: 'num'} : null;
+};
+function fmtValue(v, fmt){
+  if (fmt === 'time'){ let m = Math.floor(v), s = Math.round((v - m) * 60); if (s === 60){ m += 1; s = 0; } return m + ':' + String(s).padStart(2, '0'); }
+  return String(Math.round(v * 100) / 100);
 }
-
-function renderMethod(){
-  const box = $('methodList'); box.replaceChildren();
-  const ids = Object.keys(S.tries);
-  $('methodEmpty').hidden = ids.length > 0;
-  for (const sid of ids){
-    const tr = S.tries[sid], dec = S.decided[sid];
-    const item = el('div', 'item');
-    item.append(el('h3', '', S.titles[sid] || sid));
-    const status = dec ? (dec === 'keep' ? 'Kept.' : 'Dropped.') : tr.length < 3 ? tr.length + ' of 3 tries done.' : 'Three tries done. Keep it or drop it?';
-    item.append(el('p', '', (S.sarea[sid] || 'Study') + ': ' + status));
-    const dots = el('div', 'dots');
-    tr.forEach(x => { const i = el('i', x.result === 'better' ? 'b' : x.result === 'same' ? 's' : 'w'); i.title = x.date + ', ' + x.pct + '%'; dots.append(i); });
-    item.append(dots);
-    if (!dec && tr.length >= 3){
-      const row = el('div', 'btnrow');
-      for (const [v, label] of [['keep', 'Keep'], ['drop', 'Drop']]){
-        const b = el('button', 'small', label); b.onclick = () => { S.decided[sid] = v; save(); renderAll(); }; row.append(b);
-      }
-      item.append(row);
+function trialStats(t){
+  const m = t.metric, last = t.checkins.length ? t.checkins[t.checkins.length - 1].value : null;
+  const vals = t.checkins.map(c => c.value);
+  const best = vals.length ? (m.dir === 'lower' ? Math.min(...vals) : Math.max(...vals)) : null;
+  const gain = last === null ? null : (m.dir === 'lower' ? m.start - last : last - m.start);
+  return {last, best, gain, pct: gain === null || !m.start ? null : gain / Math.abs(m.start) * 100};
+}
+const SVGNS = 'http://www.w3.org/2000/svg';
+function svgEl(tag, attrs, text){ const e = document.createElementNS(SVGNS, tag); Object.entries(attrs).forEach(([k, v]) => e.setAttribute(k, v)); if (text !== undefined) e.textContent = text; return e; }
+function renderChart(t){
+  const W = 640, H = 240, L = 64, R = 24, T = 22, B = 36, m = t.metric;
+  const svg = svgEl('svg', {viewBox: '0 0 ' + W + ' ' + H, class: 'chart', role: 'img', 'aria-label': 'Results for ' + m.name + ' compared with the starting value'});
+  const vals = [m.start].concat(t.checkins.map(c => c.value)); if (m.target !== null) vals.push(m.target);
+  let lo = Math.min(...vals), hi = Math.max(...vals); if (hi === lo){ hi += 1; lo -= 1; }
+  const pad = (hi - lo) * .15; lo -= pad; hi += pad;
+  const x = i => L + (t.checkins.length ? i / t.checkins.length : 0) * (W - L - R), y = v => T + (1 - (v - lo) / (hi - lo)) * (H - T - B);
+  [m.start, m.target].forEach((v, k) => {
+    if (v === null) return;
+    svg.append(svgEl('line', {x1: L, x2: W - R, y1: y(v), y2: y(v), stroke: k ? '#0a7f43' : '#16143f', 'stroke-width': 2, 'stroke-dasharray': '6 5'}));
+    svg.append(svgEl('text', {x: L - 8, y: y(v) + 4, 'text-anchor': 'end', 'font-size': 12, fill: '#16143f'}, fmtValue(v, m.fmt)));
+    svg.append(svgEl('text', {x: W - R, y: y(v) - 6, 'text-anchor': 'end', 'font-size': 12, fill: k ? '#0a7f43' : '#5a5890'}, k ? 'Target' : 'Start'));
+  });
+  const pts = [[x(0), y(m.start)]].concat(t.checkins.map((c, i) => [x(i + 1), y(c.value)]));
+  svg.append(svgEl('polyline', {points: pts.map(p => p.join(',')).join(' '), fill: 'none', stroke: '#3a3aff', 'stroke-width': 3, 'stroke-linejoin': 'round'}));
+  pts.forEach((p, i) => {
+    const better = i === 0 ? null : (m.dir === 'lower' ? t.checkins[i - 1].value < m.start : t.checkins[i - 1].value > m.start);
+    svg.append(svgEl('circle', {cx: p[0], cy: p[1], r: 6, fill: better === null ? '#fff' : better ? '#6ee7a0' : '#ff6b8b', stroke: '#16143f', 'stroke-width': 3}));
+  });
+  svg.append(svgEl('text', {x: L, y: H - 10, 'font-size': 12, fill: '#5a5890'}, t.startDate));
+  if (t.checkins.length) svg.append(svgEl('text', {x: W - R, y: H - 10, 'text-anchor': 'end', 'font-size': 12, fill: '#5a5890'}, t.checkins[t.checkins.length - 1].date));
+  return svg;
+}
+function renderTrials(){
+  const box = $('trialList'); box.textContent = '';
+  $('trialEmpty').hidden = S.trials.length > 0;
+  S.trials.slice().reverse().forEach(t => {
+    const m = t.metric, st = trialStats(t), planned = t.days * t.weeks, card = el('div', 'tcard');
+    card.append(el('h3', '', t.title));
+    card.append(el('p', 'tmeta', t.share + '% of the idea, ' + t.days + ' days a week for ' + t.weeks + ' weeks. Started ' + t.startDate + (t.status === 'done' ? '. Finished.' : '.')));
+    card.append(el('p', '', t.plan));
+    const stats = el('div', 'tstats'), add = (label, value, cls) => { const d = el('div'); const b = el('b', cls || '', value); d.append(b, el('span', '', label)); stats.append(d); };
+    const unit = m.unit ? ' ' + m.unit : '';
+    add('Start', fmtValue(m.start, m.fmt) + unit);
+    add('Latest', st.last === null ? 'none yet' : fmtValue(st.last, m.fmt) + unit);
+    add('Best', st.best === null ? 'none yet' : fmtValue(st.best, m.fmt) + unit);
+    if (st.gain !== null){
+      const word = st.gain > 0 ? 'Better by ' : st.gain < 0 ? 'Worse by ' : 'No change';
+      add('Change since start', st.gain === 0 ? word : word + fmtValue(Math.abs(st.gain), m.fmt) + unit + ' (' + Math.abs(st.pct).toFixed(1) + '%)', st.gain > 0 ? 'good' : st.gain < 0 ? 'bad' : '');
     }
-    box.append(item);
-  }
+    add('Results logged', t.checkins.length + ' of ' + planned);
+    card.append(stats);
+    if (t.checkins.length) card.append(renderChart(t));
+    else card.append(el('p', 'msg', 'No result yet. Add your first ' + m.name.toLowerCase() + ' below.'));
+    if (m.dir) card.append(el('p', 'msg', m.dir === 'lower' ? 'A lower ' + m.name.toLowerCase() + ' is better.' : 'A higher ' + m.name.toLowerCase() + ' is better.'));
+    if (t.status === 'active'){
+      const form = el('form', 'tadd');
+      const l1 = el('label', '', 'Result'), v = el('input'); v.required = true; v.placeholder = m.fmt === 'time' ? '6:20' : 'Number'; v.maxLength = 12; l1.append(v);
+      const l2 = el('label', '', 'Date'), d = el('input'); d.type = 'date'; d.value = today(); l2.append(d);
+      const go = el('button', 'big', 'Add result'); go.type = 'submit'; go.style.fontSize = '16px'; go.style.padding = '10px 18px';
+      const msg = el('p', 'msg'); msg.hidden = true;
+      form.append(l1, l2, go);
+      form.onsubmit = e => {
+        e.preventDefault();
+        const p = parseValue(v.value);
+        if (!p){ msg.hidden = false; msg.textContent = 'Enter a number, or a time such as 6:20.'; card.append(msg); return; }
+        t.checkins = t.checkins.filter(c => c.date !== d.value); t.checkins.push({date: d.value || today(), value: p.v});
+        t.checkins.sort((a, b) => a.date.localeCompare(b.date)); save(); renderTrials();
+      };
+      card.append(form);
+      const row = el('div', 'btnrow');
+      const fin = el('button', 'small', 'Finish this trial'); fin.onclick = () => { t.status = 'done'; save(); renderTrials(); };
+      row.append(fin); card.append(row);
+    }
+    const rm = el('button', 'small', 'Remove'); rm.onclick = () => { S.trials = S.trials.filter(x => x.id !== t.id); save(); renderTrials(); };
+    card.append(rm);
+    box.append(card);
+  });
 }
 
 function recurring(){
@@ -491,17 +625,26 @@ function renderPattern(){
 }
 
 function renderAll(){
-  renderSuggestion(); renderResult(); renderCheckin(); renderMethod(); renderPattern();
+  renderSuggestion(); renderResult(); renderTrials(); renderPattern();
   $('clockNote').textContent = S.offset ? 'Test clock: +' + S.offset + ' day(s). Today is ' + today() + '.' : '';
 }
 
-document.querySelectorAll('#dial button').forEach(b => b.onclick = () => { pct = +b.dataset.p; renderSuggestion(); });
-
-$('lock').onclick = () => {
-  const s = sug();
-  S.titles[s.id] = s.title; S.sarea[s.id] = s.area || 'Other';
-  S.lock = {sid: s.id, pct, forDate: today(1), done: false, area: s.area || 'Other'};
-  save(); renderAll();
+$('yes').onclick = () => { $('tryQ').hidden = true; $('yn').hidden = true; $('trialForm').hidden = false; $('tPlan').focus(); };
+$('no').onclick = () => { $('tryQ').hidden = true; $('yn').hidden = true; $('thanks').hidden = false; };
+$('again').onclick = () => { S.pool = []; S.idx = 0; save(); renderAll(); $('ask').focus(); window.scrollTo({top: 0}); };
+$('tBack').onclick = () => { $('trialForm').hidden = true; $('tryQ').hidden = false; $('yn').hidden = false; };
+$('trialForm').onsubmit = e => {
+  e.preventDefault();
+  const s = sug(), start = parseValue($('tStart').value), target = $('tTarget').value.trim() ? parseValue($('tTarget').value) : null;
+  const fail = text => { $('tMsg').hidden = false; $('tMsg').textContent = text; };
+  if (!s) return;
+  if (!start) return fail('The starting value must be a number, or a time such as 6:30.');
+  if ($('tTarget').value.trim() && !target) return fail('The target must be a number, or a time such as 6:00.');
+  S.trials.push({id: 't' + Date.now(), title: s.title, area: s.area || 'Other', source_url: s.source_url || '', source_title: s.source_title || '',
+    plan: $('tPlan').value.trim(), share: +$('tShare').value, days: +$('tDays').value, weeks: +$('tWeeks').value, startDate: today(), status: 'active', checkins: [],
+    metric: {name: $('tMetric').value.trim(), unit: $('tUnit').value.trim(), dir: $('tDir').value, fmt: start.fmt, start: start.v, target: target ? target.v : null}});
+  S.pool = []; S.idx = 0; notice = 'Your trial has started. Follow it under Your trials.'; save(); renderAll();
+  $('trials').scrollIntoView({block: 'start'});
 };
 
 $('logForm').onsubmit = e => {
@@ -510,14 +653,8 @@ $('logForm').onsubmit = e => {
   S.days = S.days.filter(x => !(x.date === d.date && x.area === d.area)); S.days.push(d); save(); renderAll();
 };
 
-document.querySelectorAll('#checkin [data-r]').forEach(b => b.onclick = () => {
-  const l = S.lock; if (!l) return;
-  (S.tries[l.sid] = S.tries[l.sid] || []).push({date: today(), pct: l.pct, result: b.dataset.r});
-  l.done = true; save(); renderAll();
-});
-
-const savePrefs = () => { S.prefs = Object.assign(S.prefs, {region: $('region').value, limit: $('limit').value, count: +$('count').value || 1}); save(); };
-['region', 'limit', 'count'].forEach(id => $(id).addEventListener('input', savePrefs));
+const savePrefs = () => { S.prefs = Object.assign(S.prefs, {ask: $('ask').value, region: $('region').value, limit: $('limit').value, count: +$('count').value || 1, keepSame: $('keepSame').value}); save(); };
+['ask', 'region', 'limit', 'count', 'keepSame'].forEach(id => $(id).addEventListener('input', savePrefs));
 
 // The Python server (python -m ghost.server) adds city search, the prompt builder and the answer checker.
 // Without it the page works on its own with the built-in versions.
@@ -545,68 +682,92 @@ $('what').addEventListener('input', () => {
   }).catch(() => {}), 120);
 });
 $('what').addEventListener('keydown', e => { if (e.key === 'Escape') hideSug(); });
-callApi('/api/activities', {q: 'zz', history: []}).then(() => { api = true; }).catch(() => {});
+let canSearch = false;
+callApi('/api/status').then(s => { api = true; canSearch = !!s.search; }).catch(() => {});
 
-$('copyPrompt').onclick = async () => {
-  const last = S.days.filter(d => d.date === today()).slice(-1)[0] || S.days[S.days.length - 1];
-  const area = last ? last.area : 'Study';
-  S.promptArea = area; save();
-  const region = (S.prefs.region || '').trim() || 'anywhere in the world', limit = (S.prefs.limit || '').trim(), n = +S.prefs.count || 1;
-  const names = f => Object.keys(S.titles).filter(f).map(k => S.titles[k]).join('; ') || 'none';
-  let prompt = [
-    'You are my daily coach. Find how other people around the world do the same thing as me in a different way, and suggest ' + (n === 1 ? 'ONE small change' : n + ' different small changes') + ' I can try tomorrow.',
-    last ? 'What I did today: ' + (last.text || area) + ' (area: ' + area + '), ' + last.minutes + ' minutes, ' + last.solved + ' items finished, slept ' + last.sleep + ' hours, felt ' + last.feel + ' out of 5.' : 'I have not logged a day yet, so suggest a change for how I study.',
-    'Examples should come from: ' + region + '.' + (limit ? ' My limit: ' + limit + '.' : ''),
-    'Search the web. Use only sources you opened and give each link. If you cannot find a source, say so in "why" and leave the link empty. Do not invent people, quotes or numbers. Say whether each source is research, a person’s own account, or a product listing. Never suggest cutting sleep or anything risky. If I attached a photo, use it.',
-    'Do not repeat. Kept: ' + names(k => S.decided[k] === 'keep') + '. Dropped: ' + names(k => S.decided[k] === 'drop') + '. Already tried: ' + names(k => S.tries[k]) + '.',
-    'Write each change at four sizes: 10%, 30%, 50% and 100% of the full change, from a small first step to the whole thing.',
-    'Reply with a JSON array only, one object per change: [{"title":"","why":"","source_type":"research|person|product","from":"","source_title":"","source_url":"","variants":{"10":"","30":"","50":"","100":""}}]'
+async function showManual(prompt){
+  $('promptBox').value = prompt;
+  $('steps').hidden = false;
+  $('toolMsg').textContent = (await copyText(prompt)) ? 'Request copied.' : 'Could not copy automatically. Open "Show the request" and copy it from there.';
+  $('steps').scrollIntoView({block: 'nearest'});
+}
+async function copyText(text){ try { await navigator.clipboard.writeText(text); return true; } catch(e){ return false; } }
+let lastPrompt = '';
+function buildPromptLocal(request, region, limit, n, keep, tried){
+  return [
+    'Find how other people do the same thing as me in a different way, and give me ' + (n === 1 ? 'ONE idea' : n + ' different ideas') + ' I can try.',
+    'What I do and what I want to improve: ' + request,
+    ...(keep ? ['Keep the same: ' + keep + '.'] : []),
+    'Examples should come from: ' + (region || 'anywhere in the world') + '.' + (limit ? ' My limit: ' + limit + '.' : ''),
+    'Stay strictly on my activity and my numbers. Do not bring in other topics, interviews or anything unrelated.',
+    'Search the web, with at most 3 searches and 2 pages opened. Use only sources you opened and give each link. If you cannot find a source, leave source_url empty. Do not invent people, quotes or numbers. Never suggest anything risky, such as cutting sleep.',
+    'Write like a short magazine article: no first person and no comments about your searching or checking. summary: 2 or 3 sentences on what people do and why it works. benefits: 2 or 3 short phrases, each under 12 words and tied to my goal. from: the place or people the idea comes from.',
+    ...(tried.length ? ['Do not repeat these: ' + tried.join('; ') + '.'] : []),
+    'Reply with a JSON array only: [{"title":"","area":"Study|Work|Health|Style|Money|Other","summary":"","benefits":["",""],"source_type":"research|person|product","from":"","source_title":"","source_url":""}]'
   ].join('\n');
+}
+$('askForm').onsubmit = async e => {
+  e.preventDefault();
+  const request = $('ask').value.trim(); if (!request) return;
+  savePrefs();
+  const region = (S.prefs.region || '').trim(), limit = (S.prefs.limit || '').trim(), keep = (S.prefs.keepSame || '').trim(), n = +S.prefs.count || 1;
+  const tried = S.trials.map(t => t.title);
+  let prompt = buildPromptLocal(request, region, limit, n, keep, tried);
   if (api){
-    try {
-      const day = last ? {area, text: last.text, minutes: last.minutes, solved: last.solved, sleep: last.sleep, feel: last.feel} : null;
-      const titles = f => Object.keys(S.titles).filter(f).map(k => S.titles[k]);
-      prompt = (await callApi('/api/prompt', {day, region: S.prefs.region, limit: S.prefs.limit, count: n,
-        kept: titles(k => S.decided[k] === 'keep'), dropped: titles(k => S.decided[k] === 'drop'), tried: titles(k => S.tries[k])})).prompt;
-    } catch(e){}
+    try { prompt = (await callApi('/api/prompt', {request, region, limit, count: n, keep_same: keep, tried})).prompt; } catch(err){}
   }
-  try { await navigator.clipboard.writeText(prompt); $('toolMsg').textContent = 'Prompt copied. Paste it into Claude with web search on.'; }
-  catch(e){ $('pasteBox').hidden = false; $('pasteArea').value = prompt; $('toolMsg').textContent = 'Copy the prompt from the box below.'; }
+  lastPrompt = prompt; $('promptBox').value = prompt;
+  if (api && canSearch){
+    const btn = $('findBtn'), t0 = Date.now();
+    btn.disabled = true; btn.textContent = 'Searching…';
+    $('searchMsg').hidden = false; $('steps').hidden = true;
+    const tick = () => { $('searchMsg').textContent = 'Searching the web and reading sources… ' + Math.round((Date.now() - t0) / 1000) + ' s'; };
+    tick(); const timer = setInterval(tick, 1000);
+    try {
+      const items = (await callApi('/api/search', {prompt})).items.map((x, i) => Object.assign({id: 's' + Date.now() + '-' + i}, x));
+      S.pool = items; S.idx = 0; save();
+      $('searchMsg').hidden = true; renderAll(); $('ticket').scrollIntoView({block: 'center'});
+    } catch(err){
+      $('searchMsg').textContent = 'The automatic search did not work: ' + err.message + ' Use the request below instead.';
+      await showManual(prompt);
+    } finally { clearInterval(timer); btn.disabled = false; btn.textContent = 'Find ideas'; }
+    return;
+  }
+  $('searchMsg').hidden = true;
+  await showManual(prompt);
 };
+$('recopy').onclick = async () => { $('toolMsg').textContent = (await copyText(lastPrompt)) ? 'Request copied.' : 'Could not copy automatically. Open "Show the request" and copy it from there.'; };
 
-$('another').onclick = () => {
-  const n = S.pool.length; let next = -1;
-  for (let j = 1; j < n; j++){ const k = (S.idx + j) % n; if (!S.tries[S.pool[k].id]){ next = k; break; } }
-  if (next < 0){ $('toolMsg').textContent = 'Every other idea in this set has been tried. Copy the prompt to get new ones from Claude.'; return; }
-  S.idx = next; save(); $('toolMsg').textContent = ''; renderAll();
-};
-$('togglePaste').onclick = () => { $('pasteBox').hidden = !$('pasteBox').hidden; };
+$('another').onclick = () => { if (S.pool.length < 2) return; S.idx = (S.idx + 1) % S.pool.length; save(); renderAll(); };
+
+function parseLocal(text){
+  const raw = text.trim().replace(/^```(?:json)?\s*|\s*```$/g, '');
+  let j;
+  try { j = JSON.parse(raw); } catch(e){ const s = raw.indexOf('['), t = raw.lastIndexOf(']'); if (s < 0 || t <= s) throw e; j = JSON.parse(raw.slice(s, t + 1)); }
+  const clean = v => String(v || '').replace(/\s+/g, ' ').trim();
+  return (Array.isArray(j) ? j : [j]).slice(0, 5).filter(x => x && typeof x.title === 'string' && x.title.trim() && typeof x.summary === 'string' && x.summary.trim() && Array.isArray(x.benefits))
+    .map(x => ({
+      title: clean(x.title), area: AREAS.includes(x.area) ? x.area : 'Other', summary: clean(x.summary),
+      benefits: x.benefits.filter(b => typeof b === 'string' && b.trim()).map(b => clean(b).slice(0, 160)).slice(0, 3),
+      source_type: SRC_LABEL[x.source_type] ? x.source_type : '', from: clean(x.from), source_title: clean(x.source_title),
+      source_url: /^https?:\/\//.test(String(x.source_url || '')) ? String(x.source_url) : '', image: ''
+    })).filter(x => x.benefits.length);
+}
 $('importBtn').onclick = async () => {
   try {
-    const raw = $('pasteArea').value.trim().replace(/^```(?:json)?\s*|\s*```$/g, '');
-    const j = JSON.parse(raw), list = (Array.isArray(j) ? j : [j]).slice(0, 5);
-    const lastArea = S.days.length ? S.days[S.days.length - 1].area : 'Other';
-    let items = list.filter(x => x && typeof x.title === 'string' && x.title && x.variants && SIZES.every(k => typeof x.variants[k] === 'string' && x.variants[k]))
-      .map((x, i) => ({
-        id: 's' + Date.now() + '-' + i, area: AREAS.includes(x.area) ? x.area : (S.promptArea || lastArea),
-        source_type: SRC_LABEL[x.source_type] ? x.source_type : '', from: String(x.from || ''),
-        title: x.title, why: String(x.why || ''), source_title: String(x.source_title || ''),
-        source_url: /^https?:\/\//.test(String(x.source_url || '')) ? String(x.source_url) : '',
-        variants: Object.fromEntries(SIZES.map(k => [k, String(x.variants[k])]))
-      }));
-    if (api){
-      try { items = (await callApi('/api/parse', {text: $('pasteArea').value, area: S.promptArea || lastArea})).items.map((x, i) => Object.assign({id: 's' + Date.now() + '-' + i}, x)); }
-      catch(e){ items = []; }
-    }
+    const text = $('pasteArea').value;
+    const items = (api ? (await callApi('/api/parse', {text, area: 'Other'})).items : parseLocal(text)).map((x, i) => Object.assign({id: 's' + Date.now() + '-' + i}, x));
     if (!items.length) throw new Error('no valid item');
-    S.pool = items; S.idx = 0;
-    save(); $('pasteBox').hidden = true; $('pasteArea').value = ''; $('toolMsg').textContent = items.length + (items.length === 1 ? ' idea loaded.' : ' ideas loaded.'); renderAll();
-  } catch(e){ $('toolMsg').textContent = 'That did not parse. It needs a JSON array where each idea has a title and the four sizes (10, 30, 50, 100).'; }
+    S.pool = items; S.idx = 0; save();
+    $('pasteArea').value = ''; $('steps').hidden = true; $('toolMsg').textContent = '';
+    renderAll(); $('ticket').scrollIntoView({block: 'center'});
+  } catch(e){ $('toolMsg').textContent = 'That did not parse. Copy the whole answer from Claude: it must be a list where each idea has a title, a summary and benefits.'; }
 };
 
 $('export').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(S, null, 1)], {type: 'application/json'})); a.download = 'ghost-data.json'; a.click(); };
 $('shift').onclick = () => { S.offset += 1; save(); renderAll(); };
 
+$('ask').value = S.prefs.ask || ''; $('keepSame').value = S.prefs.keepSame || '';
 $('region').value = S.prefs.region || ''; $('limit').value = S.prefs.limit || ''; $('count').value = String(S.prefs.count || 1);
 if (S.days.length) $('area').value = S.days[S.days.length - 1].area;
 renderAll();
