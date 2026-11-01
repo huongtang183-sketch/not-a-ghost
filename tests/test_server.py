@@ -272,3 +272,35 @@ def test_a_failing_link_check_keeps_the_idea(tmp_path):
         raise RuntimeError("boom")
     status, data = run_with_checker(tmp_path, broken, two_ideas())
     assert status == 200 and len(data["items"]) == 2
+
+
+def test_search_asks_again_once_when_no_idea_has_a_source(tmp_path):
+    calls = []
+
+    def searcher(prompt):
+        calls.append(prompt)
+        return "[]" if len(calls) == 1 else two_ideas()
+    httpd = server.make_server(make_index(), port=0, web=tmp_path, searcher=searcher, imager=lambda u: "", checker=lambda u: True)
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
+    try:
+        status, data = post(f"http://127.0.0.1:{httpd.server_address[1]}/api/search", {"prompt": "x"})
+    finally:
+        httpd.shutdown()
+        httpd.server_close()
+    assert status == 200 and len(data["items"]) == 2 and len(calls) == 2 and "previous answer" in calls[1]
+
+
+def test_search_gives_up_after_one_retry(tmp_path):
+    calls = []
+
+    def searcher(prompt):
+        calls.append(prompt)
+        return "[]"
+    httpd = server.make_server(make_index(), port=0, web=tmp_path, searcher=searcher, imager=lambda u: "", checker=lambda u: True)
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
+    try:
+        status, _ = post(f"http://127.0.0.1:{httpd.server_address[1]}/api/search", {"prompt": "x"})
+    finally:
+        httpd.shutdown()
+        httpd.server_close()
+    assert status == 502 and len(calls) == 2

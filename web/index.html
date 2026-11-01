@@ -71,7 +71,7 @@ h1{font-size:clamp(44px,7.4vw,92px);line-height:.95;font-weight:800;letter-spaci
 .paper input::placeholder{color:rgba(22,20,63,.4)}
 .paper input[type=number]{-moz-appearance:textfield;text-align:center}.paper input[type=number]::-webkit-inner-spin-button{display:none}
 .paper :focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:4px}
-.arow .l1{display:flex;align-items:center;gap:10px}.arow .l1 .oth{flex:1;min-width:80px}.arow .l1 .min{width:64px}
+.arow .l1{display:flex;align-items:center;gap:10px}.arow .l1 .oth{flex:1;min-width:80px}.arow .l1 .min{width:64px}.arow .l1 .unit{width:auto;padding-right:0}
 .arow .dsc{display:block;width:100%;font-size:25px;margin-left:34px;width:calc(100% - 34px)}
 .arow .bx{flex:none;width:22px;height:22px;border:2.5px solid var(--ink);border-radius:4px;position:relative}.arow .bx:after{content:"\2713";position:absolute;left:2px;top:-14px;font-size:28px;color:var(--blue)}
 .arow .rm{margin-left:auto;border:0;background:transparent;font:700 30px/1 'Caveat',cursive;cursor:pointer;opacity:.5;padding:0 6px;height:40px}.arow .rm:hover{opacity:1}.arow .rm[hidden]{display:none}
@@ -434,8 +434,8 @@ const CAT_COLOR = {Study: '#3a3aff', Work: '#16143f', Exercise: '#1fb36b', Nutri
 function readRows(){
   const out = [];
   for (const r of $('acts').children){
-    const sel = r.querySelector('select'), oth = r.querySelector('.oth'), min = r.querySelector('.min'), dsc = r.querySelector('.dsc');
-    out.push({cat: sel.value, name: oth.value.trim(), minutes: +min.value || 0, desc: dsc.value.trim(), raw: min.value});
+    const sel = r.querySelector('select'), oth = r.querySelector('.oth'), min = r.querySelector('.min'), unit = r.querySelector('.unit'), dsc = r.querySelector('.dsc');
+    out.push({cat: sel.value, name: oth.value.trim(), minutes: Math.round((+min.value || 0) * (unit.value === 'h' ? 60 : 1)), desc: dsc.value.trim(), raw: min.value});
   }
   return out;
 }
@@ -459,17 +459,19 @@ let feelVal = 3;
 function setFeel(v){ feelVal = v; document.querySelectorAll('#feel button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.v === v))); }
 for (let v = 1; v <= 5; v++){ const b = el('button', '', String(v)); b.type = 'button'; b.dataset.v = v; b.onclick = () => setFeel(v); $('feel').append(b); }
 function addRow(a = {}){
-  const row = el('div', 'arow'), l1 = el('div', 'l1'), sel = el('select'), oth = el('input', 'oth'), min = el('input', 'min'), rm = el('button', 'rm', '\u00d7'), dsc = el('input', 'dsc');
+  const row = el('div', 'arow'), l1 = el('div', 'l1'), sel = el('select'), oth = el('input', 'oth'), min = el('input', 'min'), unit = el('select', 'unit'), rm = el('button', 'rm', '\u00d7'), dsc = el('input', 'dsc');
   sel.setAttribute('aria-label', 'Category');
   CATS.forEach(c => { const o = el('option', '', c); o.value = c; sel.append(o); });
   sel.value = a.cat || 'Study';
   oth.placeholder = 'name it'; oth.maxLength = 60; oth.value = a.name || ''; oth.setAttribute('aria-label', 'Your own category');
-  min.type = 'number'; min.min = 1; min.max = 1440; min.placeholder = '60'; min.setAttribute('aria-label', 'Minutes'); if (a.minutes) min.value = a.minutes;
+  min.type = 'number'; min.min = 0; min.step = 'any'; min.placeholder = '60'; min.setAttribute('aria-label', 'Time spent');
+  ['min', 'h'].forEach(u => { const o = el('option', '', u); o.value = u; unit.append(o); }); unit.setAttribute('aria-label', 'Unit: minutes or hours');
+  if (a.minutes){ const hours = a.minutes >= 60 && a.minutes % 60 === 0; unit.value = hours ? 'h' : 'min'; min.value = hours ? a.minutes / 60 : a.minutes; }
   dsc.maxLength = 140; dsc.placeholder = 'what did you do?'; dsc.value = a.desc || ''; dsc.setAttribute('aria-label', 'What you did');
   rm.type = 'button'; rm.setAttribute('aria-label', 'Remove activity'); rm.onclick = () => { row.remove(); syncRows(); drawGrid(); };
   const sync = () => { oth.hidden = sel.value !== 'Other'; };
   sel.onchange = () => { sync(); if (sel.value === 'Other') oth.focus(); drawGrid(); }; sync();
-  l1.append(el('span', 'bx'), sel, oth, el('span', 'dash', '\u2014'), min, el('span', '', 'min'), rm);
+  l1.append(el('span', 'bx'), sel, oth, el('span', 'dash', '\u2014'), min, unit, rm);
   row.append(l1, dsc); $('acts').append(row); syncRows();
 }
 function syncRows(){ const rows = $('acts').children; for (const r of rows) r.querySelector('.rm').hidden = rows.length < 2; }
@@ -533,7 +535,7 @@ $('logForm').onsubmit = e => {
   const acts = [];
   for (const a of readRows()){
     if (!a.raw && !a.name && !a.desc) continue;
-    if (!(a.minutes >= 1 && a.minutes <= 1440)) return fail('Time must be between 1 and 1440 minutes.');
+    if (!(a.minutes >= 1 && a.minutes <= 1440)) return fail('Time must be between 1 minute and 24 hours.');
     if (a.cat === 'Other' && !a.name) return fail('Name your activity.');
     acts.push({cat: a.cat, name: a.cat === 'Other' ? a.name : '', minutes: Math.round(a.minutes), desc: a.desc});
   }
@@ -654,7 +656,7 @@ function buildPromptLocal(request, region, limit, n, keep, tried, mode = 'improv
     'Examples should come from: ' + (region || 'anywhere in the world') + '.' + (limit ? ' My limit: ' + limit + '.' : ''),
     'Stay strictly on my activity and my numbers. Do not bring in other topics, interviews or anything unrelated.',
     ...(mt.rule ? [mt.rule] : []),
-    'Search the web, with at most ' + Math.max(3, n) + ' searches and ' + Math.max(2, n) + ' pages opened. Use only sources you opened and give each link. Every idea needs a source_url from a page you opened; leave out any idea you cannot source. Do not invent people, quotes or numbers. Never suggest anything risky, such as cutting sleep.',
+    'Search the web, with at most ' + Math.max(3, n) + ' searches and ' + Math.max(2, n) + ' pages opened. Give each link. Every idea needs a source_url taken from your search results or from a page you opened; never write a link you did not see. Leave out any idea you cannot source. Do not invent people, quotes or numbers. Never suggest anything risky, such as cutting sleep.',
     'Write like a short magazine article: no first person and no comments about your searching or checking. summary: 2 or 3 sentences on ' + mt.sum + '. benefits: 2 or 3 short phrases, each under 12 words, on ' + mt.ben + '. from: the place or people the idea comes from. price: only if a page you opened shows it, with currency, such as "CHF 49 instead of CHF 89"; otherwise an empty string.',
     ...(links.length ? ['Open these links first; they show what I mean: ' + links.join(' ')] : []),
     ...(photos ? ['I attached ' + photos + (photos > 1 ? ' photos' : ' photo') + ' of it; use what you see in the ' + (photos > 1 ? 'photos' : 'photo') + '.'] : []),

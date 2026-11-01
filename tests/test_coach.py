@@ -21,7 +21,7 @@ def test_prompt_contains_the_request_and_the_rules():
     assert "ONE idea" in p
     assert "Stay strictly on my activity and my numbers" in p
     assert "at most 3 searches" in p
-    assert "Use only sources you opened" in p
+    assert "never write a link you did not see" in p
     assert "Never suggest anything risky" in p
     assert "no first person and no comments about your searching or checking" in p
     assert "Reply with a JSON array only" in p

@@ -23,6 +23,8 @@ MAX_BODY = 1_000_000
 MAX_BODY_PHOTOS = 8_000_000
 MAX_PHOTOS = 3
 MAX_PHOTO_BYTES = 2_500_000
+RETRIES = 1
+RETRY_NOTE = "Your previous answer had no idea with a source link. Search again and use links from your search results."
 PHOTO_TYPES = ((b"\xff\xd8\xff", "image/jpeg"), (b"\x89PNG\r\n\x1a\n", "image/png"), (b"GIF8", "image/gif"))
 
 
@@ -80,6 +82,17 @@ class Handler(SimpleHTTPRequestHandler):
         self.send_header("Cache-Control", "no-store")  # always show the newest page after an update
         super().end_headers()
 
+    def sourced_ideas(self, prompt, photos, area):
+        """Ask Claude; if no idea comes back with a source link, ask once more."""
+        for attempt in range(RETRIES + 1):
+            text = prompt if attempt == 0 else prompt + "\n" + RETRY_NOTE
+            answer = self.searcher(text, images=photos) if photos else self.searcher(text)
+            try:
+                return coach.parse_answer(answer, area)
+            except ValueError:
+                if attempt == RETRIES:
+                    raise
+
     def safe_alive(self, url):
         try:
             return bool(self.checker(url))
@@ -136,8 +149,7 @@ class Handler(SimpleHTTPRequestHandler):
             except ValueError as error:
                 return self.send_json({"error": str(error)}, 400)
             try:
-                answer = self.searcher(prompt, images=photos) if photos else self.searcher(prompt)
-                items = coach.parse_answer(answer, str(body.get("area") or "Other"))
+                items = self.sourced_ideas(prompt, photos, str(body.get("area") or "Other"))
             except search.SearchError as error:
                 return self.send_json({"error": str(error)}, 503)
             except ValueError as error:

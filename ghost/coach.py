@@ -69,8 +69,9 @@ def build_prompt(request, region="", limit="", count=1, keep_same="", tried=(), 
         f"Examples should come from: {region}." + (f" My limit: {limit}." if limit else ""),
         "Stay strictly on my activity and my numbers. Do not bring in other topics, interviews or anything unrelated.",
         *(MODE_RULES[mode],),
-        f"Search the web, with at most {searches} searches and {pages} pages opened. Use only sources you opened and give each link. "
-        "Every idea needs a source_url from a page you opened; leave out any idea you cannot source. "
+        f"Search the web, with at most {searches} searches and {pages} pages opened. Give each link. "
+        "Every idea needs a source_url taken from your search results or from a page you opened; never write a link you did not see. "
+        "Leave out any idea you cannot source. "
         "Do not invent people, quotes or numbers. "
         "Never suggest anything risky, such as cutting sleep.",
         "Write like a short magazine article: no first person and no comments about your searching or checking. "
