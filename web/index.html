@@ -41,6 +41,7 @@ h1{font-size:clamp(44px,7.4vw,92px);line-height:.95;font-weight:800;letter-spaci
 .why{margin-top:10px;color:var(--mute)}
 .src{margin-top:8px;font-size:14px}
 .src a{color:var(--blue)}
+.src.unv{font-weight:700;color:#b3173f}
 .cut{position:relative;margin:22px -28px;border-top:3px dashed var(--ink)}
 .cut:before,.cut:after{content:"";position:absolute;top:-17px;width:30px;height:30px;border-radius:50%;background:var(--sky);border:3px solid var(--ink)}
 .cut:before{left:-18px;clip-path:inset(0 0 0 50%)}
@@ -422,12 +423,14 @@ function renderSuggestion(){
   $('gainsH').textContent = (MODES[s.mode] || MODES.improve).gain;
   const gains = $('gains'); gains.textContent = '';
   (s.benefits || []).forEach(b => gains.append(el('li', '', b)));
-  $('sFrom').textContent = s.from ? 'From: ' + s.from : '';
-  const src = $('sSrc'); src.textContent = '';
-  if (s.source_url && /^https?:\/\//.test(s.source_url)){
+  const sourced = !!(s.source_url && /^https?:\/\//.test(s.source_url));
+  // A name without a link cannot be checked, so it is not shown.
+  $('sFrom').textContent = sourced && s.from ? 'From: ' + s.from : '';
+  const src = $('sSrc'); src.textContent = ''; src.classList.toggle('unv', !sourced);
+  if (sourced){
     const a = document.createElement('a'); a.href = s.source_url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = s.source_title || s.source_url;
     src.append('Source: ', a);
-  } else src.textContent = 'No source found.';
+  } else src.textContent = 'Unverified: no source was found for this idea.';
   renderCollage(s);
 }
 
