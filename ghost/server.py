@@ -23,9 +23,26 @@ MAX_BODY = 1_000_000
 MAX_BODY_PHOTOS = 8_000_000
 MAX_PHOTOS = 3
 MAX_PHOTO_BYTES = 2_500_000
-RETRIES = 1
+ROUNDS = 6  # the first request plus up to five follow-ups until enough ideas have a working source
+SPARE = 2  # extra candidates requested, because ideas whose link fails are dropped
 RETRY_NOTE = "Your previous answer had no idea with a source link. Search again and use links from your search results."
+CANDIDATES_NOTE = (
+    "Put {n} candidate ideas in the array instead of {count}: "
+    "ideas whose link does not open are dropped, and I need {count} that pass."
+)
+MORE_NOTE = "I still need {n} more idea(s), each different from: {titles}. Use links from your search results."
 PHOTO_TYPES = ((b"\xff\xd8\xff", "image/jpeg"), (b"\x89PNG\r\n\x1a\n", "image/png"), (b"GIF8", "image/gif"))
+
+
+class Shortfall(Exception):
+    """Fewer ideas with a working source than the person asked for."""
+
+
+def clean_count(value):
+    try:
+        return max(1, min(int(value or 1), coach.MAX_IDEAS))
+    except (TypeError, ValueError):
+        return 1
 
 
 def place_json(p):
@@ -82,16 +99,34 @@ class Handler(SimpleHTTPRequestHandler):
         self.send_header("Cache-Control", "no-store")  # always show the newest page after an update
         super().end_headers()
 
-    def sourced_ideas(self, prompt, photos, area):
-        """Ask Claude; if no idea comes back with a source link, ask once more."""
-        for attempt in range(RETRIES + 1):
-            text = prompt if attempt == 0 else prompt + "\n" + RETRY_NOTE
+    def sourced_ideas(self, prompt, photos, area, count):
+        """Collect `count` ideas whose source links work, asking again for the missing ones."""
+        found, error = [], None
+        for attempt in range(ROUNDS):
+            text = prompt
+            if not attempt:
+                text += "\n" + CANDIDATES_NOTE.format(n=min(count + SPARE, coach.MAX_IDEAS), count=count)
+            else:
+                titles = "; ".join(i["title"] for i in found)
+                text += "\n" + (MORE_NOTE.format(n=count - len(found), titles=titles) if found else RETRY_NOTE)
             answer = self.searcher(text, images=photos) if photos else self.searcher(text)
             try:
-                return coach.parse_answer(answer, area)
-            except ValueError:
-                if attempt == RETRIES:
-                    raise
+                items = coach.parse_answer(answer, area)
+            except ValueError as e:
+                error = e
+                continue
+            known = {i["title"].lower() for i in found}
+            items = [i for i in items if i["title"].lower() not in known]
+            with ThreadPoolExecutor(max_workers=4) as pool:
+                alive = list(pool.map(self.safe_alive, [i["source_url"] for i in items]))
+            found += [i for i, ok in zip(items, alive, strict=True) if ok]  # a clearly dead link is dropped
+            if len(found) >= count:
+                break
+        if len(found) < count:  # the requested number is a requirement: no partial answer
+            if not found and error:
+                raise error
+            raise Shortfall(f"Only {len(found)} of {count} ideas had a working source. Try again.")
+        return found[:count]
 
     def safe_alive(self, url):
         try:
@@ -149,16 +184,13 @@ class Handler(SimpleHTTPRequestHandler):
             except ValueError as error:
                 return self.send_json({"error": str(error)}, 400)
             try:
-                items = self.sourced_ideas(prompt, photos, str(body.get("area") or "Other"))
+                items = self.sourced_ideas(prompt, photos, str(body.get("area") or "Other"), clean_count(body.get("count")))
             except search.SearchError as error:
                 return self.send_json({"error": str(error)}, 503)
+            except Shortfall as error:
+                return self.send_json({"error": str(error)}, 502)
             except ValueError as error:
                 return self.send_json({"error": "Claude's answer could not be read. " + str(error)}, 502)
-            with ThreadPoolExecutor(max_workers=4) as pool:
-                alive = list(pool.map(self.safe_alive, [i["source_url"] for i in items]))
-            items = [i for i, ok in zip(items, alive, strict=True) if ok]  # a clearly dead link is dropped
-            if not items:
-                return self.send_json({"error": "None of the source links opened. Try again."}, 502)
             with ThreadPoolExecutor(max_workers=4) as pool:
                 images = list(pool.map(self.safe_image, [i["source_url"] for i in items]))
             for item, image in zip(items, images, strict=True):

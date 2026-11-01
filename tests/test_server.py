@@ -242,11 +242,11 @@ def test_prompt_endpoint_uses_links_photos_and_count(base):
     assert "10 different ideas" in data["prompt"]
 
 
-def run_with_checker(tmp_path, checker, answer):
+def run_with_checker(tmp_path, checker, answer, body=None):
     httpd = server.make_server(make_index(), port=0, web=tmp_path, searcher=lambda p: answer, imager=lambda u: "", checker=checker)
     threading.Thread(target=httpd.serve_forever, daemon=True).start()
     try:
-        return post(f"http://127.0.0.1:{httpd.server_address[1]}/api/search", {"prompt": "x"})
+        return post(f"http://127.0.0.1:{httpd.server_address[1]}/api/search", dict({"prompt": "x"}, **(body or {})))
     finally:
         httpd.shutdown()
         httpd.server_close()
@@ -264,17 +264,17 @@ def test_an_idea_with_a_dead_link_is_dropped(tmp_path):
 
 def test_search_fails_when_every_link_is_dead(tmp_path):
     status, data = run_with_checker(tmp_path, lambda u: False, two_ideas())
-    assert status == 502 and "source links" in data["error"]
+    assert status == 502 and "Only 0 of 1" in data["error"]
 
 
 def test_a_failing_link_check_keeps_the_idea(tmp_path):
     def broken(u):
         raise RuntimeError("boom")
-    status, data = run_with_checker(tmp_path, broken, two_ideas())
+    status, data = run_with_checker(tmp_path, broken, two_ideas(), {"count": 2})
     assert status == 200 and len(data["items"]) == 2
 
 
-def test_search_asks_again_once_when_no_idea_has_a_source(tmp_path):
+def test_search_asks_again_when_no_idea_has_a_source(tmp_path):
     calls = []
 
     def searcher(prompt):
@@ -283,14 +283,14 @@ def test_search_asks_again_once_when_no_idea_has_a_source(tmp_path):
     httpd = server.make_server(make_index(), port=0, web=tmp_path, searcher=searcher, imager=lambda u: "", checker=lambda u: True)
     threading.Thread(target=httpd.serve_forever, daemon=True).start()
     try:
-        status, data = post(f"http://127.0.0.1:{httpd.server_address[1]}/api/search", {"prompt": "x"})
+        status, data = post(f"http://127.0.0.1:{httpd.server_address[1]}/api/search", {"prompt": "x", "count": 2})
     finally:
         httpd.shutdown()
         httpd.server_close()
     assert status == 200 and len(data["items"]) == 2 and len(calls) == 2 and "previous answer" in calls[1]
 
 
-def test_search_gives_up_after_one_retry(tmp_path):
+def test_search_gives_up_after_the_follow_ups(tmp_path):
     calls = []
 
     def searcher(prompt):
@@ -303,4 +303,66 @@ def test_search_gives_up_after_one_retry(tmp_path):
     finally:
         httpd.shutdown()
         httpd.server_close()
-    assert status == 502 and len(calls) == 2
+    assert status == 502 and len(calls) == server.ROUNDS
+
+
+def test_missing_ideas_are_requested_again_without_repeats(tmp_path):
+    calls = []
+
+    def idea(title):
+        return {"title": title, "summary": "S", "benefits": ["B"], "source_url": "https://example.org/" + title}
+
+    def searcher(prompt):
+        calls.append(prompt)
+        return json.dumps([idea("A")] if len(calls) == 1 else [idea("A"), idea("B")])
+    httpd = server.make_server(make_index(), port=0, web=tmp_path, searcher=searcher, imager=lambda u: "", checker=lambda u: True)
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
+    try:
+        status, data = post(f"http://127.0.0.1:{httpd.server_address[1]}/api/search", {"prompt": "x", "count": 2})
+    finally:
+        httpd.shutdown()
+        httpd.server_close()
+    assert status == 200 and [i["title"] for i in data["items"]] == ["A", "B"]
+    assert "1 more idea" in calls[1] and "different from: A" in calls[1]
+
+
+def test_never_more_ideas_than_requested(tmp_path):
+    status, data = run_with_checker(tmp_path, lambda u: True, two_ideas(), {"count": 1})
+    assert status == 200 and len(data["items"]) == 1
+
+
+def test_first_request_asks_for_spare_candidates(tmp_path):
+    calls = []
+
+    def searcher(prompt):
+        calls.append(prompt)
+        return two_ideas()
+    httpd = server.make_server(make_index(), port=0, web=tmp_path, searcher=searcher, imager=lambda u: "", checker=lambda u: True)
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
+    try:
+        post(f"http://127.0.0.1:{httpd.server_address[1]}/api/search", {"prompt": "x", "count": 2})
+    finally:
+        httpd.shutdown()
+        httpd.server_close()
+    assert "4 candidate ideas in the array instead of 2" in calls[0]
+
+
+def test_keeps_asking_until_the_requested_number_has_a_working_source(tmp_path):
+    calls = []
+
+    def searcher(prompt):
+        calls.append(prompt)
+        return json.dumps([{"title": f"T{len(calls)}", "summary": "S", "benefits": ["B"], "source_url": f"https://example.org/{len(calls)}"}])
+    httpd = server.make_server(make_index(), port=0, web=tmp_path, searcher=searcher, imager=lambda u: "", checker=lambda u: True)
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
+    try:
+        status, data = post(f"http://127.0.0.1:{httpd.server_address[1]}/api/search", {"prompt": "x", "count": 4})
+    finally:
+        httpd.shutdown()
+        httpd.server_close()
+    assert status == 200 and len(data["items"]) == 4 and len(calls) == 4
+
+
+def test_no_partial_answer_when_too_few_ideas_have_a_source(tmp_path):
+    status, data = run_with_checker(tmp_path, lambda u: u.endswith("ok"), two_ideas(), {"count": 2})
+    assert status == 502 and "Only 1 of 2" in data["error"]
