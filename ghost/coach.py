@@ -10,7 +10,6 @@ import json
 import re
 import sys
 
-from ghost import places
 
 AREAS = ["Study", "Work", "Health", "Style", "Money", "Other"]
 SOURCE_TYPES = ["research", "person", "product"]
@@ -71,7 +70,8 @@ def build_prompt(request, region="", limit="", count=1, keep_same="", tried=(), 
         "Stay strictly on my activity and my numbers. Do not bring in other topics, interviews or anything unrelated.",
         *(MODE_RULES[mode],),
         f"Search the web, with at most {searches} searches and {pages} pages opened. Use only sources you opened and give each link. "
-        "Every idea needs a source_url from a page you opened; leave out any idea you cannot source. Do not invent people, quotes or numbers. "
+        "Every idea needs a source_url from a page you opened; leave out any idea you cannot source. "
+        "Do not invent people, quotes or numbers. "
         "Never suggest anything risky, such as cutting sleep.",
         "Write like a short magazine article: no first person and no comments about your searching or checking. "
         f"summary: 2 or 3 sentences on {SUMMARY_FOCUS[mode]}. "
@@ -83,7 +83,8 @@ def build_prompt(request, region="", limit="", count=1, keep_same="", tried=(), 
     if links:
         lines.append("Open these links first; they show what I mean: " + " ".join(links))
     if photos:
-        lines.append(f"I attached {photos} photo{'s' if photos > 1 else ''} of it; use what you see in the photo{'s' if photos > 1 else ''}.")
+        s = "s" if photos > 1 else ""
+        lines.append(f"I attached {photos} photo{s} of it; use what you see in the photo{s}.")
     names = [t for t in tried if t]
     if names:
         lines.append("Do not repeat these: " + "; ".join(names) + ".")

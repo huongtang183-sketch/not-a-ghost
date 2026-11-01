@@ -42,7 +42,8 @@ def fake_search(prompt, images=()):
 def base(tmp_path_factory):
     web = tmp_path_factory.mktemp("web")
     (web / "index.html").write_text("<h1>Ghost</h1>", encoding="utf-8")
-    httpd = server.make_server(make_index(), port=0, web=web, searcher=fake_search, imager=lambda url: "https://img.example.org/p.jpg")
+    httpd = server.make_server(make_index(), port=0, web=web, searcher=fake_search,
+                               imager=lambda url: "https://img.example.org/p.jpg", checker=lambda url: True)
     threading.Thread(target=httpd.serve_forever, daemon=True).start()
     yield f"http://127.0.0.1:{httpd.server_address[1]}"
     httpd.shutdown()
@@ -180,7 +181,7 @@ def test_search_unavailable(tmp_path):
 def test_a_failing_image_lookup_does_not_break_the_search(tmp_path):
     def broken(url):
         raise RuntimeError("no network")
-    httpd = server.make_server(make_index(), port=0, web=tmp_path, searcher=fake_search, imager=broken)
+    httpd = server.make_server(make_index(), port=0, web=tmp_path, searcher=fake_search, imager=broken, checker=lambda url: True)
     threading.Thread(target=httpd.serve_forever, daemon=True).start()
     url = f"http://127.0.0.1:{httpd.server_address[1]}"
     try:
@@ -201,7 +202,8 @@ def test_prompt_endpoint_uses_the_mode(tmp_path):
     threading.Thread(target=httpd.serve_forever, daemon=True).start()
     try:
         import urllib.request
-        req = urllib.request.Request(f"http://127.0.0.1:{httpd.server_address[1]}/api/prompt", data=json.dumps({"request": "a blender", "mode": "cheaper"}).encode(),
+        payload = json.dumps({"request": "a blender", "mode": "cheaper"}).encode()
+        req = urllib.request.Request(f"http://127.0.0.1:{httpd.server_address[1]}/api/prompt", data=payload,
                                      headers={"Content-Type": "application/json"})
         assert "cheaper equivalent" in json.load(urllib.request.urlopen(req))["prompt"]
     finally:
@@ -234,6 +236,39 @@ def test_search_rejects_bad_photos(base):
 
 
 def test_prompt_endpoint_uses_links_photos_and_count(base):
-    status, data = post(base + "/api/prompt", {"request": "x", "mode": "similar", "links": ["https://a.example/b"], "photos": 1, "count": 40})
+    body = {"request": "x", "mode": "similar", "links": ["https://a.example/b"], "photos": 1, "count": 40}
+    status, data = post(base + "/api/prompt", body)
     assert status == 200 and "https://a.example/b" in data["prompt"] and "I attached 1 photo" in data["prompt"]
     assert "10 different ideas" in data["prompt"]
+
+
+def run_with_checker(tmp_path, checker, answer):
+    httpd = server.make_server(make_index(), port=0, web=tmp_path, searcher=lambda p: answer, imager=lambda u: "", checker=checker)
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
+    try:
+        return post(f"http://127.0.0.1:{httpd.server_address[1]}/api/search", {"prompt": "x"})
+    finally:
+        httpd.shutdown()
+        httpd.server_close()
+
+
+def two_ideas():
+    return json.dumps([{"title": t, "summary": "S", "benefits": ["B"], "source_url": u}
+                       for t, u in (("Dead", "https://example.org/dead"), ("Alive", "https://example.org/ok"))])
+
+
+def test_an_idea_with_a_dead_link_is_dropped(tmp_path):
+    status, data = run_with_checker(tmp_path, lambda u: not u.endswith("dead"), two_ideas())
+    assert status == 200 and [i["title"] for i in data["items"]] == ["Alive"]
+
+
+def test_search_fails_when_every_link_is_dead(tmp_path):
+    status, data = run_with_checker(tmp_path, lambda u: False, two_ideas())
+    assert status == 502 and "source links" in data["error"]
+
+
+def test_a_failing_link_check_keeps_the_idea(tmp_path):
+    def broken(u):
+        raise RuntimeError("boom")
+    status, data = run_with_checker(tmp_path, broken, two_ideas())
+    assert status == 200 and len(data["items"]) == 2

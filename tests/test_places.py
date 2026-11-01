@@ -20,7 +20,7 @@ def index(tmp_path):
     path = tmp_path / "places.csv"
     with open(path, "w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow("id name ascii country feature lat lng population timezone".split())
+        writer.writerow(["id", "name", "ascii", "country", "feature", "lat", "lng", "population", "timezone"])
         writer.writerows(ROWS)
     return places.load(path)
 

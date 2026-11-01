@@ -1,0 +1,14 @@
+[project]
+name = "ghost"
+version = "0.1.0"
+description = "Sourced ideas to change one small thing, and a view of what your life is juggling."
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 140
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "UP", "SIM", "C4"]

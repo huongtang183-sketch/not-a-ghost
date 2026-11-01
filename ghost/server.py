@@ -16,7 +16,7 @@ from concurrent.futures import ThreadPoolExecutor
 import base64
 import binascii
 
-from ghost import activities, coach, countries, places, preview, search
+from ghost import activities, coach, countries, linkcheck, places, preview, search
 
 WEB = Path(__file__).resolve().parent.parent / "web"
 MAX_BODY = 1_000_000
@@ -61,9 +61,9 @@ def format_coord(value, plus, minus):
 
 class Handler(SimpleHTTPRequestHandler):
     index = None  # (places, keys), set by make_server
-    by_id = None
     searcher = None  # function(prompt) -> text, or None when search is not available
     imager = staticmethod(lambda url: "")  # function(url) -> preview image address
+    checker = staticmethod(lambda url: True)  # function(url) -> False if the link is clearly dead
 
     def log_message(self, *args):
         pass
@@ -79,6 +79,12 @@ class Handler(SimpleHTTPRequestHandler):
     def end_headers(self):
         self.send_header("Cache-Control", "no-store")  # always show the newest page after an update
         super().end_headers()
+
+    def safe_alive(self, url):
+        try:
+            return bool(self.checker(url))
+        except Exception:
+            return True
 
     def safe_image(self, url):
         try:
@@ -137,8 +143,13 @@ class Handler(SimpleHTTPRequestHandler):
             except ValueError as error:
                 return self.send_json({"error": "Claude's answer could not be read. " + str(error)}, 502)
             with ThreadPoolExecutor(max_workers=4) as pool:
+                alive = list(pool.map(self.safe_alive, [i["source_url"] for i in items]))
+            items = [i for i, ok in zip(items, alive, strict=True) if ok]  # a clearly dead link is dropped
+            if not items:
+                return self.send_json({"error": "None of the source links opened. Try again."}, 502)
+            with ThreadPoolExecutor(max_workers=4) as pool:
                 images = list(pool.map(self.safe_image, [i["source_url"] for i in items]))
-            for item, image in zip(items, images):
+            for item, image in zip(items, images, strict=True):
                 item["image"] = image
             return self.send_json({"items": items})
         if path == "/api/activities":
@@ -149,12 +160,19 @@ class Handler(SimpleHTTPRequestHandler):
             request = str(body.get("request", "")).strip()
             if not request:
                 return self.send_json({"error": "Empty request."}, 400)
-            prompt = coach.build_prompt(request, str(body.get("region", "")), str(body.get("limit", "")),
-                                        max(1, min(int(body.get("count") or 1), coach.MAX_IDEAS)), str(body.get("keep_same", "")),
-                                        [str(t) for t in body.get("tried", []) if isinstance(t, str)],
-                                        str(body.get("mode", "improve")),
-                                        [str(x) for x in body.get("links", []) if isinstance(x, str)] if isinstance(body.get("links"), list) else [],
-                                        max(0, min(int(body.get("photos") or 0), MAX_PHOTOS)))
+            links = body.get("links")
+            tried = body.get("tried", [])
+            prompt = coach.build_prompt(
+                request,
+                region=str(body.get("region", "")),
+                limit=str(body.get("limit", "")),
+                count=max(1, min(int(body.get("count") or 1), coach.MAX_IDEAS)),
+                keep_same=str(body.get("keep_same", "")),
+                tried=[str(t) for t in tried if isinstance(t, str)],
+                mode=str(body.get("mode", "improve")),
+                links=[str(x) for x in links if isinstance(x, str)] if isinstance(links, list) else [],
+                photos=max(0, min(int(body.get("photos") or 0), MAX_PHOTOS)),
+            )
             return self.send_json({"prompt": prompt})
         if path == "/api/parse":
             try:
@@ -165,12 +183,12 @@ class Handler(SimpleHTTPRequestHandler):
         self.send_json({"error": "Not found."}, 404)
 
 
-def make_server(index, port=8000, web=WEB, searcher="auto", imager=preview.find_image):
+def make_server(index, port=8000, web=WEB, searcher="auto", imager=preview.find_image, checker=linkcheck.is_alive):
     if searcher == "auto":
         searcher = search.run_claude if search.find_claude() else None
-    handler = type("GhostHandler", (Handler,), {"index": index, "by_id": {p.id: p for p in index[0]},
+    handler = type("GhostHandler", (Handler,), {"index": index,
                                                 "searcher": staticmethod(searcher) if searcher else None,
-                                                "imager": staticmethod(imager)})
+                                                "imager": staticmethod(imager), "checker": staticmethod(checker)})
     return ThreadingHTTPServer(("127.0.0.1", port), partial(handler, directory=str(web)))
 
 

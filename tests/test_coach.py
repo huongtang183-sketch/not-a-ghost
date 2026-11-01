@@ -97,7 +97,8 @@ def test_parse_collapses_white_space():
 
 
 def test_parse_drops_ideas_without_a_web_source():
-    items = coach.parse_answer(json.dumps([idea(title="No link", source_url=""), idea(title="Unsafe", source_url="javascript:alert(1)"), idea(title="Good")]))
+    answer = [idea(title="No link", source_url=""), idea(title="Unsafe", source_url="javascript:alert(1)"), idea(title="Good")]
+    items = coach.parse_answer(json.dumps(answer))
     assert [i["title"] for i in items] == ["Good"]
 
 
