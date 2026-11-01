@@ -41,7 +41,6 @@ h1{font-size:clamp(44px,7.4vw,92px);line-height:.95;font-weight:800;letter-spaci
 .why{margin-top:10px;color:var(--mute)}
 .src{margin-top:8px;font-size:14px}
 .src a{color:var(--blue)}
-.src.unv{font-weight:700;color:#b3173f}
 .cut{position:relative;margin:22px -28px;border-top:3px dashed var(--ink)}
 .cut:before,.cut:after{content:"";position:absolute;top:-17px;width:30px;height:30px;border-radius:50%;background:var(--sky);border:3px solid var(--ink)}
 .cut:before{left:-18px;clip-path:inset(0 0 0 50%)}
@@ -423,14 +422,10 @@ function renderSuggestion(){
   $('gainsH').textContent = (MODES[s.mode] || MODES.improve).gain;
   const gains = $('gains'); gains.textContent = '';
   (s.benefits || []).forEach(b => gains.append(el('li', '', b)));
-  const sourced = !!(s.source_url && /^https?:\/\//.test(s.source_url));
-  // A name without a link cannot be checked, so it is not shown.
-  $('sFrom').textContent = sourced && s.from ? 'From: ' + s.from : '';
-  const src = $('sSrc'); src.textContent = ''; src.classList.toggle('unv', !sourced);
-  if (sourced){
-    const a = document.createElement('a'); a.href = s.source_url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = s.source_title || s.source_url;
-    src.append('Source: ', a);
-  } else src.textContent = 'Unverified: no source was found for this idea.';
+  $('sFrom').textContent = s.from ? 'From: ' + s.from : '';
+  const src = $('sSrc'); src.textContent = ''; 
+  const a = document.createElement('a'); a.href = s.source_url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = s.source_title || s.source_url;
+  src.append('Source: ', a);
   renderCollage(s);
 }
 
@@ -659,7 +654,7 @@ function buildPromptLocal(request, region, limit, n, keep, tried, mode = 'improv
     'Examples should come from: ' + (region || 'anywhere in the world') + '.' + (limit ? ' My limit: ' + limit + '.' : ''),
     'Stay strictly on my activity and my numbers. Do not bring in other topics, interviews or anything unrelated.',
     ...(mt.rule ? [mt.rule] : []),
-    'Search the web, with at most ' + Math.max(3, n) + ' searches and ' + Math.max(2, n) + ' pages opened. Use only sources you opened and give each link. If you cannot find a source, leave source_url empty. Do not invent people, quotes or numbers. Never suggest anything risky, such as cutting sleep.',
+    'Search the web, with at most ' + Math.max(3, n) + ' searches and ' + Math.max(2, n) + ' pages opened. Use only sources you opened and give each link. Every idea needs a source_url from a page you opened; leave out any idea you cannot source. Do not invent people, quotes or numbers. Never suggest anything risky, such as cutting sleep.',
     'Write like a short magazine article: no first person and no comments about your searching or checking. summary: 2 or 3 sentences on ' + mt.sum + '. benefits: 2 or 3 short phrases, each under 12 words, on ' + mt.ben + '. from: the place or people the idea comes from. price: only if a page you opened shows it, with currency, such as "CHF 49 instead of CHF 89"; otherwise an empty string.',
     ...(links.length ? ['Open these links first; they show what I mean: ' + links.join(' ')] : []),
     ...(photos ? ['I attached ' + photos + (photos > 1 ? ' photos' : ' photo') + ' of it; use what you see in the ' + (photos > 1 ? 'photos' : 'photo') + '.'] : []),
@@ -714,7 +709,7 @@ function parseLocal(text){
       benefits: x.benefits.filter(b => typeof b === 'string' && b.trim()).map(b => clean(b).slice(0, 160)).slice(0, 3),
       source_type: SRC_LABEL[x.source_type] ? x.source_type : '', from: clean(x.from), price: typeof x.price === 'string' ? clean(x.price).slice(0, 80) : '', source_title: clean(x.source_title),
       source_url: /^https?:\/\//.test(String(x.source_url || '')) ? String(x.source_url) : '', image: ''
-    })).filter(x => x.benefits.length);
+    })).filter(x => x.benefits.length && x.source_url);
 }
 $('importBtn').onclick = async () => {
   try {

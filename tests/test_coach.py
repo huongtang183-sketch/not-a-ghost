@@ -96,9 +96,18 @@ def test_parse_collapses_white_space():
     assert item["title"] == "Two lines" and item["summary"] == "A b c"
 
 
-def test_parse_blanks_unsafe_link_and_unknown_type():
-    item = coach.parse_answer(json.dumps([idea(source_url="javascript:alert(1)", source_type="blog")]))[0]
-    assert item["source_url"] == "" and item["source_type"] == ""
+def test_parse_drops_ideas_without_a_web_source():
+    items = coach.parse_answer(json.dumps([idea(title="No link", source_url=""), idea(title="Unsafe", source_url="javascript:alert(1)"), idea(title="Good")]))
+    assert [i["title"] for i in items] == ["Good"]
+
+
+def test_parse_fails_when_no_idea_has_a_source():
+    with pytest.raises(ValueError):
+        coach.parse_answer(json.dumps([idea(source_url="")]))
+
+
+def test_parse_blanks_unknown_type():
+    assert coach.parse_answer(json.dumps([idea(source_type="blog")]))[0]["source_type"] == ""
 
 
 def test_parse_keeps_real_area_else_default():
@@ -135,7 +144,7 @@ def test_modes_change_the_request_and_ask_for_a_price():
 
 
 def test_price_is_kept_only_as_short_text():
-    base = {"title": "t", "summary": "s", "benefits": ["b"]}
+    base = {"title": "t", "summary": "s", "benefits": ["b"], "source_url": "https://example.org"}
     items = coach.parse_answer(json.dumps([dict(base, price="CHF 49 instead of CHF 89"), dict(base, price=5), dict(base, price="x" * 200)]))
     assert items[0]["price"] == "CHF 49 instead of CHF 89"
     assert items[1]["price"] == ""

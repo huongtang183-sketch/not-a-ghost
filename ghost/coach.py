@@ -71,7 +71,7 @@ def build_prompt(request, region="", limit="", count=1, keep_same="", tried=(), 
         "Stay strictly on my activity and my numbers. Do not bring in other topics, interviews or anything unrelated.",
         *(MODE_RULES[mode],),
         f"Search the web, with at most {searches} searches and {pages} pages opened. Use only sources you opened and give each link. "
-        "If you cannot find a source, leave source_url empty. Do not invent people, quotes or numbers. "
+        "Every idea needs a source_url from a page you opened; leave out any idea you cannot source. Do not invent people, quotes or numbers. "
         "Never suggest anything risky, such as cutting sleep.",
         "Write like a short magazine article: no first person and no comments about your searching or checking. "
         f"summary: 2 or 3 sentences on {SUMMARY_FOCUS[mode]}. "
@@ -125,6 +125,8 @@ def parse_answer(text, default_area="Other"):
         if not benefits:
             continue
         url = str(x.get("source_url") or "")
+        if not re.match(r"https?://", url):
+            continue  # an idea without a source link is dropped
         items.append({
             "title": _clean(title),
             "area": x["area"] if x.get("area") in AREAS else default_area,
@@ -134,10 +136,10 @@ def parse_answer(text, default_area="Other"):
             "from": _clean(x.get("from") or ""),
             "price": _clean(x.get("price") or "")[:MAX_PRICE_CHARS] if isinstance(x.get("price"), str) else "",
             "source_title": _clean(x.get("source_title") or ""),
-            "source_url": url if re.match(r"https?://", url) else "",
+            "source_url": url,
         })
     if not items:
-        raise ValueError("No idea has a title, a summary and at least one benefit.")
+        raise ValueError("No idea has a title, a summary, at least one benefit and a source link.")
     return items
 
 
