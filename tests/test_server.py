@@ -129,7 +129,7 @@ def test_activities_ignores_bad_history(base):
 
 
 def test_status_reports_search(base):
-    assert json.loads(get(base + "/api/status")[1]) == {"search": True}
+    assert json.loads(get(base + "/api/status")[1]) == {"search": True, "version": server.VERSION}
 
 
 def test_search_returns_ideas(base):
@@ -171,7 +171,7 @@ def test_search_unavailable(tmp_path):
     threading.Thread(target=httpd.serve_forever, daemon=True).start()
     url = f"http://127.0.0.1:{httpd.server_address[1]}"
     try:
-        assert json.loads(get(url + "/api/status")[1]) == {"search": False}
+        assert json.loads(get(url + "/api/status")[1]) == {"search": False, "version": server.VERSION}
         assert post(url + "/api/search", {"prompt": "x"})[0] == 503
     finally:
         httpd.shutdown()

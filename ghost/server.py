@@ -19,6 +19,7 @@ import binascii
 from ghost import activities, coach, countries, linkcheck, places, preview, search
 
 WEB = Path(__file__).resolve().parent.parent / "web"
+VERSION = "update-24"
 MAX_BODY = 1_000_000
 MAX_BODY_PHOTOS = 8_000_000
 MAX_PHOTOS = 3
@@ -114,12 +115,16 @@ class Handler(SimpleHTTPRequestHandler):
                 items = coach.parse_answer(answer, area)
             except ValueError as e:
                 error = e
+                print(f"search round {attempt + 1}/{ROUNDS}: no usable idea ({e})")
                 continue
             known = {i["title"].lower() for i in found}
             items = [i for i in items if i["title"].lower() not in known]
             with ThreadPoolExecutor(max_workers=4) as pool:
                 alive = list(pool.map(self.safe_alive, [i["source_url"] for i in items]))
-            found += [i for i, ok in zip(items, alive, strict=True) if ok]  # a clearly dead link is dropped
+            kept = [i for i, ok in zip(items, alive, strict=True) if ok]  # a clearly dead link is dropped
+            found += kept
+            print(f"search round {attempt + 1}/{ROUNDS}: {len(items)} new ideas with a source link, "
+                  f"{len(kept)} with a working link, {len(found)} of {count} collected")
             if len(found) >= count:
                 break
         if len(found) < count:  # the requested number is a requirement: no partial answer
@@ -155,7 +160,7 @@ class Handler(SimpleHTTPRequestHandler):
                             "label": f"{p.name}, {country}", "coords": f"{format_coord(p.lat, 'N', 'S')}, {format_coord(p.lng, 'E', 'W')}"})
             return self.send_json(out)
         if url.path == "/api/status":
-            return self.send_json({"search": self.searcher is not None})
+            return self.send_json({"search": self.searcher is not None, "version": VERSION})
         if url.path.startswith("/api/"):
             return self.send_json({"error": "Not found."}, 404)
         super().do_GET()
@@ -240,7 +245,7 @@ def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     server = make_server(places.load())
-    print("Ghost is running at http://127.0.0.1:8000  (press Ctrl+C to stop)")
+    print(f"Ghost {VERSION} is running at http://127.0.0.1:8000  (press Ctrl+C to stop)")
     try:
         server.serve_forever()
     except KeyboardInterrupt:

@@ -44,7 +44,7 @@ def build_prompt(request, region="", limit="", count=1, keep_same="", tried=(), 
     mode: improve (do it differently), cheaper (same job at a lower price) or similar (something alike).
     """
     mode = mode if mode in MODES else "improve"
-    searches, pages = max(3, count), max(2, count)
+    searches, pages = 3 + 2 * count, 2 + count
     region = (region or "").strip() or ANYWHERE
     limit = (limit or "").strip()
     ask = "ONE idea" if count == 1 else f"{count} different ideas"

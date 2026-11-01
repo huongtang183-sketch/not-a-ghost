@@ -20,7 +20,7 @@ def test_prompt_contains_the_request_and_the_rules():
     assert f"What I do and what I want to improve: {REQUEST}" in p
     assert "ONE idea" in p
     assert "Stay strictly on my activity and my numbers" in p
-    assert "at most 3 searches" in p
+    assert "at most 5 searches" in p
     assert "never write a link you did not see" in p
     assert "Never suggest anything risky" in p
     assert "no first person and no comments about your searching or checking" in p
@@ -160,5 +160,5 @@ def test_links_and_photos_appear_in_the_request():
 
 
 def test_more_ideas_allow_more_searches():
-    assert "at most 3 searches and 2 pages" in coach.build_prompt("x", count=1)
-    assert "at most 8 searches and 8 pages" in coach.build_prompt("x", count=8)
+    assert "at most 5 searches and 3 pages" in coach.build_prompt("x", count=1)
+    assert "at most 19 searches and 10 pages" in coach.build_prompt("x", count=8)

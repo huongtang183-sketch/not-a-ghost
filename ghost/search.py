@@ -11,7 +11,7 @@ import tempfile
 from pathlib import Path
 
 TOOLS = "WebSearch,WebFetch"
-TIMEOUT = 240
+TIMEOUT = 300
 
 
 class SearchError(Exception):

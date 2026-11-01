@@ -122,6 +122,9 @@ footer{padding:28px clamp(16px,4vw,48px);font-size:14px;color:var(--mute);displa
 .trial label{display:grid;gap:4px;font-size:14px;font-weight:600;min-width:0}
 .trial textarea,.trial input,.trial select{border:2px solid var(--ink);border-radius:12px;padding:9px 11px;background:var(--white);width:100%;min-width:0}
 .trial textarea{min-height:84px;resize:vertical}
+.trial{display:grid;gap:12px}.trial .check{display:flex;align-items:center;gap:10px;font-size:15px}.trial .check input{width:20px;height:20px;padding:0}
+.autoRow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.dur{display:flex;gap:6px}.trial .dur select{width:76px;flex:none}
+.planned{font:600 14px/1.4 'Bricolage Grotesque',system-ui,sans-serif;color:var(--mute);margin:0 0 8px}
 @media (max-width:560px){.head{grid-template-columns:1fr}.collage{flex-direction:row;align-items:center}.tile:nth-child(2){transform:rotate(-5deg)}}
 .modes{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
 .askRow{display:grid;grid-template-columns:minmax(0,1fr) 110px;gap:12px}
@@ -242,21 +245,16 @@ footer{padding:28px clamp(16px,4vw,48px);font-size:14px;color:var(--mute);displa
       </div>
       <form class="trial" id="trialForm" hidden>
         <h3 class="try">How will you try it?</h3>
-        <label>Your plan<textarea id="tPlan" required maxlength="500" placeholder="Add four short strides after each easy run"></textarea></label>
-        <div class="opts4">
-          <label>How much of the idea<select id="tShare" required><option value="">Choose</option><option value="10">10%</option><option value="30">30%</option><option value="50">50%</option><option value="100">100%</option></select></label>
-          <label>Days per week<input id="tDays" type="number" min="1" max="7" required placeholder="3"></label>
-          <label>For how many weeks<input id="tWeeks" type="number" min="1" max="52" required placeholder="8"></label>
-          <label class="wide">What you track<select id="tMeasure" required></select></label>
-          <label id="lUnit">Unit<select id="tUnitSel"></select></label>
-          <label id="lName" hidden>Name of what you track<input id="tMetric" maxlength="60" placeholder="Pace"></label>
-          <label id="lUnitC" hidden>Unit<input id="tUnit" maxlength="30" placeholder="min per km"></label>
-          <label class="wide">How you measure it (optional)<input id="tNote" maxlength="140" placeholder="Average of three easy runs on the same route"></label>
-          <label>Starting value<input id="tStart" required maxlength="12" placeholder="6:30"></label>
-          <label>Target (optional)<input id="tTarget" maxlength="12" placeholder="6:00"></label>
+        <label>What you will do<textarea id="tPlan" required maxlength="500" placeholder="Add four short strides after each easy run"></textarea></label>
+        <label>Your routine<input id="tRoutine" required maxlength="140" placeholder="For example: every morning, or 3 times a week"></label>
+        <label class="check"><input type="checkbox" id="tAuto"> Add it to my daily log automatically</label>
+        <div class="autoRow" id="autoRow" hidden>
+          <label>Time of day<input type="time" id="tTime" value="07:30"></label>
+          <label>How long<span class="dur"><input type="number" id="tDur" min="1" step="any" value="30"><select id="tDurUnit" aria-label="Unit"><option value="min">min</option><option value="h">h</option></select></span></label>
         </div>
+        <label>Target (optional)<input id="tTarget" maxlength="140" placeholder="For example: 6:00 per km by December"></label>
         <p class="msg" id="tMsg" hidden></p>
-        <div class="btnrow"><button class="big" type="submit">Start my trial</button><button class="small" id="tBack" type="button">Back</button></div>
+        <div class="btnrow"><button class="big" type="submit">Submit</button><button class="small" id="tBack" type="button">Cancel</button></div>
       </form>
     </article>
   </div>
@@ -270,6 +268,7 @@ footer{padding:28px clamp(16px,4vw,48px);font-size:14px;color:var(--mute);displa
     <form class="paper" id="logForm">
       <i class="hole" style="top:70px"></i><i class="hole" style="top:260px"></i><i class="hole" style="top:450px"></i>
       <div class="dt" id="logDate"></div>
+      <p class="planned" id="planned" hidden></p>
       <div class="acts" id="acts"></div>
       <button class="addA" type="button" id="addAct"><i></i>add another thing</button>
       <div class="sleep">Slept <input id="sleep" type="number" min="0" max="14" step="0.5" placeholder="7" required aria-label="Sleep last night, hours"> hours. The day felt
@@ -310,6 +309,7 @@ const SRC_LABEL = {research: 'Research', person: 'A person’s account', product
 const DEMO_IDS = ['attempt-first', 'mix-types', 'test-yourself'];
 
 const CATS = ['Study', 'Work', 'Exercise', 'Nutrition', 'Self-care', 'Medication', 'Social media', 'Phone', 'TV & streaming', 'Internet browsing', 'Other'];
+const AREA_CAT = {Health: 'Exercise', Study: 'Study', Work: 'Work', Style: 'Self-care'};  // idea area to log category
 const OLD_CAT = {Study: 'Study', Work: 'Work', Health: 'Exercise'};
 function cleanAct(a){
   if (!a || !(+a.minutes > 0)) return null;
@@ -374,35 +374,9 @@ function renderCollage(s){
   box.append(tile(DOTS, '#fff'));
 }
 
-const MEASURES = {
-  Health: [{name:'Pace', units:['min per km','min per mile'], dir:'lower'}, {name:'Distance', units:['km','miles'], dir:'higher'}, {name:'Duration', units:['minutes'], dir:'higher'}, {name:'Weight lifted', units:['kg','lb'], dir:'higher'}, {name:'Body weight', units:['kg','lb'], dir:null}, {name:'Resting heart rate', units:['bpm'], dir:null}, {name:'Sleep', units:['hours'], dir:null}],
-  Study: [{name:'Problems solved per hour', units:['problems per hour'], dir:'higher'}, {name:'Practice test score', units:['%','points'], dir:'higher'}, {name:'Study time', units:['hours','minutes'], dir:null}, {name:'Items recalled', units:['items'], dir:'higher'}],
-  Work: [{name:'Tasks finished', units:['tasks per day','tasks per week'], dir:'higher'}, {name:'Focused time', units:['hours per day'], dir:'higher'}, {name:'Applications sent', units:['per week'], dir:'higher'}],
-  Money: [{name:'Spending', units:['CHF per week','EUR per week','USD per week'], dir:'lower'}, {name:'Saved', units:['CHF per month','EUR per month','USD per month'], dir:'higher'}],
-  Style: [{name:'Outfits planned ahead', units:['per week'], dir:'higher'}],
-  Other: []
-};
-let presetList = [];
-function fillMeasures(){
-  const sel = $('tMeasure'), s = sug();
-  presetList = (s && MEASURES[s.area]) || [];
-  sel.textContent = '';
-  const ph = el('option', '', 'Choose'); ph.value = ''; sel.append(ph);
-  presetList.forEach((p, i) => { const o = el('option', '', p.name); o.value = String(i); sel.append(o); });
-  const o = el('option', '', 'Something else'); o.value = 'custom'; sel.append(o);
-  syncMeasure();
-}
-function syncMeasure(){
-  const v = $('tMeasure').value, custom = v === 'custom';
-  $('lUnit').hidden = custom || v === ''; $('lName').hidden = !custom; $('lUnitC').hidden = !custom;
-  $('tMetric').required = custom;
-  const u = $('tUnitSel'); u.textContent = '';
-  if (!custom && v !== '') presetList[+v].units.forEach(x => { const o = el('option', '', x); o.value = x; u.append(o); });
-}
-$('tMeasure').onchange = syncMeasure;
 function resetTry(){
   $('tryQ').hidden = false; $('yn').hidden = false; $('thanks').hidden = true; $('trialForm').hidden = true; $('tryBox').hidden = false;
-  $('trialForm').reset(); $('tMsg').hidden = true; fillMeasures();
+  $('trialForm').reset(); $('autoRow').hidden = true; $('tMsg').hidden = true;
 }
 function renderSuggestion(){
   const has = S.pool.length > 0, s = sug();
@@ -479,54 +453,37 @@ function fillLog(){
   $('logDate').textContent = new Date(today() + 'T12:00:00').toLocaleDateString('en-GB', {weekday: 'long', day: 'numeric', month: 'long'});
   $('acts').textContent = '';
   const d = S.days.find(x => x.date === today());
-  (d && d.acts.length ? d.acts : [{}]).forEach(addRow);
+  const planned = d && d.acts.length ? [] : S.trials.filter(t => t.status === 'active' && t.auto);
+  const rows = d && d.acts.length ? d.acts : planned.map(t => ({cat: AREA_CAT[t.area] || 'Other', name: AREA_CAT[t.area] ? '' : t.title.slice(0, 60), minutes: t.auto.minutes, desc: t.plan.slice(0, 140)}));
+  (rows.length ? rows : [{}]).forEach(addRow);
+  $('planned').hidden = !planned.length;
+  $('planned').textContent = planned.length ? 'Planned for today: ' + planned.map(t => t.title + ' at ' + t.auto.time).join('; ') + '. Change or remove them, then save.' : '';
   $('sleep').value = d && d.sleep !== null ? d.sleep : ''; setFeel(d && d.feel ? d.feel : 3);
   drawGrid();
 }
 $('addAct').onclick = () => { addRow(); $('acts').lastChild.querySelector('select').focus(); drawGrid(); };
 $('logForm').addEventListener('input', drawGrid);
 
-// ---- Trials: one number tracked against its starting value
-const parseValue = t => {
-  t = String(t || '').trim();
-  const m = /^(\d+):([0-5]\d)$/.exec(t);
-  if (m) return {v: +m[1] + +m[2] / 60, fmt: 'time'};
-  const n = Number(t.replace(',', '.'));
-  return t && isFinite(n) ? {v: n, fmt: 'num'} : null;
-};
-function fmtValue(v, fmt){
-  if (fmt === 'time'){ let m = Math.floor(v), s = Math.round((v - m) * 60); if (s === 60){ m += 1; s = 0; } return m + ':' + String(s).padStart(2, '0'); }
-  return String(Math.round(v * 100) / 100);
-}
+// ---- Trials
 function renderAll(){
   renderSuggestion();
 }
 
-$('yes').onclick = () => { $('tryQ').hidden = true; $('yn').hidden = true; $('trialForm').hidden = false; fillMeasures(); $('tPlan').focus(); };
+$('yes').onclick = () => { $('tryQ').hidden = true; $('yn').hidden = true; $('trialForm').hidden = false; $('tPlan').focus(); };
 $('no').onclick = () => { $('tryQ').hidden = true; $('yn').hidden = true; $('thanks').hidden = false; };
 $('again').onclick = () => { S.pool = []; S.idx = 0; save(); renderAll(); $('ask').focus(); window.scrollTo({top: 0}); };
 $('tBack').onclick = () => { $('trialForm').hidden = true; $('tryQ').hidden = false; $('yn').hidden = false; };
+$('tAuto').onchange = () => { $('autoRow').hidden = !$('tAuto').checked; };
 $('trialForm').onsubmit = e => {
   e.preventDefault();
-  const s = sug(), start = parseValue($('tStart').value), tt = $('tTarget').value.trim(), target = tt ? parseValue(tt) : null;
-  const fail = text => { $('tMsg').hidden = false; $('tMsg').textContent = text; };
+  const s = sug(), fail = text => { $('tMsg').hidden = false; $('tMsg').textContent = text; };
   if (!s) return;
-  const sel = $('tMeasure').value, custom = sel === 'custom', pre = custom ? null : presetList[+sel];
-  const name = custom ? $('tMetric').value.trim() : pre.name, unit = custom ? $('tUnit').value.trim() : $('tUnitSel').value;
-  if (!name) return fail('Name what you track.');
-  if (!start) return fail('The starting value must be a number, or a time such as 6:30.');
-  if (tt && !target) return fail('The target must be a number, or a time such as 6:00.');
-  let dir = pre && pre.dir ? pre.dir : '';
-  if (target){
-    if (target.v === start.v) return fail('The target must differ from the starting value.');
-    const implied = target.v < start.v ? 'lower' : 'higher';
-    if (dir && dir !== implied) return fail(name + ' improves with a ' + dir + ' number, so the target must be ' + dir + ' than the start.');
-    dir = implied;
-  }
+  const auto = $('tAuto').checked, minutes = Math.round((+$('tDur').value || 0) * ($('tDurUnit').value === 'h' ? 60 : 1));
+  if (auto && !(minutes >= 1 && minutes <= 1440)) return fail('How long must be between 1 minute and 24 hours.');
   S.trials.push({id: 't' + Date.now(), title: s.title, area: s.area || 'Other', source_url: s.source_url || '', source_title: s.source_title || '',
-    plan: $('tPlan').value.trim(), share: +$('tShare').value, days: +$('tDays').value, weeks: +$('tWeeks').value, startDate: today(), status: 'active', checkins: [],
-    metric: {name, unit, note: $('tNote').value.trim(), dir, fmt: start.fmt, start: start.v, target: target ? target.v : null}});
-  S.pool = []; S.idx = 0; notice = 'Your trial is saved.'; save(); renderAll();
+    plan: $('tPlan').value.trim(), routine: $('tRoutine').value.trim(), target: $('tTarget').value.trim(), startDate: today(), status: 'active',
+    auto: auto ? {time: $('tTime').value || '07:30', minutes} : null});
+  S.pool = []; S.idx = 0; notice = 'Your trial is saved.'; save(); renderAll(); fillLog();
 };
 
 $('logForm').onsubmit = e => {
@@ -656,7 +613,7 @@ function buildPromptLocal(request, region, limit, n, keep, tried, mode = 'improv
     'Examples should come from: ' + (region || 'anywhere in the world') + '.' + (limit ? ' My limit: ' + limit + '.' : ''),
     'Stay strictly on my activity and my numbers. Do not bring in other topics, interviews or anything unrelated.',
     ...(mt.rule ? [mt.rule] : []),
-    'Search the web, with at most ' + Math.max(3, n) + ' searches and ' + Math.max(2, n) + ' pages opened. Give each link. Every idea needs a source_url taken from your search results or from a page you opened; never write a link you did not see. Leave out any idea you cannot source. Do not invent people, quotes or numbers. Never suggest anything risky, such as cutting sleep.',
+    'Search the web, with at most ' + (3 + 2 * n) + ' searches and ' + (2 + n) + ' pages opened. Give each link. Every idea needs a source_url taken from your search results or from a page you opened; never write a link you did not see. Leave out any idea you cannot source. Do not invent people, quotes or numbers. Never suggest anything risky, such as cutting sleep.',
     'Write like a short magazine article: no first person and no comments about your searching or checking. summary: 2 or 3 sentences on ' + mt.sum + '. benefits: 2 or 3 short phrases, each under 12 words, on ' + mt.ben + '. from: the place or people the idea comes from. price: only if a page you opened shows it, with currency, such as "CHF 49 instead of CHF 89"; otherwise an empty string.',
     ...(links.length ? ['Open these links first; they show what I mean: ' + links.join(' ')] : []),
     ...(photos ? ['I attached ' + photos + (photos > 1 ? ' photos' : ' photo') + ' of it; use what you see in the ' + (photos > 1 ? 'photos' : 'photo') + '.'] : []),
@@ -685,7 +642,7 @@ $('askForm').onsubmit = async e => {
     const tick = () => { $('searchMsg').textContent = 'Searching the web and reading sources… ' + Math.round((Date.now() - t0) / 1000) + ' s'; };
     tick(); const timer = setInterval(tick, 1000);
     try {
-      const items = (await callApi('/api/search', {prompt, images: sent.map(d => ({data: d}))})).items.map((x, i) => Object.assign({id: 's' + Date.now() + '-' + i, mode}, x));
+      const items = (await callApi('/api/search', {prompt, count: clampCount(), images: sent.map(d => ({data: d}))})).items.map((x, i) => Object.assign({id: 's' + Date.now() + '-' + i, mode}, x));
       S.pool = items; S.idx = 0; save();
       $('searchMsg').hidden = true; renderAll(); $('ticket').scrollIntoView({block: 'center'});
     } catch(err){
