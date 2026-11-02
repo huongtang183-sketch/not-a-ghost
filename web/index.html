@@ -46,6 +46,7 @@ h1{font-size:clamp(44px,7.4vw,92px);line-height:.95;font-weight:800;letter-spaci
 .cut:before{left:-18px;clip-path:inset(0 0 0 50%)}
 .cut:after{right:-18px;clip-path:inset(0 50% 0 0)}
 .q{font-weight:600;margin-bottom:10px}
+.demoBar{margin:0;padding:8px clamp(16px,4vw,48px);background:var(--lemon);border-block:2px solid var(--ink);font-size:14px;font-weight:600}.demoBar a{color:var(--ink)}
 .btnrow{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px;align-items:center}
 .big{background:var(--coral);border:3px solid var(--ink);border-radius:999px;padding:14px 26px;font-weight:800;font-size:20px;cursor:pointer;box-shadow:4px 4px 0 var(--ink);transition:transform .12s,box-shadow .12s}
 .big:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
@@ -167,6 +168,7 @@ footer{padding:28px clamp(16px,4vw,48px);font-size:14px;color:var(--mute);displa
   <div class="grow"></div>
   <nav aria-label="Pages"><a href="index.html" aria-current="page">Improve your life</a><a href="pattern.html">What’s your life juggling?</a></nav>
 </header>
+<p class="demoBar" id="demoBar" hidden>Demo with sample ideas, each with its real source. Live search with Claude runs on your own computer: <a href="https://github.com/huongtang183-sketch/ghost">see the project on GitHub</a>.</p>
 
 <section class="hero">
   <div>
@@ -288,6 +290,7 @@ footer{padding:28px clamp(16px,4vw,48px);font-size:14px;color:var(--mute);displa
 
 <script>
 const $ = id => document.getElementById(id);
+const DEMO = window.GHOST_DEMO || null;  // set only in the published demo (tools/build_demo.py)
 const KEY = 'ghost.v3', OLD_KEY = 'ghost.v2';
 const AREAS = ['Study', 'Work', 'Health', 'Style', 'Money', 'Other'];
 const MODES = {
@@ -302,7 +305,7 @@ const curMode = () => MODES[S.prefs.mode] ? S.prefs.mode : 'improve';
 function applyMode(){
   const m = curMode(), c = MODES[m];
   document.querySelectorAll('.mode').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === m)));
-  $('lede').textContent = c.lede; $('ask').placeholder = c.ph; $('findBtn').textContent = c.btn; $('attach').hidden = !c.attach;
+  $('lede').textContent = c.lede; $('ask').placeholder = c.ph; $('findBtn').textContent = c.btn; $('attach').hidden = !c.attach || !!DEMO;
 }
 const SRC_LABEL = {research: 'Research', person: 'A person’s account', product: 'Product listing'};
 
@@ -585,7 +588,7 @@ $('photoIn').onchange = async () => {
   }
   $('photoIn').value = ''; renderThumbs();
 };
-callApi('/api/status').then(s => { api = true; canSearch = !!s.search; syncPhoto(); }).catch(() => {});
+if (!DEMO) callApi('/api/status').then(s => { api = true; canSearch = !!s.search; syncPhoto(); }).catch(() => {});
 function syncPhoto(){ $('photoBtn').hidden = !(api && canSearch); $('photoNote').textContent = api && canSearch ? '' : 'Photos need the Ghost server with search.'; }
 syncPhoto();
 
@@ -630,6 +633,11 @@ $('askForm').onsubmit = async e => {
   const sent = MODES[mode0].attach && api && canSearch ? photos.slice() : [];
   const tried = S.trials.map(t => t.title);
   const mode = curMode();
+  if (DEMO){
+    const pool = DEMO.ideas.filter(x => x.mode === mode).slice(0, n).map((x, i) => Object.assign({id: 'd' + Date.now() + '-' + i, image: ''}, x));
+    S.pool = pool; S.idx = 0; save(); $('searchMsg').hidden = true; $('steps').hidden = true; renderAll(); $('ticket').scrollIntoView({block: 'center'});
+    return;
+  }
   let prompt = buildPromptLocal(request, region, limit, n, keep, tried, mode, links, sent.length);
   if (api){
     try { prompt = (await callApi('/api/prompt', {request, region, limit, count: n, keep_same: keep, tried, mode, links, photos: sent.length})).prompt; } catch(err){}
@@ -684,6 +692,7 @@ $('importBtn').onclick = async () => {
 $('export').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(S, null, 1)], {type: 'application/json'})); a.download = 'ghost-data.json'; a.click(); };
 
 document.querySelectorAll('.mode').forEach(b => b.onclick = () => { S.prefs.mode = b.dataset.mode; save(); applyMode(); renderAll(); $('ask').focus(); });
+$('demoBar').hidden = !DEMO;
 applyMode();
 $('ask').value = S.prefs.ask || '';
 $('region').value = S.prefs.region || ''; $('count').value = String(S.prefs.count || 1);

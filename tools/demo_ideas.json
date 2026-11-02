@@ -1,0 +1,50 @@
+[
+  {
+    "mode": "improve",
+    "title": "Add four to eight short strides after easy runs",
+    "area": "Health",
+    "summary": "Strides are efforts of 20 to 30 seconds at about 85 to 95% effort, run after an easy run with about 2 minutes of recovery between them. Runners Connect says most runners do 4 to 8 strides, 2 to 3 times a week.",
+    "benefits": ["Improves running economy", "Adds speed work without a hard day", "Practises form while relaxed"],
+    "source_type": "person",
+    "from": "Runners Connect",
+    "price": "",
+    "source_title": "How Strides Can Help You Run Faster",
+    "source_url": "https://runnersconnect.net/running-training-articles/strides-how-strides-can-help-you-run-faster/"
+  },
+  {
+    "mode": "improve",
+    "title": "Spread study sessions over time instead of one block",
+    "area": "Study",
+    "summary": "Spaced practice means spreading learning over time instead of concentrating it in one block. INSPIRE at Australian Catholic University reports that it improves learning compared with massed practice.",
+    "benefits": ["Learning improves compared with one block", "Spaced retrieval gave better retention than massed retrieval", "A 2025 classroom study found scores about half a standard deviation higher"],
+    "source_type": "research",
+    "from": "INSPIRE, Australian Catholic University",
+    "price": "",
+    "source_title": "Spaced practice",
+    "source_url": "https://inspire.acu.edu.au/articles/spaced-practice"
+  },
+  {
+    "mode": "cheaper",
+    "title": "Borrow e-books and audiobooks from your library with Libby",
+    "area": "Money",
+    "summary": "Libby is a free app for e-books, digital audiobooks and magazines from your public library. A library card is required, and each library sets its own loan length and borrowing limits.",
+    "benefits": ["Free to borrow with a library card", "No late fees: titles return automatically on their due date", "Titles can be downloaded for offline reading"],
+    "source_type": "product",
+    "from": "Libby by OverDrive",
+    "price": "Free with a library card",
+    "source_title": "Libby Help",
+    "source_url": "https://help.libbyapp.com/6144.htm"
+  },
+  {
+    "mode": "similar",
+    "title": "Try parkrun, a free weekly 5 km in a park",
+    "area": "Health",
+    "summary": "Parkrun is a series of weekly 5 km runs in parks around the world. It is free to enter and open to everybody, and walking it is as welcome as running it.",
+    "benefits": ["Free to enter", "Events usually take place at the same time each week", "Open to every pace, including walkers"],
+    "source_type": "person",
+    "from": "Advnture",
+    "price": "",
+    "source_title": "What is parkrun? A quick guide to the running event for everybody",
+    "source_url": "https://www.advnture.com/features/what-is-parkrun"
+  }
+]

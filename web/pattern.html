@@ -59,6 +59,7 @@ h1{font-size:clamp(38px,5.6vw,66px);line-height:.98;font-weight:800;letter-spaci
 .tk.me{color:var(--ink)}.tk.me .c{box-shadow:0 0 0 6px var(--lemon),0 0 0 9.5px var(--ink)}
 .tk .mk{font-size:18px;line-height:1}
 .empty{display:grid;justify-items:start;gap:16px;margin-top:30px}.empty svg{width:200px;height:auto;overflow:visible}
+.big.alt{background:var(--lemon);cursor:pointer;font-family:inherit}
 .empty p{font-size:clamp(22px,3vw,30px);line-height:1.2;letter-spacing:-.02em;font-weight:600;max-width:24em}
 @media (prefers-reduced-motion:no-preference){.empty svg{animation:bob 5s ease-in-out infinite}}
 footer{padding:20px clamp(16px,4vw,56px) 28px;font-size:14px;color:var(--mute)}
@@ -119,12 +120,14 @@ footer{padding:20px clamp(16px,4vw,56px) 28px;font-size:14px;color:var(--mute)}
     <svg viewBox="0 0 120 110" aria-hidden="true"><use href="#ghost"/></svg>
     <p>Nothing logged yet. Log a day and your balls appear in the air.</p>
     <a class="big" href="index.html#log">Log today</a>
+    <button class="big alt" id="sample" type="button" hidden>See it with sample days</button>
   </div>
 </main>
 <footer>Your data stays in this browser.</footer>
 
 <script>
 const $ = id => document.getElementById(id);
+const DEMO = window.GHOST_DEMO || null;  // set only in the published demo (tools/build_demo.py)
 function el(tag, cls, text){ const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; }
 const CATS = ['Study', 'Work', 'Exercise', 'Nutrition', 'Self-care', 'Medication', 'Social media', 'Phone', 'TV & streaming', 'Internet browsing', 'Other'];
 const OLD_CAT = {Study: 'Study', Work: 'Work', Health: 'Exercise'};
@@ -292,8 +295,19 @@ function renderArch(){
   });
 }
 
+function sampleDays(){
+  const d = (n, acts, sleep, feel) => ({date: new Date(Date.now() - n * 864e5 - new Date().getTimezoneOffset() * 6e4).toISOString().slice(0, 10), acts, sleep, feel});
+  const a = (cat, minutes, desc, name = '') => ({cat, name, minutes, desc});
+  return [d(5, [a('Study', 120, 'quant finance book'), a('Social media', 90, 'scrolling')], 6.5, 3), d(4, [a('Study', 100, 'notes'), a('Exercise', 40, 'easy run')], 7, 4),
+    d(3, [a('Work', 240, 'job applications'), a('Exercise', 45, 'easy run with strides')], 7.5, 4), d(2, [a('Study', 60, 'chapter review'), a('Other', 45, 'scales', 'Guitar'), a('Exercise', 50, 'long run')], 8, 5),
+    d(1, [a('Work', 200, 'job applications'), a('Nutrition', 30, 'meal prep')], 7, 4), d(0, [a('Study', 90, 'chapter 3'), a('Exercise', 45, '5 km easy run')], 7.5, 4)];
+}
 function render(){
-  if (!days.length){ $('empty').hidden = false; return; }
+  if (!days.length){
+    $('empty').hidden = false;
+    if (DEMO){ $('sample').hidden = false; $('sample').onclick = () => { try { const cur = JSON.parse(localStorage.getItem('ghost.v3') || '{}') || {}; cur.days = sampleDays(); localStorage.setItem('ghost.v3', JSON.stringify(cur)); } catch(e){} location.reload(); }; }
+    return;
+  }
   $('full').hidden = false;
   const balls = $('balls');
   ranked.forEach((c, i) => balls.append(makeBall(c, i)));

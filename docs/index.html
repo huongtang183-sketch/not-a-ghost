@@ -1,0 +1,710 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ghost</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#d6e2ff">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<script>window.GHOST_DEMO = {"ideas": [{"mode": "improve", "title": "Add four to eight short strides after easy runs", "area": "Health", "summary": "Strides are efforts of 20 to 30 seconds at about 85 to 95% effort, run after an easy run with about 2 minutes of recovery between them. Runners Connect says most runners do 4 to 8 strides, 2 to 3 times a week.", "benefits": ["Improves running economy", "Adds speed work without a hard day", "Practises form while relaxed"], "source_type": "person", "from": "Runners Connect", "price": "", "source_title": "How Strides Can Help You Run Faster", "source_url": "https://runnersconnect.net/running-training-articles/strides-how-strides-can-help-you-run-faster/"}, {"mode": "improve", "title": "Spread study sessions over time instead of one block", "area": "Study", "summary": "Spaced practice means spreading learning over time instead of concentrating it in one block. INSPIRE at Australian Catholic University reports that it improves learning compared with massed practice.", "benefits": ["Learning improves compared with one block", "Spaced retrieval gave better retention than massed retrieval", "A 2025 classroom study found scores about half a standard deviation higher"], "source_type": "research", "from": "INSPIRE, Australian Catholic University", "price": "", "source_title": "Spaced practice", "source_url": "https://inspire.acu.edu.au/articles/spaced-practice"}, {"mode": "cheaper", "title": "Borrow e-books and audiobooks from your library with Libby", "area": "Money", "summary": "Libby is a free app for e-books, digital audiobooks and magazines from your public library. A library card is required, and each library sets its own loan length and borrowing limits.", "benefits": ["Free to borrow with a library card", "No late fees: titles return automatically on their due date", "Titles can be downloaded for offline reading"], "source_type": "product", "from": "Libby by OverDrive", "price": "Free with a library card", "source_title": "Libby Help", "source_url": "https://help.libbyapp.com/6144.htm"}, {"mode": "similar", "title": "Try parkrun, a free weekly 5 km in a park", "area": "Health", "summary": "Parkrun is a series of weekly 5 km runs in parks around the world. It is free to enter and open to everybody, and walking it is as welcome as running it.", "benefits": ["Free to enter", "Events usually take place at the same time each week", "Open to every pace, including walkers"], "source_type": "person", "from": "Advnture", "price": "", "source_title": "What is parkrun? A quick guide to the running event for everybody", "source_url": "https://www.advnture.com/features/what-is-parkrun"}]};</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#16143f;--sky:#d6e2ff;--blue:#3a3aff;--coral:#ff6b8b;--lemon:#ffe45c;--white:#fff;--mute:#4b4a7a}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--sky);color:var(--ink);font:17px/1.5 'Bricolage Grotesque',system-ui,sans-serif}
+h1,h2,h3,p{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+
+header{display:flex;align-items:center;gap:20px;padding:18px clamp(16px,4vw,48px)}
+.logo{font-weight:800;font-size:26px;letter-spacing:-1px;display:flex;align-items:center;gap:6px;color:inherit;text-decoration:none}
+.logo .lg{width:30px;height:auto}
+header nav{display:flex;gap:18px}
+header nav a{color:var(--mute);font-weight:600;text-decoration:none;padding:4px 0;border-bottom:3px solid transparent}
+header nav a:hover{color:var(--ink)}header nav a[aria-current=page]{color:var(--ink);border-color:var(--ink)}
+.logo i{font-style:normal;color:var(--blue)}
+header .grow{flex:1}
+.link{background:none;border:0;padding:0;text-decoration:underline;cursor:pointer;color:var(--mute);font-size:14px}
+
+.hero{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(24px,5vw,72px);padding:clamp(12px,3vw,40px) clamp(16px,4vw,48px) 72px;align-items:start;max-width:1240px;margin:0 auto}
+h1{font-size:clamp(44px,7.4vw,92px);line-height:.95;font-weight:800;letter-spacing:-.045em;font-stretch:90%}
+.lede{margin-top:20px;max-width:30em;font-size:19px;color:var(--mute)}
+.ghostWrap{margin-top:28px;width:min(260px,60%)}
+.ghostWrap svg{width:100%;height:auto;overflow:visible}
+#ghostBody{transition:opacity .35s}
+@media (prefers-reduced-motion:no-preference){.ghostWrap svg{animation:bob 5s ease-in-out infinite}@keyframes bob{50%{transform:translateY(-10px)}}}
+.ghostCap{margin-top:8px;color:var(--mute);font-size:14px}
+
+.ticket{position:relative;background:var(--white);border:3px solid var(--ink);border-radius:28px;padding:28px 28px 24px;box-shadow:8px 8px 0 var(--ink);transform:rotate(-1.2deg)}
+.tag{display:inline-block;background:var(--lemon);border:2px solid var(--ink);border-radius:999px;padding:2px 12px;font-size:14px;font-weight:600}
+.tag.real{background:#9af0c0}
+.ticket h2{margin-top:12px;font-size:32px;line-height:1.05;letter-spacing:-.03em;font-weight:800}
+.why{margin-top:10px;color:var(--mute)}
+.src{margin-top:8px;font-size:14px}
+.src a{color:var(--blue)}
+.cut{position:relative;margin:22px -28px;border-top:3px dashed var(--ink)}
+.cut:before,.cut:after{content:"";position:absolute;top:-17px;width:30px;height:30px;border-radius:50%;background:var(--sky);border:3px solid var(--ink)}
+.cut:before{left:-18px;clip-path:inset(0 0 0 50%)}
+.cut:after{right:-18px;clip-path:inset(0 50% 0 0)}
+.q{font-weight:600;margin-bottom:10px}
+.demoBar{margin:0;padding:8px clamp(16px,4vw,48px);background:var(--lemon);border-block:2px solid var(--ink);font-size:14px;font-weight:600}.demoBar a{color:var(--ink)}
+.btnrow{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px;align-items:center}
+.big{background:var(--coral);border:3px solid var(--ink);border-radius:999px;padding:14px 26px;font-weight:800;font-size:20px;cursor:pointer;box-shadow:4px 4px 0 var(--ink);transition:transform .12s,box-shadow .12s}
+.big:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.big:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.big[disabled]{opacity:.5;cursor:default}
+.small{background:var(--white);border:2px solid var(--ink);border-radius:999px;padding:8px 16px;font-weight:600;cursor:pointer}
+.tools{margin-top:14px;display:grid;gap:10px}
+.tools textarea{width:100%;min-height:90px;border:2px solid var(--ink);border-radius:14px;padding:10px;background:var(--sky)}
+.msg{font-size:14px;color:var(--mute)}
+.logwrap{display:grid;grid-template-columns:minmax(0,700px) minmax(260px,340px);gap:56px;align-items:start;margin-top:34px}
+.logwrap .paper{margin:0}
+.daypanel{position:sticky;top:24px;padding-top:12px}
+.dgrid{display:grid;grid-template-columns:repeat(12,1fr);gap:5px;width:100%}.dgrid i{aspect-ratio:1;border-radius:5px;background:rgba(22,20,63,.12)}
+.dleg{margin-top:22px;display:grid;gap:8px;font-weight:600;font-size:17px;line-height:1.25}.dleg div{display:flex;gap:10px;align-items:center}.dleg i{width:16px;height:16px;border-radius:5px;flex:none;border:1.5px solid var(--ink)}.dleg small{font-size:15px;font-weight:500;opacity:.7;margin-left:auto}
+.dnote{font-size:14px;line-height:1.35;opacity:.75;margin-top:16px;max-width:30em}
+.paper{--rule:48px;position:relative;max-width:700px;margin:0;padding:30px 36px 36px 92px;background:#fffbe9;color:var(--ink);transform:rotate(-.8deg);box-shadow:0 18px 30px -14px rgba(22,20,63,.35);
+  background-image:repeating-linear-gradient(transparent 0 47px,rgba(58,58,255,.25) 47px 48px);background-position:0 18px;font-family:'Caveat','Segoe Print',cursive;font-size:28px;line-height:48px}
+.paper:before{content:"";position:absolute;left:68px;top:0;bottom:0;width:2px;background:var(--coral)}
+.paper .hole{position:absolute;left:20px;width:22px;height:22px;border-radius:50%;background:var(--lemon);box-shadow:inset 0 2px 3px rgba(0,0,0,.25)}
+.paper .dt{font:800 30px/48px 'Bricolage Grotesque',system-ui,sans-serif;letter-spacing:-.03em}
+.paper input,.paper select{font:inherit;color:var(--ink);background:transparent;border:0;border-bottom:2px solid var(--coral);border-radius:0;padding:0 4px;height:40px;min-width:0}
+.paper select{font-weight:700;appearance:none;padding-right:20px;cursor:pointer;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%2316143f' stroke-width='2'/%3E%3C/svg%3E") right 4px center no-repeat}
+.paper input::placeholder{color:rgba(22,20,63,.4)}
+.paper input[type=number]{-moz-appearance:textfield;text-align:center}.paper input[type=number]::-webkit-inner-spin-button{display:none}
+.paper :focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:4px}
+.arow .l1{display:flex;align-items:center;gap:10px}.arow .l1 .oth{flex:1;min-width:80px}.arow .l1 .min{width:64px}.arow .l1 .unit{width:auto;padding-right:0}
+.arow .dsc{display:block;width:100%;font-size:25px;margin-left:34px;width:calc(100% - 34px)}
+.arow .bx{flex:none;width:22px;height:22px;border:2.5px solid var(--ink);border-radius:4px;position:relative}.arow .bx:after{content:"\2713";position:absolute;left:2px;top:-14px;font-size:28px;color:var(--blue)}
+.arow .rm{margin-left:auto;border:0;background:transparent;font:700 30px/1 'Caveat',cursive;cursor:pointer;opacity:.5;padding:0 6px;height:40px}.arow .rm:hover{opacity:1}.arow .rm[hidden]{display:none}
+.addA{border:0;background:transparent;font:inherit;cursor:pointer;opacity:.6;display:flex;align-items:center;gap:10px;padding:0}.addA:hover{opacity:1}
+.addA i{width:22px;height:22px;border:2.5px solid var(--ink);border-radius:4px;display:inline-block}
+.paper .sleep input{width:60px}
+.fv{display:inline-flex;gap:6px;vertical-align:middle;margin:0 6px}.fv button{width:38px;height:38px;border-radius:50%;border:2px solid transparent;background:transparent;font:700 26px/1 'Caveat',cursive;cursor:pointer;color:var(--ink);padding:0}
+.fv button[aria-pressed=true]{border-color:var(--blue);color:var(--blue)}
+.paper .msg{font:600 15px/1.3 'Bricolage Grotesque',system-ui,sans-serif;margin:10px 0 0}
+.paper .save{font:800 18px/1 'Bricolage Grotesque',system-ui,sans-serif;margin-top:18px;background:var(--ink);color:#fffbe9;border:0;border-radius:6px;padding:13px 26px;cursor:pointer;transform:rotate(1.2deg)}
+@media (max-width:940px){.logwrap{grid-template-columns:1fr;gap:28px}.daypanel{position:static;max-width:420px}}
+@media (max-width:620px){.paper{transform:none;padding:24px 16px 30px 52px;font-size:25px}.paper:before{left:38px}.paper .hole{left:8px}.arow .dash{display:none}.logwrap{grid-template-columns:1fr;gap:28px}.daypanel{position:static}.dgrid{width:100%}.arow .l1{flex-wrap:wrap}}
+
+
+.band{padding:64px clamp(16px,4vw,48px)}
+.band>.in{max-width:1100px;margin:0 auto}
+.band h2{font-size:clamp(32px,4.6vw,52px);line-height:1;letter-spacing:-.04em;font-weight:800;max-width:16em}
+.band .sub{margin-top:12px;max-width:34em}
+.lemon{background:var(--lemon)}.coral{background:var(--coral)}.ink{background:var(--ink);color:var(--white)}.ink .sub{color:#c9c8ee}
+footer{padding:28px clamp(16px,4vw,48px);font-size:14px;color:var(--mute);display:flex;gap:16px;flex-wrap:wrap}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tab{border:2px solid var(--ink);border-radius:999px;padding:2px 14px;font-size:14px;font-weight:600;background:var(--white);cursor:pointer}
+.tab:hover{background:var(--sky)}.tab[aria-selected=true]{background:#9af0c0}
+.tag.plain{background:var(--white)}
+.opts{display:grid;grid-template-columns:1fr 84px;gap:10px}
+.opts label{display:grid;gap:4px;font-size:14px;font-weight:600}
+.opts input,.opts select{border:2px solid var(--ink);border-radius:12px;padding:8px 10px;background:var(--white);min-width:0}
+.opts .wideopt{grid-column:1/-1}
+.head{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start}
+.collage{display:flex;flex-direction:column;gap:8px;align-items:flex-end;padding-top:4px}
+.tile{width:84px;height:84px;border:3px solid var(--ink);border-radius:18px;overflow:hidden;display:grid;place-items:center;background:var(--sky);box-shadow:3px 3px 0 var(--ink)}
+.tile:nth-child(1){transform:rotate(4deg)}.tile:nth-child(2){transform:rotate(-5deg) translateX(-14px);width:64px;height:64px;border-radius:14px}
+.tile img{width:100%;height:100%;object-fit:cover;display:block}
+.tile svg{width:78%;height:78%}
+.summary{margin-top:14px;font-size:18px;line-height:1.5;color:var(--ink)}
+.price{margin-top:10px;font-weight:800;color:#0a7f43}
+.gainsH{margin-top:18px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.gains{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:8px}
+.gains li{display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:start;font-weight:600;line-height:1.35}
+.gains li:before{content:"\2713";display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#6ee7a0;border:2px solid var(--ink);font-size:14px}
+.try{font-size:clamp(34px,5vw,48px);line-height:1;letter-spacing:-.04em;font-weight:800;margin:0 0 16px}
+.yn{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.yn .big{width:100%;padding:18px 0;font-size:26px}
+.yn .no{background:var(--white)}
+.yes{background:#6ee7a0}
+.thanks{font-size:22px;font-weight:700;display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.trial{display:grid;gap:12px}
+.trial label{display:grid;gap:4px;font-size:14px;font-weight:600;min-width:0}
+.trial textarea,.trial input,.trial select{border:2px solid var(--ink);border-radius:12px;padding:9px 11px;background:var(--white);width:100%;min-width:0}
+.trial textarea{min-height:84px;resize:vertical}
+.trial{display:grid;gap:12px}.trial .check{display:flex;align-items:center;gap:10px;font-size:15px}.trial .check input{width:20px;height:20px;padding:0}
+.autoRow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.dur{display:flex;gap:6px}.trial .dur select{width:76px;flex:none}
+.planned{font:600 14px/1.4 'Bricolage Grotesque',system-ui,sans-serif;color:var(--mute);margin:0 0 8px}
+@media (max-width:560px){.head{grid-template-columns:1fr}.collage{flex-direction:row;align-items:center}.tile:nth-child(2){transform:rotate(-5deg)}}
+.modes{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.askRow{display:grid;grid-template-columns:minmax(0,1fr) 110px;gap:12px}
+.askRow label,.attach label{display:grid;gap:6px;font-weight:600;font-size:15px;min-width:0}
+.askRow input,.attach textarea{border:3px solid var(--ink);border-radius:14px;padding:12px;background:var(--white);width:100%;min-width:0;font:inherit}
+.attach{display:grid;gap:10px}.ask .attach textarea{min-height:64px;resize:vertical;font-size:16px;border-radius:14px;padding:10px 12px}
+.combo{position:relative}
+.locList{position:absolute;z-index:20;left:0;right:0;top:100%;margin:6px 0 0;padding:6px;list-style:none;background:var(--white);border:3px solid var(--ink);border-radius:16px;max-height:340px;overflow:auto;box-shadow:0 12px 24px -12px rgba(22,20,63,.4)}
+.locList button{display:flex;justify-content:space-between;gap:14px;align-items:baseline;width:100%;text-align:left;border:0;background:transparent;padding:9px 10px;border-radius:10px;cursor:pointer;font:inherit}
+.locList button:hover,.locList button:focus-visible{background:var(--sky);outline:0}
+.locList b{font-weight:700}.locList small{font-weight:500;color:var(--mute);white-space:nowrap}
+.photoRow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.photoNote{font-size:14px;color:var(--mute)}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap}.thumbs div{position:relative}.thumbs img{width:56px;height:56px;object-fit:cover;border-radius:10px;border:2px solid var(--ink);display:block}
+.thumbs button{position:absolute;top:-8px;right:-8px;width:22px;height:22px;border-radius:50%;border:2px solid var(--ink);background:var(--white);font-weight:800;line-height:1;cursor:pointer;padding:0}
+.mode{border:2px solid var(--ink);border-radius:999px;padding:7px 14px;font-weight:600;background:var(--white);cursor:pointer}
+.mode[aria-pressed="true"]{background:var(--blue);color:var(--white)}
+.mode:disabled{opacity:.45;cursor:not-allowed}
+.ask{margin-top:22px;display:grid;gap:12px}
+.ask textarea{width:100%;min-height:130px;border:3px solid var(--ink);border-radius:20px;padding:16px;font-size:18px;line-height:1.4;background:var(--white);resize:vertical}
+.opts4 .wide{grid-column:1/-1}
+.opts4{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opts4 label{display:grid;gap:4px;font-size:14px;font-weight:600;min-width:0}
+.opts4 input,.opts4 select{border:2px solid var(--ink);border-radius:12px;padding:8px 10px;background:var(--white);min-width:0;width:100%}
+.steps{margin-top:22px;background:var(--white);border:3px solid var(--ink);border-radius:20px;padding:18px 20px;display:grid;gap:10px}
+.steps ol{margin:0;padding-left:20px;display:grid;gap:4px}
+.steps a{color:var(--blue);font-weight:600}
+.steps textarea{width:100%;min-height:110px;border:2px solid var(--ink);border-radius:14px;padding:10px;background:var(--sky)}
+.steps details summary{cursor:pointer;font-size:14px;font-weight:600}
+@media (max-width:520px){.opts4{grid-template-columns:1fr}}
+.white{background:var(--white)}
+
+[hidden]{display:none!important}
+@media (max-width:860px){.hero{grid-template-columns:1fr}.ticket{transform:none}.ghostWrap{width:140px}}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="index.html"><svg class="lg" viewBox="0 0 120 110" aria-hidden="true"><path d="M18 98V46C18 22 36 8 60 8s42 14 42 38v52l-13-11-14 13-15-13-15 13-14-13z" fill="#fff" stroke="#16143f" stroke-width="7" stroke-linejoin="round"/><circle cx="45" cy="48" r="7" fill="#16143f"/><circle cx="75" cy="48" r="7" fill="#16143f"/></svg> ghost<i>.</i></a>
+  <div class="grow"></div>
+  <nav aria-label="Pages"><a href="index.html" aria-current="page">Improve your life</a><a href="pattern.html">What’s your life juggling?</a></nav>
+</header>
+<p class="demoBar" id="demoBar" hidden>Demo with sample ideas, each with its real source. Live search with Claude runs on your own computer: <a href="https://github.com/huongtang183-sketch/ghost">see the project on GitHub</a>.</p>
+
+<section class="hero">
+  <div>
+    <h1>Change one small thing tomorrow.</h1>
+    <p class="lede" id="lede"></p>
+    <div class="modes" role="group" aria-label="What do you want">
+      <button class="mode" type="button" data-mode="improve" aria-pressed="true">Do it differently</button>
+      <button class="mode" type="button" data-mode="cheaper" aria-pressed="false">Spend less</button>
+      <button class="mode" type="button" data-mode="similar" aria-pressed="false">Something similar</button>
+    </div>
+    <form class="ask" id="askForm">
+      <textarea id="ask" required maxlength="1000" placeholder="Describe what you do and what you want to improve. For example: I run 5 km three times a week at 6:30 per km and want to get faster."></textarea>
+      <div class="askRow">
+        <label class="combo">Examples from
+          <input id="region" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="locList" placeholder="Anywhere, or type a country or city">
+          <ul class="locList" id="locList" role="listbox" hidden></ul>
+        </label>
+        <label>Ideas<input id="count" type="number" min="1" max="10" value="1"></label>
+      </div>
+      <div class="attach" id="attach" hidden>
+        <label>Links (optional)<textarea id="links" rows="2" maxlength="600" placeholder="Paste a link to the product or place, one per line"></textarea></label>
+        <div class="photoRow"><input id="photoIn" type="file" accept="image/*" multiple hidden>
+          <button class="small" type="button" id="photoBtn">Add photos</button><span class="photoNote" id="photoNote"></span><div class="thumbs" id="thumbs"></div></div>
+      </div>
+      <div class="btnrow"><button class="big" id="findBtn" type="submit">Show me ideas</button></div>
+      <p class="msg" id="searchMsg" hidden></p>
+    </form>
+    <div class="steps" id="steps" hidden>
+      <b>Your request is ready.</b>
+      <ol>
+        <li>Open <a href="https://claude.ai/new" target="_blank" rel="noopener">Claude</a>, paste it (Ctrl+V) and send.</li>
+        <li>Copy Claude's whole answer.</li>
+        <li>Paste it here:</li>
+      </ol>
+      <textarea id="pasteArea" placeholder="Paste Claude's answer here"></textarea>
+      <div class="btnrow"><button class="big" id="importBtn" type="button">Show ideas</button><button class="small" id="recopy" type="button">Copy the request again</button></div>
+      <p class="msg" id="toolMsg"></p>
+      <details><summary>Show the request</summary><textarea id="promptBox" readonly></textarea></details>
+    </div>
+  </div>
+
+  <div>
+    <div class="ghostWrap" id="ghostWrap">
+      <svg viewBox="0 0 120 110" aria-hidden="true">
+        <g id="ghostBody" style="opacity:.55">
+          <path d="M18 98V46C18 22 36 8 60 8s42 14 42 38v52l-13-11-14 13-15-13-15 13-14-13z" fill="#fff" stroke="#16143f" stroke-width="4" stroke-linejoin="round"/>
+          <circle cx="45" cy="48" r="6" fill="#16143f"/><circle cx="75" cy="48" r="6" fill="#16143f"/>
+          <ellipse cx="36" cy="62" rx="7" ry="4" fill="#ff6b8b"/><ellipse cx="84" cy="62" rx="7" ry="4" fill="#ff6b8b"/>
+          <path d="M52 64q8 7 16 0" stroke="#16143f" stroke-width="4" fill="none" stroke-linecap="round"/>
+        </g>
+      </svg>
+      <div class="ghostCap" id="ghostCap"></div>
+    </div>
+    <article class="ticket" id="ticket" hidden>
+      <div class="head">
+        <div>
+          <div class="tags" id="ideaTabs" role="tablist" aria-label="Ideas"></div>
+          <h2 id="sTitle"></h2>
+        </div>
+        <div class="collage" id="collage" aria-hidden="true"></div>
+      </div>
+      <p class="summary" id="sSummary"></p>
+      <p class="price" id="sPrice" hidden></p>
+      <h4 class="gainsH" id="gainsH">What you gain</h4>
+      <ul class="gains" id="gains"></ul>
+      <p class="src" id="sFrom"></p>
+      <p class="src" id="sSrc"></p>
+      <div class="cut"></div>
+      <div id="tryBox">
+        <h3 class="try" id="tryQ">Do you want to try it?</h3>
+        <div class="yn" id="yn">
+          <button class="big yes" id="yes" type="button">Yes</button>
+          <button class="big no" id="no" type="button">No</button>
+        </div>
+        <p class="thanks" id="thanks" hidden>Thank you. <button class="small" id="again" type="button">Find another idea</button></p>
+      </div>
+      <form class="trial" id="trialForm" hidden>
+        <h3 class="try">How will you try it?</h3>
+        <label>What you will do<textarea id="tPlan" required maxlength="500" placeholder="Add four short strides after each easy run"></textarea></label>
+        <label>Your routine<input id="tRoutine" required maxlength="140" placeholder="For example: every morning, or 3 times a week"></label>
+        <label class="check"><input type="checkbox" id="tAuto"> Add it to my daily log automatically</label>
+        <div class="autoRow" id="autoRow" hidden>
+          <label>Time of day<input type="time" id="tTime" value="07:30"></label>
+          <label>How long<span class="dur"><input type="number" id="tDur" min="1" step="any" value="30"><select id="tDurUnit" aria-label="Unit"><option value="min">min</option><option value="h">h</option></select></span></label>
+        </div>
+        <label>Target (optional)<input id="tTarget" maxlength="140" placeholder="For example: 6:00 per km by December"></label>
+        <p class="msg" id="tMsg" hidden></p>
+        <div class="btnrow"><button class="big" type="submit">Submit</button><button class="small" id="tBack" type="button">Cancel</button></div>
+      </form>
+    </article>
+  </div>
+</section>
+
+<section class="band lemon" id="log">
+  <div class="in">
+    <h2>How did today go?</h2>
+    <p class="sub">Log your day.</p>
+    <div class="logwrap">
+    <form class="paper" id="logForm">
+      <i class="hole" style="top:70px"></i><i class="hole" style="top:260px"></i><i class="hole" style="top:450px"></i>
+      <div class="dt" id="logDate"></div>
+      <p class="planned" id="planned" hidden></p>
+      <div class="acts" id="acts"></div>
+      <button class="addA" type="button" id="addAct"><i></i>add another thing</button>
+      <div class="sleep">Slept <input id="sleep" type="number" min="0" max="14" step="0.5" placeholder="7" required aria-label="Sleep last night, hours"> hours. The day felt
+        <span class="fv" id="feel" role="group" aria-label="Overall feel, 1 to 5"></span> out of 5.</div>
+      <p class="msg" id="logMsg" hidden></p>
+      <button class="save" type="submit">Save today</button>
+    </form>
+    <aside class="daypanel"><div class="dgrid" id="dgrid" aria-hidden="true"></div><div class="dleg" id="dleg"></div><p class="dnote">One square is 15 minutes. Empty squares are time you did not log.</p></aside>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>Your data stays in this browser.</span>
+  <button class="link" id="export">Export JSON</button>
+</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const DEMO = window.GHOST_DEMO || null;  // set only in the published demo (tools/build_demo.py)
+const KEY = 'ghost.v3', OLD_KEY = 'ghost.v2';
+const AREAS = ['Study', 'Work', 'Health', 'Style', 'Money', 'Other'];
+const MODES = {
+  improve: {btn: 'Show me ideas', attach: false, gain: 'What you gain', lede: 'Describe what you do and what you want to improve. You get an idea from people elsewhere who do it differently, with a source.',
+    ph: 'Describe what you do and what you want to improve. For example: I run 5 km three times a week at 6:30 per km and want to get faster.', cap: 'Describe what you do, then press Show me ideas.'},
+  cheaper: {btn: 'Show me ideas', attach: true, gain: 'What you save', lede: 'Describe what you buy or use, with its price if you know it. You get an equivalent that costs less, with a source.',
+    ph: 'Describe what you buy or use. For example: A 1000 W blender that cost me 89 CHF.', cap: 'Describe what you buy, then press Show me ideas.'},
+  similar: {btn: 'Show me ideas', attach: true, gain: 'What it shares', lede: 'Describe something you like. You get something similar that you may not know yet, with a source.',
+    ph: 'Describe what you like. For example: I love the old yellow trams of Lisbon and want to find similar places to visit.', cap: 'Describe what you like, then press Show me ideas.'}
+};
+const curMode = () => MODES[S.prefs.mode] ? S.prefs.mode : 'improve';
+function applyMode(){
+  const m = curMode(), c = MODES[m];
+  document.querySelectorAll('.mode').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === m)));
+  $('lede').textContent = c.lede; $('ask').placeholder = c.ph; $('findBtn').textContent = c.btn; $('attach').hidden = !c.attach || !!DEMO;
+}
+const SRC_LABEL = {research: 'Research', person: 'A person’s account', product: 'Product listing'};
+
+const DEMO_IDS = ['attempt-first', 'mix-types', 'test-yourself'];
+
+const CATS = ['Study', 'Work', 'Exercise', 'Nutrition', 'Self-care', 'Medication', 'Social media', 'Phone', 'TV & streaming', 'Internet browsing', 'Other'];
+const AREA_CAT = {Health: 'Exercise', Study: 'Study', Work: 'Work', Style: 'Self-care'};  // idea area to log category
+const OLD_CAT = {Study: 'Study', Work: 'Work', Health: 'Exercise'};
+function cleanAct(a){
+  if (!a || !(+a.minutes > 0)) return null;
+  const cat = CATS.includes(a.cat) ? a.cat : 'Other';
+  return {cat, name: cat === 'Other' ? String(a.name || '').trim().slice(0, 60) : '', minutes: Math.min(Math.round(+a.minutes), 1440), desc: String(a.desc || '').trim().slice(0, 140)};
+}
+function normDays(list){
+  const by = {};
+  (Array.isArray(list) ? list : []).forEach(d => {
+    if (!d || !d.date) return;
+    const e = by[d.date] || (by[d.date] = {date: d.date, acts: [], sleep: null, feel: null});
+    if (Array.isArray(d.acts)) e.acts = d.acts.map(cleanAct).filter(Boolean);
+    else if (+d.minutes > 0) e.acts.push(OLD_CAT[d.area] ? {cat: OLD_CAT[d.area], name: '', minutes: Math.round(+d.minutes)} : {cat: 'Other', name: String(d.text || d.area || '').slice(0, 60), minutes: Math.round(+d.minutes)});
+    if (d.sleep !== undefined && d.sleep !== null) e.sleep = +d.sleep;
+    if (+d.feel >= 1 && +d.feel <= 5) e.feel = +d.feel;
+  });
+  return Object.values(by).sort((a, b) => a.date.localeCompare(b.date));
+}
+function el(tag, cls, text){ const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; }
+
+function blank(){ return {days: [], trials: [], pool: [], idx: 0, lock: null, tries: {}, titles: {}, sarea: {}, decided: {}, offset: 0, prefs: {region: '', limit: '', count: 1}, promptArea: null}; }
+function normalize(v){
+  const o = Object.assign(blank(), v);
+  o.days = normDays(o.days);
+  delete o.suggestion;
+  o.trials = Array.isArray(o.trials) ? o.trials : [];
+  o.pool = (Array.isArray(o.pool) ? o.pool : []).filter(x => x && !DEMO_IDS.includes(x.id));
+  o.idx = Math.min(Math.max(+o.idx || 0, 0), Math.max(o.pool.length - 1, 0));
+  o.prefs = Object.assign({region: '', limit: '', count: 1}, o.prefs || {});
+  return o;
+}
+function load(){
+  for (const k of [KEY, OLD_KEY]){ try { const raw = localStorage.getItem(k); if (raw) return normalize(JSON.parse(raw)); } catch(e){} }
+  return blank();
+}
+let S = load();
+let shownId = null, notice = '';
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+const sug = () => S.pool[S.idx];
+function today(off = 0){ const d = new Date(); d.setDate(d.getDate() + off); return d.toLocaleDateString('sv'); }
+
+const ART_BG = {Study: '#cfd5ff', Work: '#dcdcea', Health: '#c8f3dc', Style: '#ffd3df', Money: '#fff0a6', Other: '#e4e7ff'};
+const ART = {
+  Study: '<svg viewBox="0 0 80 80"><path d="M10 22c10-5 22-5 30 2v40c-8-7-20-7-30-2z" fill="#fff" stroke="#16143f" stroke-width="4" stroke-linejoin="round"/><path d="M70 22c-10-5-22-5-30 2v40c8-7 20-7 30-2z" fill="#ffe45c" stroke="#16143f" stroke-width="4" stroke-linejoin="round"/></svg>',
+  Work: '<svg viewBox="0 0 80 80"><rect x="10" y="26" width="60" height="40" rx="8" fill="#fff" stroke="#16143f" stroke-width="4"/><path d="M30 26v-6a5 5 0 015-5h10a5 5 0 015 5v6" fill="none" stroke="#16143f" stroke-width="4"/><path d="M10 44h60" stroke="#16143f" stroke-width="4"/><rect x="35" y="40" width="10" height="9" rx="2" fill="#ff6b8b" stroke="#16143f" stroke-width="3"/></svg>',
+  Health: '<svg viewBox="0 0 80 80"><path d="M40 66S12 48 12 30a14 14 0 0128-6 14 14 0 0128 6c0 18-28 36-28 36z" fill="#ff6b8b" stroke="#16143f" stroke-width="4" stroke-linejoin="round"/><path d="M18 40h12l5-9 8 16 5-7h14" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  Style: '<svg viewBox="0 0 80 80"><path d="M40 26a6 6 0 116 6c0 4-6 5-6 10M40 42L10 62h60z" fill="#fff" stroke="#16143f" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="40" cy="55" r="4" fill="#ff6b8b" stroke="#16143f" stroke-width="3"/></svg>',
+  Money: '<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="28" fill="#ffe45c" stroke="#16143f" stroke-width="4"/><circle cx="40" cy="40" r="19" fill="none" stroke="#16143f" stroke-width="3" stroke-dasharray="4 5"/><path d="M40 28v24M34 34c0-4 12-4 12 0s-12 4-12 8 12 4 12 0" fill="none" stroke="#16143f" stroke-width="3.5" stroke-linecap="round"/></svg>',
+  Other: '<svg viewBox="0 0 80 80"><path d="M40 8l8 22 22 2-17 15 6 22-19-12-19 12 6-22L10 32l22-2z" fill="#ffe45c" stroke="#16143f" stroke-width="4" stroke-linejoin="round"/></svg>'
+};
+const DOTS = '<svg viewBox="0 0 80 80"><circle cx="20" cy="22" r="8" fill="#3a3aff"/><circle cx="52" cy="18" r="5" fill="#ff6b8b"/><circle cx="60" cy="52" r="10" fill="#ffe45c" stroke="#16143f" stroke-width="3"/><circle cx="24" cy="58" r="6" fill="#16143f"/></svg>';
+function tile(html, bg){ const d = el('div', 'tile'); d.style.background = bg; d.innerHTML = html; return d; }   // html is built only from the constants above
+function renderCollage(s){
+  const box = $('collage'); box.textContent = '';
+  const art = tile(ART[s.area] || ART.Other, ART_BG[s.area] || ART_BG.Other);
+  if (s.image && /^https?:\/\//.test(s.image)){
+    const t = el('div', 'tile'), img = document.createElement('img');
+    img.alt = ''; img.referrerPolicy = 'no-referrer'; img.loading = 'lazy';
+    img.onerror = () => { t.replaceWith(art.cloneNode(true)); };
+    img.src = s.image; t.append(img); box.append(t);
+  } else box.append(art);
+  box.append(tile(DOTS, '#fff'));
+}
+
+function resetTry(){
+  $('tryQ').hidden = false; $('yn').hidden = false; $('thanks').hidden = true; $('trialForm').hidden = true; $('tryBox').hidden = false;
+  $('trialForm').reset(); $('autoRow').hidden = true; $('tMsg').hidden = true;
+}
+function renderSuggestion(){
+  const has = S.pool.length > 0, s = sug();
+  $('ticket').hidden = !has; $('ghostWrap').hidden = has;
+  if (!has){ shownId = null; $('ghostCap').textContent = notice || MODES[curMode()].cap; return; }
+  notice = '';
+  if (shownId !== s.id){ shownId = s.id; resetTry(); }
+  const tabs = $('ideaTabs'); tabs.textContent = '';
+  S.pool.forEach((x, i) => {
+    const b = el('button', 'tab', 'Idea ' + (i + 1)); b.type = 'button'; b.setAttribute('role', 'tab'); b.setAttribute('aria-selected', String(i === S.idx));
+    b.onclick = () => { if (i === S.idx) return; S.idx = i; save(); renderAll(); };
+    tabs.append(b);
+  });
+  $('sTitle').textContent = s.title;
+  $('sSummary').textContent = s.summary || '';
+  $('sPrice').hidden = !s.price; $('sPrice').textContent = s.price ? 'Price: ' + s.price : '';
+  $('gainsH').textContent = (MODES[s.mode] || MODES.improve).gain;
+  const gains = $('gains'); gains.textContent = '';
+  (s.benefits || []).forEach(b => gains.append(el('li', '', b)));
+  $('sFrom').textContent = s.from ? 'From: ' + s.from : '';
+  const src = $('sSrc'); src.textContent = ''; 
+  const a = document.createElement('a'); a.href = s.source_url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = s.source_title || s.source_url;
+  src.append('Source: ', a);
+  renderCollage(s);
+}
+
+const fmtMin = m => { const h = Math.floor(m / 60), r = m % 60; return [h ? h + ' h' : '', r || !h ? r + ' min' : ''].filter(Boolean).join(' '); };
+const CAT_COLOR = {Study: '#3a3aff', Work: '#16143f', Exercise: '#1fb36b', Nutrition: '#ff8a3d', 'Self-care': '#9b6bff', Medication: '#17a2b8', 'Social media': '#ff6b8b', Phone: '#8a8fb5', 'TV & streaming': '#c2410c', 'Internet browsing': '#0e7490', Other: '#6b7280', Sleep: '#ffffff'};
+function readRows(){
+  const out = [];
+  for (const r of $('acts').children){
+    const sel = r.querySelector('select'), oth = r.querySelector('.oth'), min = r.querySelector('.min'), unit = r.querySelector('.unit'), dsc = r.querySelector('.dsc');
+    out.push({cat: sel.value, name: oth.value.trim(), minutes: Math.round((+min.value || 0) * (unit.value === 'h' ? 60 : 1)), desc: dsc.value.trim(), raw: min.value});
+  }
+  return out;
+}
+function drawGrid(){
+  const rows = readRows().filter(a => a.minutes > 0), sleep = +$('sleep').value || 0, grid = $('dgrid'), leg = $('dleg');
+  const sums = new Map(); rows.forEach(a => { const k = a.cat === 'Other' ? (a.name || 'Other') : a.cat; const o = sums.get(k) || {cat: a.cat, min: 0}; o.min += a.minutes; sums.set(k, o); });
+  const cells = [];
+  const push = (n, color, label) => { for (let i = 0; i < n && cells.length < 96; i++) cells.push([color, label]); };
+  push(Math.round(Math.min(sleep, 14) * 4), CAT_COLOR.Sleep, 'Sleep');
+  sums.forEach((o, k) => push(Math.max(1, Math.round(o.min / 15)), CAT_COLOR[o.cat], k));
+  grid.textContent = '';
+  for (let i = 0; i < 96; i++){ const c = document.createElement('i'); if (cells[i]){ c.style.background = cells[i][0]; c.title = cells[i][1]; } grid.append(c); }
+  leg.textContent = '';
+  const total = [...sums.values()].reduce((t, o) => t + o.min, 0);
+  const add = (color, text, extra) => { const d = el('div'), sw = el('i'); sw.style.background = color; d.append(sw, text); if (extra){ d.append(el('small', '', extra)); } leg.append(d); };
+  if (sleep > 0) add(CAT_COLOR.Sleep, 'Sleep ' + fmtMin(Math.round(sleep * 60)));
+  sums.forEach((o, k) => add(CAT_COLOR[o.cat], k + ' ' + fmtMin(o.min), Math.round(o.min / total * 100) + '%'));
+  if (!sums.size && !(sleep > 0)) leg.append(el('div', '', 'Your day appears here as you fill it in.'));
+}
+let feelVal = 3;
+function setFeel(v){ feelVal = v; document.querySelectorAll('#feel button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.v === v))); }
+for (let v = 1; v <= 5; v++){ const b = el('button', '', String(v)); b.type = 'button'; b.dataset.v = v; b.onclick = () => setFeel(v); $('feel').append(b); }
+function addRow(a = {}){
+  const row = el('div', 'arow'), l1 = el('div', 'l1'), sel = el('select'), oth = el('input', 'oth'), min = el('input', 'min'), unit = el('select', 'unit'), rm = el('button', 'rm', '\u00d7'), dsc = el('input', 'dsc');
+  sel.setAttribute('aria-label', 'Category');
+  CATS.forEach(c => { const o = el('option', '', c); o.value = c; sel.append(o); });
+  sel.value = a.cat || 'Study';
+  oth.placeholder = 'name it'; oth.maxLength = 60; oth.value = a.name || ''; oth.setAttribute('aria-label', 'Your own category');
+  min.type = 'number'; min.min = 0; min.step = 'any'; min.placeholder = '60'; min.setAttribute('aria-label', 'Time spent');
+  ['min', 'h'].forEach(u => { const o = el('option', '', u); o.value = u; unit.append(o); }); unit.setAttribute('aria-label', 'Unit: minutes or hours');
+  if (a.minutes){ const hours = a.minutes >= 60 && a.minutes % 60 === 0; unit.value = hours ? 'h' : 'min'; min.value = hours ? a.minutes / 60 : a.minutes; }
+  dsc.maxLength = 140; dsc.placeholder = 'what did you do?'; dsc.value = a.desc || ''; dsc.setAttribute('aria-label', 'What you did');
+  rm.type = 'button'; rm.setAttribute('aria-label', 'Remove activity'); rm.onclick = () => { row.remove(); syncRows(); drawGrid(); };
+  const sync = () => { oth.hidden = sel.value !== 'Other'; };
+  sel.onchange = () => { sync(); if (sel.value === 'Other') oth.focus(); drawGrid(); }; sync();
+  l1.append(el('span', 'bx'), sel, oth, el('span', 'dash', '\u2014'), min, unit, rm);
+  row.append(l1, dsc); $('acts').append(row); syncRows();
+}
+function syncRows(){ const rows = $('acts').children; for (const r of rows) r.querySelector('.rm').hidden = rows.length < 2; }
+function fillLog(){
+  $('logDate').textContent = new Date(today() + 'T12:00:00').toLocaleDateString('en-GB', {weekday: 'long', day: 'numeric', month: 'long'});
+  $('acts').textContent = '';
+  const d = S.days.find(x => x.date === today());
+  const planned = d && d.acts.length ? [] : S.trials.filter(t => t.status === 'active' && t.auto);
+  const rows = d && d.acts.length ? d.acts : planned.map(t => ({cat: AREA_CAT[t.area] || 'Other', name: AREA_CAT[t.area] ? '' : t.title.slice(0, 60), minutes: t.auto.minutes, desc: t.plan.slice(0, 140)}));
+  (rows.length ? rows : [{}]).forEach(addRow);
+  $('planned').hidden = !planned.length;
+  $('planned').textContent = planned.length ? 'Planned for today: ' + planned.map(t => t.title + ' at ' + t.auto.time).join('; ') + '. Change or remove them, then save.' : '';
+  $('sleep').value = d && d.sleep !== null ? d.sleep : ''; setFeel(d && d.feel ? d.feel : 3);
+  drawGrid();
+}
+$('addAct').onclick = () => { addRow(); $('acts').lastChild.querySelector('select').focus(); drawGrid(); };
+$('logForm').addEventListener('input', drawGrid);
+
+// ---- Trials
+function renderAll(){
+  renderSuggestion();
+}
+
+$('yes').onclick = () => { $('tryQ').hidden = true; $('yn').hidden = true; $('trialForm').hidden = false; $('tPlan').focus(); };
+$('no').onclick = () => { $('tryQ').hidden = true; $('yn').hidden = true; $('thanks').hidden = false; };
+$('again').onclick = () => { S.pool = []; S.idx = 0; save(); renderAll(); $('ask').focus(); window.scrollTo({top: 0}); };
+$('tBack').onclick = () => { $('trialForm').hidden = true; $('tryQ').hidden = false; $('yn').hidden = false; };
+$('tAuto').onchange = () => { $('autoRow').hidden = !$('tAuto').checked; };
+$('trialForm').onsubmit = e => {
+  e.preventDefault();
+  const s = sug(), fail = text => { $('tMsg').hidden = false; $('tMsg').textContent = text; };
+  if (!s) return;
+  const auto = $('tAuto').checked, minutes = Math.round((+$('tDur').value || 0) * ($('tDurUnit').value === 'h' ? 60 : 1));
+  if (auto && !(minutes >= 1 && minutes <= 1440)) return fail('How long must be between 1 minute and 24 hours.');
+  S.trials.push({id: 't' + Date.now(), title: s.title, area: s.area || 'Other', source_url: s.source_url || '', source_title: s.source_title || '',
+    plan: $('tPlan').value.trim(), routine: $('tRoutine').value.trim(), target: $('tTarget').value.trim(), startDate: today(), status: 'active',
+    auto: auto ? {time: $('tTime').value || '07:30', minutes} : null});
+  S.pool = []; S.idx = 0; notice = 'Your trial is saved.'; save(); renderAll(); fillLog();
+};
+
+$('logForm').onsubmit = e => {
+  e.preventDefault();
+  const msg = $('logMsg'), fail = t => { msg.hidden = false; msg.textContent = t; };
+  const acts = [];
+  for (const a of readRows()){
+    if (!a.raw && !a.name && !a.desc) continue;
+    if (!(a.minutes >= 1 && a.minutes <= 1440)) return fail('Time must be between 1 minute and 24 hours.');
+    if (a.cat === 'Other' && !a.name) return fail('Name your activity.');
+    acts.push({cat: a.cat, name: a.cat === 'Other' ? a.name : '', minutes: Math.round(a.minutes), desc: a.desc});
+  }
+  if (!acts.length) return fail('Add at least one activity with its time.');
+  if (acts.reduce((t, a) => t + a.minutes, 0) > 1440) return fail('The activities add up to more than 24 hours.');
+  const sleep = +$('sleep').value;
+  if ($('sleep').value === '' || !(sleep >= 0 && sleep <= 14)) return fail('Sleep must be between 0 and 14 hours.');
+  S.days = S.days.filter(x => x.date !== today()); S.days.push({date: today(), acts, sleep, feel: feelVal}); save();
+  msg.hidden = false; msg.textContent = 'Saved.';
+};
+
+const clampCount = () => Math.min(10, Math.max(1, Math.round(+$('count').value) || 1));
+const savePrefs = () => { S.prefs = Object.assign(S.prefs, {ask: $('ask').value, region: $('region').value, count: clampCount()}); save(); };
+['ask', 'region', 'count'].forEach(id => $(id).addEventListener('input', savePrefs));
+
+// The Python server (python -m ghost.server) adds city search, the prompt builder and the answer checker.
+// Without it the page works on its own with the built-in versions.
+let api = false;
+async function callApi(path, body){
+  const r = await fetch(path, body ? {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)} : undefined);
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.error || 'Request failed');
+  return j;
+}
+let canSearch = false;
+
+// Location suggestions: first three letters of a country or city, with coordinates for cities.
+let locTimer = 0, locSeq = 0;
+const locList = () => $('locList');
+function closeLoc(){ locList().hidden = true; locList().textContent = ''; $('region').setAttribute('aria-expanded', 'false'); }
+function pickLoc(text){ $('region').value = text; savePrefs(); closeLoc(); }
+$('region').addEventListener('input', () => {
+  clearTimeout(locTimer);
+  const q = $('region').value.trim();
+  if (!api || q.length < 3){ closeLoc(); return; }
+  const seq = ++locSeq;
+  locTimer = setTimeout(() => callApi('/api/location?q=' + encodeURIComponent(q)).then(list => {
+    if (seq !== locSeq) return;
+    const box = locList(); box.textContent = ''; box.hidden = !list.length; $('region').setAttribute('aria-expanded', String(!!list.length));
+    list.forEach(r => {
+      const li = el('li'), b = el('button'); b.type = 'button'; b.setAttribute('role', 'option');
+      b.append(el('b', '', r.label), el('small', '', r.kind === 'city' ? r.coords : r.kind === 'region' ? 'Region' : 'Country'));
+      b.onclick = () => pickLoc(r.label); li.append(b); box.append(li);
+    });
+  }).catch(() => {}), 150);
+});
+$('region').addEventListener('keydown', e => {
+  const items = [...locList().querySelectorAll('button')];
+  if (e.key === 'Escape') closeLoc();
+  else if (e.key === 'ArrowDown' && items.length){ e.preventDefault(); items[0].focus(); }
+});
+locList().addEventListener('keydown', e => {
+  const items = [...locList().querySelectorAll('button')], i = items.indexOf(document.activeElement);
+  if (e.key === 'ArrowDown'){ e.preventDefault(); (items[i + 1] || items[0]).focus(); }
+  else if (e.key === 'ArrowUp'){ e.preventDefault(); (i > 0 ? items[i - 1] : $('region')).focus(); }
+  else if (e.key === 'Escape'){ closeLoc(); $('region').focus(); }
+});
+document.addEventListener('click', e => { if (!e.target.closest('.combo')) closeLoc(); });
+$('count').addEventListener('change', () => { $('count').value = String(clampCount()); savePrefs(); });
+
+// Photos: shrunk in the browser before they are sent (largest side 1024 px).
+const photos = [], MAX_PHOTOS = 3;
+function renderThumbs(){
+  const box = $('thumbs'); box.textContent = '';
+  photos.forEach((d, i) => {
+    const w = el('div'), im = document.createElement('img'), x = el('button', '', '\u00d7');
+    im.src = d; im.alt = 'Photo ' + (i + 1); x.type = 'button'; x.setAttribute('aria-label', 'Remove photo ' + (i + 1));
+    x.onclick = () => { photos.splice(i, 1); renderThumbs(); }; w.append(im, x); box.append(w);
+  });
+  $('photoBtn').disabled = photos.length >= MAX_PHOTOS;
+}
+function shrink(file){
+  return new Promise((ok, fail) => {
+    const url = URL.createObjectURL(file), im = new Image();
+    im.onload = () => {
+      const k = Math.min(1, 1024 / Math.max(im.width, im.height)), c = document.createElement('canvas');
+      c.width = Math.max(1, Math.round(im.width * k)); c.height = Math.max(1, Math.round(im.height * k));
+      c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); URL.revokeObjectURL(url); ok(c.toDataURL('image/jpeg', 0.82));
+    };
+    im.onerror = () => { URL.revokeObjectURL(url); fail(new Error('read')); };
+    im.src = url;
+  });
+}
+$('photoBtn').onclick = () => $('photoIn').click();
+$('photoIn').onchange = async () => {
+  $('photoNote').textContent = '';
+  for (const f of [...$('photoIn').files]){
+    if (photos.length >= MAX_PHOTOS) break;
+    try { photos.push(await shrink(f)); } catch(e){ $('photoNote').textContent = 'One photo could not be read. Use a JPEG or PNG.'; }
+  }
+  $('photoIn').value = ''; renderThumbs();
+};
+if (!DEMO) callApi('/api/status').then(s => { api = true; canSearch = !!s.search; syncPhoto(); }).catch(() => {});
+function syncPhoto(){ $('photoBtn').hidden = !(api && canSearch); $('photoNote').textContent = api && canSearch ? '' : 'Photos need the Ghost server with search.'; }
+syncPhoto();
+
+async function showManual(prompt){
+  $('promptBox').value = prompt;
+  $('steps').hidden = false;
+  $('toolMsg').textContent = (await copyText(prompt)) ? 'Request copied.' : 'Could not copy automatically. Open "Show the request" and copy it from there.';
+  $('steps').scrollIntoView({block: 'nearest'});
+}
+async function copyText(text){ try { await navigator.clipboard.writeText(text); return true; } catch(e){ return false; } }
+let lastPrompt = '';
+const MODE_TEXT = {
+  improve: {rule: '', sum: 'what people do and why it works', ben: 'my goal'},
+  cheaper: {rule: 'The alternative must do the same job as mine at a lower price. If its quality or features differ, say so in the summary.', sum: 'what the alternative is and how it matches mine', ben: 'what stays the same and what I save'},
+  similar: {rule: 'The suggestion must share something concrete with my example, and the summary says what it shares.', sum: 'what it is and what it shares with my example', ben: 'what is alike'}
+};
+function buildPromptLocal(request, region, limit, n, keep, tried, mode = 'improve', links = [], photos = 0){
+  const ask = n === 1 ? 'ONE idea' : n + ' different ideas', mt = MODE_TEXT[mode] || MODE_TEXT.improve;
+  const head = mode === 'cheaper' ? ['Find a cheaper equivalent of what I buy or use, and give me ' + ask + ' I can switch to.', 'What I buy or use now (with its price if I know it): ' + request]
+    : mode === 'similar' ? ['Find something similar to what I describe that I may not know yet, and give me ' + ask + ' I can try.', 'What I like or use now: ' + request]
+    : ['Find how other people do the same thing as me in a different way, and give me ' + ask + ' I can try.', 'What I do and what I want to improve: ' + request];
+  return [
+    ...head,
+    ...(keep ? ['Keep the same: ' + keep + '.'] : []),
+    'Examples should come from: ' + (region || 'anywhere in the world') + '.' + (limit ? ' My limit: ' + limit + '.' : ''),
+    'Stay strictly on my activity and my numbers. Do not bring in other topics, interviews or anything unrelated.',
+    ...(mt.rule ? [mt.rule] : []),
+    'Search the web, with at most ' + (3 + 2 * n) + ' searches and ' + (2 + n) + ' pages opened. Give each link. Every idea needs a source_url taken from your search results or from a page you opened; never write a link you did not see. Leave out any idea you cannot source. Do not invent people, quotes or numbers. Never suggest anything risky, such as cutting sleep.',
+    'Write like a short magazine article: no first person and no comments about your searching or checking. summary: 2 or 3 sentences on ' + mt.sum + '. benefits: 2 or 3 short phrases, each under 12 words, on ' + mt.ben + '. from: the place or people the idea comes from. price: only if a page you opened shows it, with currency, such as "CHF 49 instead of CHF 89"; otherwise an empty string.',
+    ...(links.length ? ['Open these links first; they show what I mean: ' + links.join(' ')] : []),
+    ...(photos ? ['I attached ' + photos + (photos > 1 ? ' photos' : ' photo') + ' of it; use what you see in the ' + (photos > 1 ? 'photos' : 'photo') + '.'] : []),
+    ...(tried.length ? ['Do not repeat these: ' + tried.join('; ') + '.'] : []),
+    'Reply with a JSON array only: [{"title":"","area":"Study|Work|Health|Style|Money|Other","summary":"","benefits":["",""],"source_type":"research|person|product","from":"","price":"","source_title":"","source_url":""}]'
+  ].join('\n');
+}
+$('askForm').onsubmit = async e => {
+  e.preventDefault();
+  const request = $('ask').value.trim(); if (!request) return;
+  savePrefs();
+  const region = (S.prefs.region || '').trim(), limit = '', keep = '', n = clampCount(), mode0 = curMode();
+  const links = MODES[mode0].attach ? $('links').value.split(/\s+/).filter(x => /^https?:\/\/\S+$/.test(x)).slice(0, 5) : [];
+  const sent = MODES[mode0].attach && api && canSearch ? photos.slice() : [];
+  const tried = S.trials.map(t => t.title);
+  const mode = curMode();
+  if (DEMO){
+    const pool = DEMO.ideas.filter(x => x.mode === mode).slice(0, n).map((x, i) => Object.assign({id: 'd' + Date.now() + '-' + i, image: ''}, x));
+    S.pool = pool; S.idx = 0; save(); $('searchMsg').hidden = true; $('steps').hidden = true; renderAll(); $('ticket').scrollIntoView({block: 'center'});
+    return;
+  }
+  let prompt = buildPromptLocal(request, region, limit, n, keep, tried, mode, links, sent.length);
+  if (api){
+    try { prompt = (await callApi('/api/prompt', {request, region, limit, count: n, keep_same: keep, tried, mode, links, photos: sent.length})).prompt; } catch(err){}
+  }
+  lastPrompt = prompt; $('promptBox').value = prompt;
+  if (api && canSearch){
+    const btn = $('findBtn'), t0 = Date.now();
+    btn.disabled = true; btn.textContent = 'Searching…';
+    $('searchMsg').hidden = false; $('steps').hidden = true;
+    const tick = () => { $('searchMsg').textContent = 'Searching the web and reading sources… ' + Math.round((Date.now() - t0) / 1000) + ' s'; };
+    tick(); const timer = setInterval(tick, 1000);
+    try {
+      const items = (await callApi('/api/search', {prompt, count: clampCount(), images: sent.map(d => ({data: d}))})).items.map((x, i) => Object.assign({id: 's' + Date.now() + '-' + i, mode}, x));
+      S.pool = items; S.idx = 0; save();
+      $('searchMsg').hidden = true; renderAll(); $('ticket').scrollIntoView({block: 'center'});
+    } catch(err){
+      $('searchMsg').textContent = 'The automatic search did not work: ' + err.message + ' Use the request below instead.';
+      await showManual(prompt);
+    } finally { clearInterval(timer); btn.disabled = false; btn.textContent = MODES[mode].btn; }
+    return;
+  }
+  $('searchMsg').hidden = true;
+  await showManual(prompt);
+};
+$('recopy').onclick = async () => { $('toolMsg').textContent = (await copyText(lastPrompt)) ? 'Request copied.' : 'Could not copy automatically. Open "Show the request" and copy it from there.'; };
+
+
+function parseLocal(text){
+  const raw = text.trim().replace(/^```(?:json)?\s*|\s*```$/g, '');
+  let j;
+  try { j = JSON.parse(raw); } catch(e){ const s = raw.indexOf('['), t = raw.lastIndexOf(']'); if (s < 0 || t <= s) throw e; j = JSON.parse(raw.slice(s, t + 1)); }
+  const clean = v => String(v || '').replace(/\s+/g, ' ').trim();
+  return (Array.isArray(j) ? j : [j]).slice(0, 5).filter(x => x && typeof x.title === 'string' && x.title.trim() && typeof x.summary === 'string' && x.summary.trim() && Array.isArray(x.benefits))
+    .map(x => ({
+      title: clean(x.title), area: AREAS.includes(x.area) ? x.area : 'Other', summary: clean(x.summary),
+      benefits: x.benefits.filter(b => typeof b === 'string' && b.trim()).map(b => clean(b).slice(0, 160)).slice(0, 3),
+      source_type: SRC_LABEL[x.source_type] ? x.source_type : '', from: clean(x.from), price: typeof x.price === 'string' ? clean(x.price).slice(0, 80) : '', source_title: clean(x.source_title),
+      source_url: /^https?:\/\//.test(String(x.source_url || '')) ? String(x.source_url) : '', image: ''
+    })).filter(x => x.benefits.length && x.source_url);
+}
+$('importBtn').onclick = async () => {
+  try {
+    const text = $('pasteArea').value;
+    const items = (api ? (await callApi('/api/parse', {text, area: 'Other'})).items : parseLocal(text)).map((x, i) => Object.assign({id: 's' + Date.now() + '-' + i, mode: curMode()}, x));
+    if (!items.length) throw new Error('no valid item');
+    S.pool = items; S.idx = 0; save();
+    $('pasteArea').value = ''; $('steps').hidden = true; $('toolMsg').textContent = '';
+    renderAll(); $('ticket').scrollIntoView({block: 'center'});
+  } catch(e){ $('toolMsg').textContent = 'That did not parse. Copy the whole answer from Claude: it must be a list where each idea has a title, a summary and benefits.'; }
+};
+
+$('export').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(S, null, 1)], {type: 'application/json'})); a.download = 'ghost-data.json'; a.click(); };
+
+document.querySelectorAll('.mode').forEach(b => b.onclick = () => { S.prefs.mode = b.dataset.mode; save(); applyMode(); renderAll(); $('ask').focus(); });
+$('demoBar').hidden = !DEMO;
+applyMode();
+$('ask').value = S.prefs.ask || '';
+$('region').value = S.prefs.region || ''; $('count').value = String(S.prefs.count || 1);
+fillLog();
+renderAll();
+</script>
+<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});</script>
+</body>
+</html>
