@@ -24,7 +24,7 @@ A small web app with two pages.
 
 ## Try it online
 
-Live demo: https://huongtang183-sketch.github.io/ghost/
+Live demo: [https://huongtang183-sketch.github.io/not-a-ghost/]
 
 The demo shows sample ideas, each with its real source, and page 2 can load sample days. Live search needs the local server below. On a phone, open the demo and choose "Add to Home Screen" to install it.
 
