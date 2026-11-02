@@ -1,6 +1,20 @@
 # not a ghost
 
-A small local web app with two pages.
+## Why I built it
+
+I believe we judge what is possible by what our five senses show us, and that this keeps people in versions of themselves that no longer fit. Two people born at the same moment in different countries, from different backgrounds, can end up with very different options and very different feelings about themselves. I use quantum entanglement as an analogy for this: it is an inspiration, not a claim that physics explains it. The 2022 Nobel Prize in Physics honoured Aspect, Clauser and Zeilinger for experiments with entangled photons that showed the world behaves in ways everyday experience does not predict.
+
+I also believe a new pattern, repeated, becomes a new person, and that a new pattern starts when you see a way of living you had not seen. Michael Levin of Tufts University works on a related idea in biology: cells store pattern memories in bioelectric networks, and "the genome does not directly specify your shape".
+
+*not a ghost* is my attempt to make that practical. Describe something you do, for example running five times a week in Vietnam. The app finds how people in another country, such as Japan or Korea, do the same thing differently, with a checked source for every idea. You try one change and log your days. A second page, "What's your life juggling?", shows where your time goes and what type of person your days describe, so you can watch yourself change.
+
+Why the name? Many days we run on autopilot, like the ghost of yesterday repeating itself. Let's redefine ourselves: we are no longer a ghost of the past.
+
+Sources: [Nobel Prize in Physics 2022, press release](https://www.nobelprize.org/prizes/physics/2022/press-release/); [New Atlas on Michael Levin's work](https://newatlas.com/biology/levin-bioelectricity-cellular-intelligence-dna).
+
+## What it does
+
+A small web app with two pages.
 
 - **Improve your life.** Describe an activity and get sourced ideas to do it differently, spend less, or find something similar. Start a trial with a routine and an optional target, and log each day in a notebook.
 - **What's your life juggling?** Your logged days become balls in the air (bigger ball, more time), with a type bar that names your main type and your streak type.
