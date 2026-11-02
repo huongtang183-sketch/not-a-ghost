@@ -1,9 +1,10 @@
-"""Draw the ghost icon as SVG and PNG (192 and 512 px) into docs/icons.
+"""Draw the app icon (the ghost inside an eight-pointed star) as SVG and PNG (192 and 512 px) into docs/icons.
 
     python -m tools.make_icons
 
 The PNG step needs Playwright (pip install playwright). The SVG is written either way.
 """
+import math
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "docs" / "icons"
@@ -14,10 +15,25 @@ GHOST = (
     '<ellipse cx="36" cy="62" rx="7" ry="4" fill="#ff6b8b"/><ellipse cx="84" cy="62" rx="7" ry="4" fill="#ff6b8b"/>'
     '<path d="M52 64q8 7 16 0" stroke="#16143f" stroke-width="4" fill="none" stroke-linecap="round"/>'
 )
-# the ghost sits inside the middle 60% of the tile, so a phone can round or crop the corners
+
+
+def square(radius, turn):
+    """Corner points of a square with the given circumradius, turned by `turn` degrees."""
+    corners = [(radius * math.cos(math.radians(turn + 90 * i)), radius * math.sin(math.radians(turn + 90 * i))) for i in range(4)]
+    return " ".join(f"{x:.2f},{y:.2f}" for x, y in corners)
+
+
+# The ghost sits in the middle of an eight-pointed star made of two squares, one turned 45 degrees.
+# Everything is drawn inside the middle 70% of the tile, so a phone can round or crop the corners.
+STAR = (
+    f'<polygon points="{square(60, 45)}" fill="#3a3aff" stroke="#16143f" stroke-width="3.5" stroke-linejoin="round"/>'
+    f'<polygon points="{square(60, 0)}" fill="#3a3aff" stroke="#16143f" stroke-width="3.5" stroke-linejoin="round"/>'
+    '<circle r="42" fill="#d6e2ff" stroke="#16143f" stroke-width="3"/>'
+    f'<g transform="translate(-30 -29) scale(.5)">{GHOST}</g>'
+)
 SVG = (
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" fill="#d6e2ff"/>'
-    f'<g transform="translate(24 24) scale(.6)">{GHOST}</g></svg>'
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200"><rect x="-100" y="-100" width="200" height="200" fill="#d6e2ff"/>'
+    f'<g transform="scale(1.1)">{STAR}</g></svg>'
 )
 
 

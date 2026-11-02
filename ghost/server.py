@@ -19,7 +19,7 @@ import binascii
 from ghost import activities, coach, countries, linkcheck, places, preview, search
 
 WEB = Path(__file__).resolve().parent.parent / "web"
-VERSION = "update-24"
+VERSION = "update-26"
 MAX_BODY = 1_000_000
 MAX_BODY_PHOTOS = 8_000_000
 MAX_PHOTOS = 3
@@ -245,7 +245,7 @@ def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     server = make_server(places.load())
-    print(f"Ghost {VERSION} is running at http://127.0.0.1:8000  (press Ctrl+C to stop)")
+    print(f"not a ghost {VERSION} is running at http://127.0.0.1:8000  (press Ctrl+C to stop)")
     try:
         server.serve_forever()
     except KeyboardInterrupt:

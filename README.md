@@ -1,8 +1,8 @@
-# Ghost
+# not a ghost
 
 A small local web app with two pages.
 
-- **Improve your life.** Describe an activity and get sourced ideas to do it differently, spend less, or find something similar. Start a trial, track one number, and log each day in a notebook.
+- **Improve your life.** Describe an activity and get sourced ideas to do it differently, spend less, or find something similar. Start a trial with a routine and an optional target, and log each day in a notebook.
 - **What's your life juggling?** Your logged days become balls in the air (bigger ball, more time), with a type bar that names your main type and your streak type.
 
 ![Improve your life](docs/improve.png)

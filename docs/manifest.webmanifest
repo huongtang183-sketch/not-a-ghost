@@ -1,6 +1,6 @@
 {
-  "name": "Ghost",
-  "short_name": "Ghost",
+  "name": "not a ghost",
+  "short_name": "not a ghost",
   "description": "Sourced ideas to change one small thing, and a view of what your life is juggling.",
   "start_url": "./",
   "scope": "./",

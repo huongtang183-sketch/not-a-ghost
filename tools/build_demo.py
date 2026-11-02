@@ -28,8 +28,8 @@ HEAD = (
 REGISTER = "<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});</script>\n"
 
 MANIFEST = {
-    "name": "Ghost",
-    "short_name": "Ghost",
+    "name": "not a ghost",
+    "short_name": "not a ghost",
     "description": DESCRIPTION,
     "start_url": "./",
     "scope": "./",
